@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.provider
 
-import com.example.tachiyomi_clone.model.Result
+import com.example.tachiyomi_clone.data.model.Result
+import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 

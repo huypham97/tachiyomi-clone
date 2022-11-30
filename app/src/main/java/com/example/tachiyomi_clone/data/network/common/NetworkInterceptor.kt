@@ -23,8 +23,8 @@ class NetworkInterceptor constructor(
 
     private fun addHeader(request: Request): Request.Builder {
         var builder = request.newBuilder()
-        builder = addUserAgentHeader(builder)
-        builder = addRefererHeader(builder)
+//        builder = addUserAgentHeader(builder)
+//        builder = addRefererHeader(builder)
         return builder
     }
 

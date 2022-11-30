@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.main.base
+package com.example.tachiyomi_clone.ui.base
 
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry

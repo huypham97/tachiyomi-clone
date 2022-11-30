@@ -10,7 +10,8 @@ import dagger.Module
         AppDelegateModule::class,
         AppViewModelModule::class,
         AppActivityModule::class,
-        CoroutinesModule::class]
+        CoroutinesModule::class,
+        HomeModule::class]
 )
 abstract class AppModule {
 

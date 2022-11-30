@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.model
+package com.example.tachiyomi_clone.data.model
 
 /**
  * A generic class that holds a value with its loading status.

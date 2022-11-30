@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.main.base
+package com.example.tachiyomi_clone.ui.base
 
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -53,7 +53,7 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
     protected open fun setBindingContentView(@LayoutRes layoutId: Int) {
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this
-        binding.setVariable(BR._all, viewModel)
+//        binding.setVariable(BR._all, viewModel)
     }
 
     protected open fun initViews(savedInstanceState: Bundle?) {}
