@@ -6,5 +6,5 @@ import retrofit2.http.Query
 interface HomeService {
 
     @GET("hot/")
-    suspend fun fetchPopularManga(@Query("page") page: Int): Any
+    suspend fun popularMangaRequest(@Query("page") page: Int): Any
 }
