@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.example.tachiyomi_clone.BuildConfig
 import com.example.tachiyomi_clone.data.network.common.NetworkInterceptor
+import com.example.tachiyomi_clone.data.network.http.MangaSource
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -74,4 +75,9 @@ class NetworkModule(baseUrl: String) {
     @Provides
     fun provideHomeService(retrofit: Retrofit): HomeService =
         retrofit.create(HomeService::class.java)
+
+    @Provides
+    fun provideMangaSource(): MangaSource {
+        return MangaSource()
+    }
 }
