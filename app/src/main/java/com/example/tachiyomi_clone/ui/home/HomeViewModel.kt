@@ -18,15 +18,15 @@ class HomeViewModel @Inject constructor(
         const val TAG = "HomeViewModel"
     }
 
-    fun getPopularManga() {
+    fun getPopularManga(page: Int) {
         viewModelScope.launch {
-            homeUseCase(page = 1)
+            homeUseCase(page = page)
                 .collect { result ->
                     when (result) {
                         is Result.Success -> {
                             Logger.d(
                                 TAG,
-                                "[${TAG}] getPopularManga() --> homeUseCase: ${(result.data as Response).asJsoup()}"
+                                "[${TAG}] getPopularManga() --> homeUseCase: ${result.data}"
                             )
                         }
                         is Result.Error -> {

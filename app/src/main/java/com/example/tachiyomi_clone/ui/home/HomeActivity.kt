@@ -14,6 +14,6 @@ class HomeActivity :
 
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
-        viewModel.getPopularManga()
+        viewModel.getPopularManga(page = 1)
     }
 }
