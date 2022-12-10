@@ -2,6 +2,7 @@ package com.example.tachiyomi_clone.data.network.common
 
 import android.content.Context
 import com.example.tachiyomi_clone.BuildConfig
+import com.example.tachiyomi_clone.utils.Constant
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -38,7 +39,7 @@ class NetworkInterceptor constructor(
     private fun addRefererHeader(builder: Request.Builder): Request.Builder {
         return builder.addHeader(
             "Referer",
-            BuildConfig.BASE_URL
+            Constant.BASE_URL
         )
     }
 

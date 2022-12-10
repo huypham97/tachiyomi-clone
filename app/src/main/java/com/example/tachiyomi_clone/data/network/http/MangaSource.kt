@@ -1,8 +1,8 @@
 package com.example.tachiyomi_clone.data.network.http
 
-import com.example.tachiyomi_clone.BuildConfig
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.dto.MangasPageDto
+import com.example.tachiyomi_clone.utils.Constant
 import com.example.tachiyomi_clone.utils.asJsoup
 import okhttp3.Request
 import okhttp3.Response
@@ -12,7 +12,7 @@ import java.net.URISyntaxException
 
 class MangaSource {
 
-    val baseUrl: String = BuildConfig.BASE_URL
+    val baseUrl: String = Constant.BASE_URL
 
     val popularPath = "hot"
 

@@ -3,6 +3,7 @@ package com.example.tachiyomi_clone
 import android.app.Application
 import com.example.tachiyomi_clone.di.component.DaggerAppComponent
 import com.example.tachiyomi_clone.di.module.NetworkModule
+import com.example.tachiyomi_clone.utils.Constant
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -20,7 +21,7 @@ class TachiyomiApplication: Application(), HasAndroidInjector {
         DaggerAppComponent
             .builder()
             .application(this)
-            .networkModule(NetworkModule(BuildConfig.BASE_URL))
+            .networkModule(NetworkModule(Constant.BASE_URL))
             .build()
             .inject(this)
     }
