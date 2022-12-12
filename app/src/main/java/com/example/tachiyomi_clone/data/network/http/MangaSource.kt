@@ -17,7 +17,7 @@ class MangaSource {
     val popularPath = "hot"
 
     fun popularMangaRequest(page: Int): Request {
-        return GET("$baseUrl/$popularPath" + if (page > 1) "?page=$page" else "")
+            return GET("$baseUrl/$popularPath" + if (page > 1) "?page=$page" else "")
     }
 
     fun popularMangaParse(response: Response): MangasPageDto {

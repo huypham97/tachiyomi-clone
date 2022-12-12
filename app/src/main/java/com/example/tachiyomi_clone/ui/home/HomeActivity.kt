@@ -1,10 +1,17 @@
 package com.example.tachiyomi_clone.ui.home
 
 import android.os.Bundle
+import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.ActivityHomeBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HomeActivity :
     BaseActivity<ActivityHomeBinding, HomeViewModel>() {
@@ -20,13 +27,30 @@ class HomeActivity :
         this.binding.rvManga.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = homeAdapter
+            val drawable = ResourcesCompat.getDrawable(resources, R.drawable.divider, theme)
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@HomeActivity,
+                    DividerItemDecoration.HORIZONTAL
+                ).apply { setDrawable(drawable!!) })
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@HomeActivity,
+                    DividerItemDecoration.VERTICAL
+                ).apply { setDrawable(drawable!!) })
+        }
+
+        val items = viewModel.listManga
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                items.collectLatest {
+                    homeAdapter.submitData(it)
+                }
+            }
         }
     }
 
     override fun setEventListener() {
         super.setEventListener()
-        viewModel.getPopularManga(page = 1) {
-            it.mangas?.let { list -> homeAdapter.refreshList(list) }
-        }
     }
 }
