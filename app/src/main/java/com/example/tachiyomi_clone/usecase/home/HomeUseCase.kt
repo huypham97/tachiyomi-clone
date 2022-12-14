@@ -5,8 +5,11 @@ import com.example.tachiyomi_clone.data.network.repository.HomeRepository
 import javax.inject.Inject
 
 class HomeUseCase @Inject constructor(private val homeRepository: HomeRepository) {
-    fun subscribe(): MangaPagingSourceType {
-        return homeRepository.fetchPopularManga()
+    fun subscribe(query: String): MangaPagingSourceType {
+        return when (query) {
+            QUERY_POPULAR -> homeRepository.fetchPopularManga()
+            else -> homeRepository.fetchPopularManga()
+        }
     }
 
     companion object {

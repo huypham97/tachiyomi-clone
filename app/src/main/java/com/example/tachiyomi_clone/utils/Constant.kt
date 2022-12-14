@@ -4,6 +4,6 @@ object Constant {
 
     const val API_KEY = "api_key"
     const val SHARED_PREFS_FILENAME = "secret_shared_prefs"
-    const val BASE_URL = "https://www.nettruyenmin.com"
+    const val BASE_URL = "https://www.nettruyenking.com/"
 
 }

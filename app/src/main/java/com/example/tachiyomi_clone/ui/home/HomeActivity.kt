@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.ActivityHomeBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
+import com.example.tachiyomi_clone.usecase.home.HomeUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -24,6 +25,14 @@ class HomeActivity :
 
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
+        this.binding.llPopular.setOnClickListener {
+            this.binding.llPopular.setBackgroundResource(R.drawable.shape_bg_blue_corner_16)
+            this.binding.llLatest.setBackgroundResource(R.drawable.shape_bg_trans_stroke_black_corner_16)
+        }
+        this.binding.llLatest.setOnClickListener {
+            this.binding.llLatest.setBackgroundResource(R.drawable.shape_bg_blue_corner_16)
+            this.binding.llPopular.setBackgroundResource(R.drawable.shape_bg_trans_stroke_black_corner_16)
+        }
         this.binding.rvManga.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = homeAdapter
@@ -40,7 +49,7 @@ class HomeActivity :
                 ).apply { setDrawable(drawable!!) })
         }
 
-        val items = viewModel.listManga
+        val items = viewModel.listManga(HomeUseCase.QUERY_POPULAR)
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 items.collectLatest {

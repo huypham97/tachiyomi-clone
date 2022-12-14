@@ -1,10 +1,12 @@
 package com.example.tachiyomi_clone.ui.home
 
+import androidx.databinding.Bindable
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.example.tachiyomi_clone.BR
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.home.HomeUseCase
@@ -19,10 +21,17 @@ class HomeViewModel @Inject constructor(
         const val TAG = "HomeViewModel"
     }
 
-    val listManga: Flow<PagingData<MangaEntity>> = Pager(
+    @Bindable
+    var selectedButton = 0
+    set(value) {
+        field = value
+        notifyPropertyChanged(BR.selectedButton)
+    }
+
+    fun listManga(query: String): Flow<PagingData<MangaEntity>> = Pager(
         PagingConfig(pageSize = 25),
     ) {
-        homeUseCase.subscribe()
+        homeUseCase.subscribe(query)
     }.flow.cachedIn(viewModelScope)
 
 }
