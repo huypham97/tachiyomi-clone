@@ -35,7 +35,7 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         holder.binding.tvMangaName.text = getItem(position)?.title
-        Glide.with(context).load(getItem(position)?.thumbnail_url)
+        Glide.with(context).load(getItem(position)?.thumbnailUrl)
             .into(holder.binding.ivMangaThumbnail)
     }
 

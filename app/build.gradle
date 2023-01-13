@@ -4,16 +4,17 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'com.squareup.sqldelight'
 }
 
 android {
     namespace 'com.example.tachiyomi_clone'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.tachiyomi_clone"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -78,4 +79,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
 
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+    implementation "com.squareup.sqldelight:android-driver:1.5.4"
+    implementation "androidx.sqlite:sqlite-ktx:2.3.0"
+    implementation "androidx.sqlite:sqlite-framework:2.3.0"
+    implementation 'com.github.requery:sqlite-android:3.39.2'
 }

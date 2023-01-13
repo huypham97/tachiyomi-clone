@@ -1,7 +1,7 @@
-package com.example.tachiyomi_clone.usecase.home
+package com.example.tachiyomi_clone.usecase
 
 import com.example.tachiyomi_clone.data.model.entity.MangaPagingSourceType
-import com.example.tachiyomi_clone.data.network.repository.HomeRepository
+import com.example.tachiyomi_clone.data.repository.HomeRepository
 import javax.inject.Inject
 
 class HomeUseCase @Inject constructor(private val homeRepository: HomeRepository) {

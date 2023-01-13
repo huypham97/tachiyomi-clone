@@ -1,37 +1,35 @@
 package com.example.tachiyomi_clone.ui.home
 
-import androidx.databinding.Bindable
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.example.tachiyomi_clone.BR
+import androidx.paging.*
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
-import com.example.tachiyomi_clone.usecase.home.HomeUseCase
+import com.example.tachiyomi_clone.usecase.HomeUseCase
+import com.example.tachiyomi_clone.usecase.NetworkToLocalUseCase
+import com.example.tachiyomi_clone.utils.withIOContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
-    private val homeUseCase: HomeUseCase
+    private val homeUseCase: HomeUseCase,
+    private val networkToLocalUseCase: NetworkToLocalUseCase,
 ) : BaseViewModel() {
 
     companion object {
         const val TAG = "HomeViewModel"
     }
 
-    @Bindable
-    var selectedButton = 0
-    set(value) {
-        field = value
-        notifyPropertyChanged(BR.selectedButton)
-    }
-
     fun listManga(query: String): Flow<PagingData<MangaEntity>> = Pager(
         PagingConfig(pageSize = 25),
     ) {
         homeUseCase.subscribe(query)
-    }.flow.cachedIn(viewModelScope)
+    }.flow.map {
+        it.map { manga ->
+            withIOContext {
+                networkToLocalUseCase.await(manga)
+            }
+        }
+    }.cachedIn(viewModelScope)
 
 }
