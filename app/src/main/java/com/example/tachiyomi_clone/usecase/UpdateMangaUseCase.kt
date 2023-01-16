@@ -14,10 +14,10 @@ class UpdateMangaUseCase @Inject constructor(private val mangaRepository: MangaR
     ): Boolean {
         val title = remoteManga.title.ifEmpty { null }
         val thumbnailUrl = remoteManga.thumbnailUrl?.takeIf { it.isNotEmpty() }
-        return mangaRepository.update(
+        return mangaRepository.updateToLocal(
             MangaDto(
                 id = localManga.id,
-                title = remoteManga.title,
+                title = title,
                 coverLastModified = 0L,
                 author = remoteManga.author,
                 artist = remoteManga.artist,

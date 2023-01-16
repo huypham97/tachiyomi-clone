@@ -16,5 +16,5 @@ interface MangaRepository {
 
     suspend fun fetchMangaDetails(mangaUrl: String): MangaEntity
 
-    suspend fun update(update: MangaDto): Boolean
+    suspend fun updateToLocal(update: MangaDto): Boolean
 }

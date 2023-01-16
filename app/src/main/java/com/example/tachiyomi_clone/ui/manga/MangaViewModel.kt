@@ -7,6 +7,7 @@ import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.GetMangaWithChaptersUseCase
+import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
 import com.example.tachiyomi_clone.utils.Logger
 import com.example.tachiyomi_clone.utils.withIOContext
 import kotlinx.coroutines.async
@@ -17,7 +18,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MangaViewModel @Inject constructor(private val getMangaWithChaptersUseCase: GetMangaWithChaptersUseCase) :
+class MangaViewModel @Inject constructor(
+    private val getMangaWithChaptersUseCase: GetMangaWithChaptersUseCase,
+    private val updateMangaUseCase: UpdateMangaUseCase
+) :
     BaseViewModel() {
 
     private val _manga: MutableLiveData<MangaEntity> = MutableLiveData()
@@ -58,7 +62,7 @@ class MangaViewModel @Inject constructor(private val getMangaWithChaptersUseCase
             if (viewModelScope.isActive) {
                 val fetchFromSourceTasks = listOf(
                     async { if (needRefreshInfo) fetchMangaFromSource(manga) },
-//                    async { if (needRefreshChapter) fetchChaptersFromSource() },
+                    async { if (needRefreshChapter) fetchChaptersFromSource(manga) },
                 )
                 fetchFromSourceTasks.awaitAll()
             }
@@ -70,16 +74,24 @@ class MangaViewModel @Inject constructor(private val getMangaWithChaptersUseCase
 
     private suspend fun fetchMangaFromSource(manga: MangaEntity, manualFetch: Boolean = false) {
         withIOContext {
-            val manga = getMangaWithChaptersUseCase.fetchMangaDetails(manga.url)
+            val networkManga = getMangaWithChaptersUseCase.fetchMangaDetails(manga.url)
             Logger.d(
                 TAG,
                 "[${TAG}] fetchMangaFromSource() --> response success: $manga"
             )
+            if (updateMangaUseCase.awaitUpdateFromSource(manga, networkManga, manualFetch))
+                _manga.value = networkManga
         }
     }
 
-//    private suspend fun fetchChaptersFromSource() {
-//
-//    }
+    private suspend fun fetchChaptersFromSource(manga: MangaEntity) {
+        withIOContext {
+            val chapters = getMangaWithChaptersUseCase.getChapterList(manga)
+            Logger.d(
+                TAG,
+                "[${TAG}] fetchChaptersFromSource() --> response success: $chapters"
+            )
+        }
+    }
 
 }

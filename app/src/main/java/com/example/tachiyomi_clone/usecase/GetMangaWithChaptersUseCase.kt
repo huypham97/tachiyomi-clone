@@ -2,6 +2,7 @@ package com.example.tachiyomi_clone.usecase
 
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.model.mapper.ChapterMapper
 import com.example.tachiyomi_clone.data.repository.ChapterRepository
 import com.example.tachiyomi_clone.data.repository.MangaRepository
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 class GetMangaWithChaptersUseCase @Inject constructor(
     private var mangaRepository: MangaRepository,
-    private var chapterRepository: ChapterRepository
+    private var chapterRepository: ChapterRepository,
+    private val mapper: ChapterMapper
 ) {
 
     suspend fun subscribe(id: Long): Flow<Pair<MangaEntity, List<ChapterEntity>>> {
@@ -32,5 +34,11 @@ class GetMangaWithChaptersUseCase @Inject constructor(
 
     suspend fun fetchMangaDetails(mangaUrl: String): MangaEntity {
         return mangaRepository.fetchMangaDetails(mangaUrl)
+    }
+
+    suspend fun getChapterList(manga: MangaEntity): List<ChapterEntity> {
+        return chapterRepository.fetchChaptersFromNetwork(manga).map { dto ->
+            mapper.toEntity(dto)
+        }
     }
 }

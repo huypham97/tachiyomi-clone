@@ -76,7 +76,7 @@ class MangaProvider @Inject constructor(
         }
     }
 
-    override suspend fun update(manga: MangaDto): Boolean {
+    override suspend fun updateToLocal(manga: MangaDto): Boolean {
         return try {
             partialUpdate(manga)
             true
