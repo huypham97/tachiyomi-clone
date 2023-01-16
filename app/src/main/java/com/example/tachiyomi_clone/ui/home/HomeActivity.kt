@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.ActivityHomeBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
+import com.example.tachiyomi_clone.ui.manga.MangaActivity
 import com.example.tachiyomi_clone.usecase.HomeUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -53,5 +55,10 @@ class HomeActivity :
 
     override fun setEventListener() {
         super.setEventListener()
+        homeAdapter.onSelectLoanClientListener = {
+            val intent = Intent(this, MangaActivity::class.java)
+            intent.putExtra(MangaActivity.MANGA_ID, it.id)
+            startActivity(intent)
+        }
     }
 }

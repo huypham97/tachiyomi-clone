@@ -18,6 +18,8 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
 
     private lateinit var context: Context
 
+    var onSelectLoanClientListener: ((MangaEntity) -> Unit)? = null
+
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         context = recyclerView.context
@@ -26,17 +28,28 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
         val binding: RowRecyclerViewMangaBinding = DataBindingUtil.inflate(
-            layoutInflater,
-            R.layout.row_recycler_view_manga,
-            parent, false
+            layoutInflater, R.layout.row_recycler_view_manga, parent, false
         )
         return HomeViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
+        initViewHolder(holder, position, getItem(position))
+        setEventListener(holder, position, getItem(position))
+    }
+
+    private fun initViewHolder(holder: HomeViewHolder, position: Int, item: MangaEntity?) {
         holder.binding.tvMangaName.text = getItem(position)?.title
         Glide.with(context).load(getItem(position)?.thumbnailUrl)
             .into(holder.binding.ivMangaThumbnail)
+    }
+
+    private fun setEventListener(holder: HomeViewHolder, position: Int, item: MangaEntity?) {
+        holder.binding.root.setOnClickListener {
+            if (item != null) {
+                onSelectLoanClientListener?.invoke(item)
+            }
+        }
     }
 
     object HomeComparator : DiffUtil.ItemCallback<MangaEntity>() {

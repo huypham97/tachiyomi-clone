@@ -6,6 +6,7 @@ import com.example.tachiyomi_clone.utils.Constant
 import com.example.tachiyomi_clone.utils.asJsoup
 import okhttp3.Request
 import okhttp3.Response
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.net.URI
 import java.net.URISyntaxException
@@ -17,7 +18,11 @@ class MangaSource {
     val popularPath = "hot"
 
     fun popularMangaRequest(page: Int): Request {
-            return GET("$baseUrl/$popularPath" + if (page > 1) "?page=$page" else "")
+        return GET("$baseUrl/$popularPath" + if (page > 1) "?page=$page" else "")
+    }
+
+    fun mangaDetailsRequest(mangaUrl: String): Request {
+        return GET(baseUrl + mangaUrl)
     }
 
     fun popularMangaParse(response: Response): MangasPageDto {
@@ -87,4 +92,30 @@ class MangaSource {
 
     fun popularMangaNextPageSelector() = "a.next-page, a[rel=next]"
 
+    fun mangaDetailsParse(response: Response): MangaDto {
+        val document = response.asJsoup()
+        return MangaDto.create().apply {
+            document.select("article#item-detail").let { info ->
+                author = info.select("li.author p.col-xs-8").text()
+                status = info.select("li.status p.col-xs-8").text().toStatus()
+                genre = info.select("li.kind p.col-xs-8 a").joinToString { it.text() }
+                description = info.select("div.detail-content p").text()
+                thumbnail_url = info.select("div.col-image img").first()?.let { imageOrNull(it) }
+            }
+        }
+    }
+
+    open fun String?.toStatus(): Int {
+        val ongoingWords = listOf("Ongoing", "Updating", "Đang tiến hành")
+        val completedWords = listOf("Complete", "Hoàn thành")
+        return when {
+            this == null -> MangaDto.UNKNOWN
+            ongoingWords.doesInclude(this) -> MangaDto.ONGOING
+            completedWords.doesInclude(this) -> MangaDto.COMPLETED
+            else -> MangaDto.UNKNOWN
+        }
+    }
+
+    private fun List<String>.doesInclude(thisWord: String): Boolean =
+        this.any { it.contains(thisWord, ignoreCase = true) }
 }

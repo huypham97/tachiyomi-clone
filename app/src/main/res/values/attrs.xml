@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomAppBar">
+        <attr name="app_bar_icon_color" format="color" />
+        <attr name="app_bar_text_color" format="color" />
+        <attr name="app_bar_title" format="string" />
+        <attr name="app_bar_bg_color" format="color" />
+        <attr name="app_has_back_button" format="boolean" />
+    </declare-styleable>
+</resources>

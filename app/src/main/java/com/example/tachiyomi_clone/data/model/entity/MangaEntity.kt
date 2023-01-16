@@ -47,7 +47,7 @@ data class MangaEntity(
     }
 }
 
-fun MangaDto.toDomainManga(): MangaEntity {
+fun MangaDto.toDomain(): MangaEntity {
     return MangaEntity.create().copy(
         url = url ?: "",
         title = title ?: "",

@@ -12,12 +12,36 @@ data class MangaDto(
     var thumbnail_url: String? = null,
     var update_strategy: UpdateStrategy? = null,
     var initialized: Boolean? = null,
+    var favorite: Boolean? = null,
+    var lastUpdate: Long? = null,
+    var dateAdded: Long? = null,
+    var viewerFlags: Long? = null,
+    var chapterFlags: Long? = null,
+    var coverLastModified: Long? = null,
 ) {
+
+    companion object {
+        const val UNKNOWN = 0
+        const val ONGOING = 1
+        const val COMPLETED = 2
+        const val LICENSED = 3
+        const val PUBLISHING_FINISHED = 4
+        const val CANCELLED = 5
+        const val ON_HIATUS = 6
+
+        fun create() = MangaDto(
+            status = UNKNOWN,
+            update_strategy = UpdateStrategy.ALWAYS_UPDATE,
+            initialized = false
+        )
+    }
 
     fun getGenres(): List<String>? {
         if (genre.isNullOrBlank()) return null
         return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
     }
+
+    var listGenre: List<String>? = null
 }
 
 /**

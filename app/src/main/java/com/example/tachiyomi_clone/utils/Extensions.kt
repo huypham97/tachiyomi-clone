@@ -25,5 +25,7 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
 }
 
 fun Response.asJsoup(html: String? = null): Document {
-    return Jsoup.parse(html ?: body!!.string(), request.url.toString())
+    return Jsoup.parse(html ?: body.string(), request.url.toString())
 }
+
+fun Boolean.toLong() = if (this) 1L else 0L

@@ -3,8 +3,12 @@ package com.example.tachiyomi_clone.data.local.database
 import com.example.tachiyomi_clone.Database
 import com.squareup.sqldelight.Query
 import com.squareup.sqldelight.db.SqlDriver
+import com.squareup.sqldelight.runtime.coroutines.asFlow
+import com.squareup.sqldelight.runtime.coroutines.mapToList
+import com.squareup.sqldelight.runtime.coroutines.mapToOne
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class AndroidDatabaseHandler(
@@ -12,7 +16,7 @@ class AndroidDatabaseHandler(
     private val driver: SqlDriver,
     val queryDispatcher: CoroutineDispatcher = Dispatchers.IO,
     val transactionDispatcher: CoroutineDispatcher = queryDispatcher,
-): DatabaseHandler {
+) : DatabaseHandler {
 
     val suspendingTransactionId = ThreadLocal<Int>()
 
@@ -32,6 +36,21 @@ class AndroidDatabaseHandler(
         block: suspend Database.() -> Query<T>
     ): T? {
         return dispatch(inTransaction) { block(db).executeAsOneOrNull() }
+    }
+
+    override suspend fun <T : Any> awaitList(
+        inTransaction: Boolean,
+        block: suspend Database.() -> Query<T>
+    ): List<T> {
+        return dispatch(inTransaction) { block(db).executeAsList() }
+    }
+
+    override fun <T : Any> subscribeToOne(block: Database.() -> Query<T>): Flow<T> {
+        return block(db).asFlow().mapToOne(queryDispatcher)
+    }
+
+    override fun <T : Any> subscribeToList(block: Database.() -> Query<T>): Flow<List<T>> {
+        return block(db).asFlow().mapToList(queryDispatcher)
     }
 
     private suspend fun <T> dispatch(inTransaction: Boolean, block: suspend Database.() -> T): T {
