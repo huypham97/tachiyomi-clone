@@ -1,5 +1,7 @@
 package com.example.tachiyomi_clone.data.model.entity
 
+import androidx.annotation.StringRes
+import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.dto.UpdateStrategy
 import java.io.Serializable
@@ -44,6 +46,20 @@ data class MangaEntity(
             updateStrategy = UpdateStrategy.ALWAYS_UPDATE,
             initialized = false,
         )
+    }
+
+    @StringRes
+    fun getStatus(): Int {
+        return when (status.toInt()) {
+            MangaDto.UNKNOWN -> return R.string.unknown
+            MangaDto.ONGOING -> return R.string.ongoing
+            MangaDto.COMPLETED -> return R.string.completed
+            MangaDto.LICENSED -> return R.string.licensed
+            MangaDto.PUBLISHING_FINISHED -> R.string.publishing_finished
+            MangaDto.CANCELLED -> R.string.cancelled
+            MangaDto.ON_HIATUS -> R.string.on_hiatus
+            else -> R.string.unknown
+        }
     }
 }
 

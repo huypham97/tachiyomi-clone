@@ -10,6 +10,7 @@ import com.example.tachiyomi_clone.usecase.GetMangaWithChaptersUseCase
 import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
 import com.example.tachiyomi_clone.utils.Logger
 import com.example.tachiyomi_clone.utils.withIOContext
+import com.example.tachiyomi_clone.utils.withUIContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collectLatest
@@ -66,31 +67,37 @@ class MangaViewModel @Inject constructor(
                 )
                 fetchFromSourceTasks.awaitAll()
             }
-
-            _manga.value = manga
-            _chapters.value = chapters
         }
     }
 
     private suspend fun fetchMangaFromSource(manga: MangaEntity, manualFetch: Boolean = false) {
         withIOContext {
-            val networkManga = getMangaWithChaptersUseCase.fetchMangaDetails(manga.url)
-            Logger.d(
-                TAG,
-                "[${TAG}] fetchMangaFromSource() --> response success: $manga"
-            )
-            if (updateMangaUseCase.awaitUpdateFromSource(manga, networkManga, manualFetch))
-                _manga.value = networkManga
+            try {
+                val networkManga = getMangaWithChaptersUseCase.fetchMangaDetails(manga.url)
+                Logger.d(
+                    TAG,
+                    "[${TAG}] fetchMangaFromSource() --> response success: $manga"
+                )
+                if (updateMangaUseCase.awaitUpdateFromSource(manga, networkManga, manualFetch))
+                    withUIContext { _manga.value = networkManga }
+            } catch (e: Throwable) {
+                Logger.e(TAG, "[${TAG}] fetchMangaFromSource() --> error: ${e.message}")
+            }
         }
     }
 
     private suspend fun fetchChaptersFromSource(manga: MangaEntity) {
-        withIOContext {
-            val chapters = getMangaWithChaptersUseCase.getChapterList(manga)
-            Logger.d(
-                TAG,
-                "[${TAG}] fetchChaptersFromSource() --> response success: $chapters"
-            )
+        try {
+            withIOContext {
+                val chapters = getMangaWithChaptersUseCase.getChapterList(manga)
+                Logger.d(
+                    TAG,
+                    "[${TAG}] fetchChaptersFromSource() --> response success: $chapters"
+                )
+                withUIContext { _chapters.value = chapters }
+            }
+        } catch (e: Throwable) {
+            Logger.e(TAG, "[${TAG}] fetchChaptersFromSource() --> error: ${e.message}")
         }
     }
 

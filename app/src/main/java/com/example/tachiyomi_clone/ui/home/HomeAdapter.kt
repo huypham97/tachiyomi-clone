@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
-import com.example.tachiyomi_clone.databinding.RowRecyclerViewMangaBinding
+import com.example.tachiyomi_clone.databinding.RowRvMangaBinding
 
 
 class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparator) {
@@ -27,8 +27,8 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
-        val binding: RowRecyclerViewMangaBinding = DataBindingUtil.inflate(
-            layoutInflater, R.layout.row_recycler_view_manga, parent, false
+        val binding: RowRvMangaBinding = DataBindingUtil.inflate(
+            layoutInflater, R.layout.row_rv_manga, parent, false
         )
         return HomeViewHolder(binding)
     }
@@ -39,7 +39,8 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
     }
 
     private fun initViewHolder(holder: HomeViewHolder, position: Int, item: MangaEntity?) {
-        holder.binding.tvMangaName.text = getItem(position)?.title
+        holder.binding.tvMangaName.
+        text = getItem(position)?.title
         Glide.with(context).load(getItem(position)?.thumbnailUrl)
             .into(holder.binding.ivMangaThumbnail)
     }
@@ -65,7 +66,7 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
     }
 }
 
-class HomeViewHolder(val binding: RowRecyclerViewMangaBinding) :
+class HomeViewHolder(val binding: RowRvMangaBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
 }

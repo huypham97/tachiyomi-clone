@@ -36,12 +36,12 @@ data class MangaDto(
         )
     }
 
+    var listGenre: List<String>? = null
+
     fun getGenres(): List<String>? {
         if (genre.isNullOrBlank()) return null
         return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
     }
-
-    var listGenre: List<String>? = null
 }
 
 /**

@@ -3,11 +3,15 @@ package com.example.tachiyomi_clone.utils
 import android.app.Activity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import okhttp3.Response
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 fun Activity.hideKeyboard() {
@@ -29,3 +33,13 @@ fun Response.asJsoup(html: String? = null): Document {
 }
 
 fun Boolean.toLong() = if (this) 1L else 0L
+
+fun TextView.leftDrawable(@DrawableRes id: Int = 0) {
+    this.setCompoundDrawablesWithIntrinsicBounds(id, 0, 0, 0)
+}
+
+fun Long.getDateTime(format: String): String {
+    val sdf = SimpleDateFormat(format)
+    val netDate = Date(this)
+    return sdf.format(netDate)
+}

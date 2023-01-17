@@ -1,3 +1,5 @@
+package com.example.tachiyomi_clone.ui.base
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
