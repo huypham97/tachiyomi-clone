@@ -50,6 +50,7 @@ class MangaViewModel @Inject constructor(
     }
 
     fun fetchDetailManga(mangaId: Long) {
+        showLoadingDialog()
         viewModelScope.launch {
             val manga = getMangaWithChaptersUseCase.awaitManga(mangaId)
             val chapters = getMangaWithChaptersUseCase.awaitChapters(mangaId)
@@ -57,15 +58,18 @@ class MangaViewModel @Inject constructor(
             val needRefreshInfo = !manga.initialized
             val needRefreshChapter = chapters.isEmpty()
 
-            _manga.value = manga
-            _chapters.value = chapters
+            withUIContext {
+                _manga.value = manga
+                _chapters.value = chapters
+            }
 
             if (viewModelScope.isActive) {
                 val fetchFromSourceTasks = listOf(
                     async { if (needRefreshInfo) fetchMangaFromSource(manga) },
                     async { if (needRefreshChapter) fetchChaptersFromSource(manga) },
                 )
-                fetchFromSourceTasks.awaitAll()
+                val result = fetchFromSourceTasks.awaitAll()
+                if (result.isNotEmpty()) withUIContext { dismissLoadingDialog() }
             }
         }
     }

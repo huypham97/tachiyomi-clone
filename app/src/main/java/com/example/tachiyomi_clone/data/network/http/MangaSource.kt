@@ -19,9 +19,9 @@ class MangaSource {
 
     val popularPath = "hot"
 
-    val dateFormat: SimpleDateFormat = SimpleDateFormat("HH:mm - dd/MM/yyyy Z", Locale.US)
+    val dateFormat: SimpleDateFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
 
-    val gmtOffset: String = "+0500"
+    val gmtOffset: String? = null
 
     val currentYear by lazy { Calendar.getInstance(Locale.US)[1].toString().takeLast(2) }
 

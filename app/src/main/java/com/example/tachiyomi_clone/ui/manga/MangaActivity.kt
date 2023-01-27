@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.ui.manga
 
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.tachiyomi_clone.R
@@ -62,6 +63,9 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
         viewModel.chapters.observe(this) { chapters ->
             binding.tvChaptersCount.text = "${chapters.size} chapters"
             chapterAdapter.refreshList(chapters)
+        }
+        viewModel.isLoading.observe(this) {
+            binding.pbLoading.visibility = if (it) View.VISIBLE else View.GONE
         }
     }
 
