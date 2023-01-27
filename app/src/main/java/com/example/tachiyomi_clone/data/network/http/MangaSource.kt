@@ -1,10 +1,14 @@
 package com.example.tachiyomi_clone.data.network.http
 
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.example.tachiyomi_clone.data.model.dto.ChapterDto
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.dto.MangasPageDto
 import com.example.tachiyomi_clone.utils.Constant
 import com.example.tachiyomi_clone.utils.asJsoup
+import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.nodes.Element
@@ -25,16 +29,22 @@ class MangaSource {
 
     val currentYear by lazy { Calendar.getInstance(Locale.US)[1].toString().takeLast(2) }
 
+    val headers: Headers by lazy { headersBuilder().build() }
+
+    private fun headersBuilder() = Headers.Builder().apply {
+        add("Referer", baseUrl)
+    }
+
     fun popularMangaRequest(page: Int): Request {
-        return GET("$baseUrl/$popularPath" + if (page > 1) "?page=$page" else "")
+        return GET("$baseUrl/$popularPath" + if (page > 1) "?page=$page" else "", headers)
     }
 
     fun mangaDetailsRequest(mangaUrl: String): Request {
-        return GET(baseUrl + mangaUrl)
+        return GET(baseUrl + mangaUrl, headers)
     }
 
     fun chapterListRequest(mangaUrl: String): Request {
-        return GET(baseUrl + mangaUrl)
+        return GET(baseUrl + mangaUrl, headers)
     }
 
     fun popularMangaParse(response: Response): MangasPageDto {
@@ -209,4 +219,6 @@ class MangaSource {
             0L
         }
     }
+
+
 }
