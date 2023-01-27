@@ -85,4 +85,7 @@ dependencies {
     implementation 'com.github.requery:sqlite-android:3.39.2'
     implementation "com.squareup.sqldelight:coroutines-extensions:1.5.4"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    implementation "com.github.tachiyomiorg:DirectionalViewPager:1.0.0"
+    implementation "com.github.tachiyomiorg:subsampling-scale-image-view:846abe0"
 }

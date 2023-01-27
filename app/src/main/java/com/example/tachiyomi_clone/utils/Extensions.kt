@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import okhttp3.Response
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
