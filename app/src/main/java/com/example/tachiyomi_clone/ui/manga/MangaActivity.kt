@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.ui.manga
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.ActivityMangaBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
-import com.example.tachiyomi_clone.utils.leftDrawable
+import com.example.tachiyomi_clone.ui.reader.ReaderActivity
 import com.google.android.flexbox.FlexDirection.ROW
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
@@ -52,13 +53,12 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
         viewModel.manga.observe(this) { manga ->
             Glide.with(this).load(manga.thumbnailUrl)
                 .into(binding.ivMangaThumbnail)
-            binding.tvMangaTitle.text = manga.title
-            binding.tvMangaStatus.apply {
-                setText(manga.getStatus())
-                leftDrawable()
-            }
+            if (manga.title.isNotEmpty()) binding.tvMangaTitle.text = manga.title
+            binding.tvMangaStatus.text = "Status: ${resources.getString(manga.getStatus())}"
+            binding.tvMangaAuthor.text = "Author: ${manga.author}"
             binding.tvMangaDescribe.text = manga.description
             manga.genre?.let { genreAdapter.refreshList(it) }
+            if (manga.title.isNotEmpty()) binding.tbHeader.title = manga.title
         }
         viewModel.chapters.observe(this) { chapters ->
             binding.tvChaptersCount.text = "${chapters.size} chapters"
@@ -66,6 +66,11 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
         }
         viewModel.isLoading.observe(this) {
             binding.pbLoading.visibility = if (it) View.VISIBLE else View.GONE
+        }
+        chapterAdapter.onSelectChapterListener = {
+            val intent = Intent(this, ReaderActivity::class.java)
+            intent.putExtra(ReaderActivity.CHAPTER_URL, it)
+            startActivity(intent)
         }
     }
 

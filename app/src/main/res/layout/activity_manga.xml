@@ -39,7 +39,10 @@
                         android:layout_height="?attr/actionBarSize"
                         android:background="@android:color/transparent"
                         android:gravity="center"
+                        app:contentInsetLeft="0dp"
                         app:contentInsetStart="0dp"
+                        app:contentInsetStartWithNavigation="0dp"
+                        app:titleMarginStart="0dp"
                         app:navigationIcon="@drawable/ic_back_black"
                         tools:title="GITBAO" />
 
@@ -98,6 +101,15 @@
                         android:textColor="@color/black"
                         android:textSize="24sp"
                         android:textStyle="bold"
+                        tools:text="Hello" />
+
+                    <TextView
+                        android:id="@+id/tv_manga_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
                         tools:text="Hello" />
 
                     <TextView

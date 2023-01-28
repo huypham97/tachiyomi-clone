@@ -44,7 +44,7 @@ abstract class HomePagingSource : MangaPagingSourceType() {
 class HomePopularPagingSource constructor(
     private val client: OkHttpClient,
     private val source: MangaSource,
-    private val mangasPageMapper: MangasPageMapper
+    private val mangasPageMapper: MangasPageMapper,
 ) : HomePagingSource() {
     override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
         return client.newCall(source.popularMangaRequest(currentPage)).await().let {

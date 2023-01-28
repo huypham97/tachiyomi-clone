@@ -11,8 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.tachiyomi_clone.BR
-import com.example.tachiyomi_clone.utils.ScreenUtils
+import com.example.tachiyomi_clone.utils.system.ScreenUtils
 import com.example.tachiyomi_clone.utils.inTransaction
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
@@ -46,7 +45,7 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
 
     protected abstract fun getLayoutResId(): Int
 
-    protected val viewModel by lazy {
+    val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(modelClass)
     }
 

@@ -1,5 +1,7 @@
 package com.example.tachiyomi_clone.data.model.entity
 
+import java.io.Serializable
+
 data class ChapterEntity(
     var id: Long,
     var mangaId: Long,
@@ -13,7 +15,7 @@ data class ChapterEntity(
     var dateUpload: Long,
     var chapterNumber: Float,
     var scanlator: String?,
-) {
+) : Serializable {
 
     companion object {
         private const val NUMBER_PATTERN = """([0-9]+)(\.[0-9]+)?(\.?[a-z]+)?"""

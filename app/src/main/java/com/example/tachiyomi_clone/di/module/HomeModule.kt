@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.tachiyomi_clone.di.ViewModelKey
 import com.example.tachiyomi_clone.ui.home.HomeViewModel
 import com.example.tachiyomi_clone.ui.manga.MangaViewModel
+import com.example.tachiyomi_clone.ui.reader.ReaderViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -20,4 +21,9 @@ internal abstract class HomeModule {
     @IntoMap
     @ViewModelKey(MangaViewModel::class)
     abstract fun bindMangaViewModel(viewModel: MangaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ReaderViewModel::class)
+    abstract fun bindReaderViewModel(viewModel: ReaderViewModel): ViewModel
 }

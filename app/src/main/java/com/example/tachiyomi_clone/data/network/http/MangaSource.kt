@@ -1,11 +1,9 @@
 package com.example.tachiyomi_clone.data.network.http
 
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import com.example.tachiyomi_clone.data.model.dto.ChapterDto
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.dto.MangasPageDto
+import com.example.tachiyomi_clone.data.model.dto.PageDto
 import com.example.tachiyomi_clone.utils.Constant
 import com.example.tachiyomi_clone.utils.asJsoup
 import okhttp3.Headers
@@ -45,6 +43,14 @@ class MangaSource {
 
     fun chapterListRequest(mangaUrl: String): Request {
         return GET(baseUrl + mangaUrl, headers)
+    }
+
+    fun pageListRequest(chapterUrl: String): Request {
+        return GET(baseUrl + chapterUrl, headers)
+    }
+
+    fun imageRequest(imageUrl: String): Request {
+        return GET(imageUrl, headers)
     }
 
     fun popularMangaParse(response: Response): MangasPageDto {
@@ -220,5 +226,12 @@ class MangaSource {
         }
     }
 
+    val pageListSelector = "div.page-chapter > img, li.blocks-gallery-item img"
 
+    fun pageListParse(response: Response): List<PageDto> {
+        val document = response.asJsoup()
+        return document.select(pageListSelector).mapNotNull { img -> imageOrNull(img) }
+            .distinct()
+            .mapIndexed { i, image -> PageDto(i, "", image) }
+    }
 }

@@ -1,7 +1,6 @@
 package com.example.tachiyomi_clone.data.network.common
 
 import android.content.Context
-import com.example.tachiyomi_clone.BuildConfig
 import com.example.tachiyomi_clone.utils.Constant
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -25,7 +24,7 @@ class NetworkInterceptor constructor(
     private fun addHeader(request: Request): Request.Builder {
         var builder = request.newBuilder()
 //        builder = addUserAgentHeader(builder)
-//        builder = addRefererHeader(builder)
+        builder = addRefererHeader(builder)
         return builder
     }
 

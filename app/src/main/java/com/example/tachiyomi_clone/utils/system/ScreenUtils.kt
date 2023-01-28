@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.utils
+package com.example.tachiyomi_clone.utils.system
 
 import android.content.Context
 import android.graphics.Color
