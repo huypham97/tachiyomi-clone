@@ -10,11 +10,14 @@ import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.GetMangaWithChaptersUseCase
 import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
 import com.example.tachiyomi_clone.utils.Logger
+import com.example.tachiyomi_clone.utils.withIOContext
 import com.example.tachiyomi_clone.utils.withUIContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,52 +55,63 @@ class MangaViewModel @Inject constructor(
     fun fetchDetailManga(mangaId: Long) {
         showLoadingDialog()
         viewModelScope.launch {
-            val manga = getMangaWithChaptersUseCase.awaitManga(mangaId)
-            val chapters = getMangaWithChaptersUseCase.awaitChapters(mangaId)
+            val manga = async { getMangaWithChaptersUseCase.awaitManga(mangaId) }
+            val chapters = async { getMangaWithChaptersUseCase.awaitChapters(mangaId) }
 
-            val needRefreshInfo = !manga.initialized
-            val needRefreshChapter = chapters.isEmpty()
-
-            withUIContext {
-                _manga.value = manga
-                _chapters.value = chapters
+            var needRefreshInfo: Boolean
+            var needRefreshChapter: Boolean
+            manga.await().let {
+                needRefreshInfo = !it.initialized
+                launch(Dispatchers.Main) {
+                    _manga.value = it
+                }
+            }
+            chapters.await().let {
+                needRefreshChapter = it.isEmpty()
+                launch(Dispatchers.Main) {
+                    _chapters.value = it
+                }
             }
 
             if (viewModelScope.isActive) {
-                val fetchFromSourceTasks = listOf(
-                    async { if (needRefreshInfo) fetchMangaFromSource(manga) },
-                    async { if (needRefreshChapter) fetchChaptersFromSource(manga) },
-                )
-                val result = fetchFromSourceTasks.awaitAll()
-                if (result.isNotEmpty()) withUIContext { dismissLoadingDialog() }
+                if (needRefreshInfo or needRefreshChapter)
+                    fetchMangaFromSource(manga.await())
+                else dismissLoadingDialog()
             }
         }
     }
 
     private suspend fun fetchMangaFromSource(manga: MangaEntity, manualFetch: Boolean = false) {
-        getMangaWithChaptersUseCase.fetchMangaDetails(manga.url).collect { result ->
-            when (result) {
-                is Result.Success -> {
-                    if (updateMangaUseCase.awaitUpdateFromSource(
-                            manga,
-                            result.data,
-                            manualFetch
+        getMangaWithChaptersUseCase.fetchMangaDetails(manga)
+            .onStart { showLoadingDialog() }
+            .onCompletion { dismissLoadingDialog() }
+            .collect { result ->
+                when (result) {
+                    is Result.Success -> {
+                        if (withIOContext {
+                                updateMangaUseCase.awaitUpdateFromSource(
+                                    manga,
+                                    result.data.first,
+                                    manualFetch
+                                )
+                            }
+                        ) {
+                            _manga.value = result.data.first
+                            _chapters.value = result.data.second
+                            Logger.d(
+                                TAG,
+                                "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
+                            )
+                        }
+                    }
+                    is Result.Error -> {
+                        Logger.e(
+                            TAG,
+                            "[${TAG}] fetchMangaFromSource() --> error: ${result.exception}"
                         )
-                    )
-                        withUIContext { _manga.value = result.data }
-                    Logger.d(
-                        TAG,
-                        "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
-                    )
-                }
-                is Result.Error -> {
-                    Logger.e(
-                        TAG,
-                        "[${TAG}] fetchMangaFromSource() --> error: ${result.exception}"
-                    )
+                    }
                 }
             }
-        }
     }
 
     private suspend fun fetchChaptersFromSource(manga: MangaEntity) {

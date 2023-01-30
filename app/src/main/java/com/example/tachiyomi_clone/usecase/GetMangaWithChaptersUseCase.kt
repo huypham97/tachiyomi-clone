@@ -14,6 +14,7 @@ import com.example.tachiyomi_clone.utils.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import java.util.*
 import javax.inject.Inject
 
@@ -41,8 +42,14 @@ class GetMangaWithChaptersUseCase @Inject constructor(
         return chapterRepository.getChapterByMangaId(id)
     }
 
-    suspend fun fetchMangaDetails(mangaUrl: String): Flow<Result<MangaEntity>> {
-        return mangaRepository.fetchMangaDetails(mangaUrl)
+    suspend fun fetchMangaDetails(manga: MangaEntity): Flow<Result<Pair<MangaEntity, List<ChapterEntity>>>> {
+        return mangaRepository.fetchMangaDetails(manga.url).zip(getChapterList(manga)) { rsManga, rsChapters ->
+            return@zip when {
+                rsManga is Result.Success && rsChapters is Result.Success -> Result.Success(Pair(rsManga.data, rsChapters.data))
+                rsManga is Result.Error -> Result.Error(rsManga.exception)
+                else -> Result.Error((rsChapters as Result.Error).exception)
+            }
+        }
     }
 
     suspend fun getChapterList(manga: MangaEntity): Flow<Result<List<ChapterEntity>>> {

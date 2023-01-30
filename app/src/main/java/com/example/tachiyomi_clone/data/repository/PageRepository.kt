@@ -8,6 +8,6 @@ interface PageRepository {
 
     suspend fun fetchPageList(chapterUrl: String): Flow<Result<PageEntity>>
 
-    suspend fun parseImageToBitmap(page: PageEntity): Flow<Result<PageEntity>>
+    suspend fun parseImageToBitmap(page: Result<PageEntity>): Flow<Result<PageEntity>>
 
 }

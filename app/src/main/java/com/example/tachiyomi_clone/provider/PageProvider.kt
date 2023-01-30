@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.provider
 
 import com.example.tachiyomi_clone.data.model.Result
+import com.example.tachiyomi_clone.data.model.data
 import com.example.tachiyomi_clone.data.model.entity.PageEntity
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import com.example.tachiyomi_clone.data.model.mapper.PageMapper
@@ -9,7 +10,6 @@ import com.example.tachiyomi_clone.data.network.http.await
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.PageRepository
 import com.example.tachiyomi_clone.di.qualifier.DefaultDispatcher
-import com.example.tachiyomi_clone.utils.withIOContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
@@ -31,29 +31,31 @@ class PageProvider @Inject constructor(
 
     @OptIn(FlowPreview::class)
     override suspend fun fetchPageList(chapterUrl: String): Flow<Result<PageEntity>> {
-//        return client.newCall(source.pageListRequest(chapterUrl)).await().let {
-//            val listDto = source.pageListParse(it)
-//            return@let listDto.map { dto -> mapper.toEntity(dto) }
-//        }.asFlow().flatMapMerge {
-//            parseImageToBitmap(it)
-//        }
-        return withIOContext {
-            service.pageListRequest(chapterUrl).let {
-                val listDto = source.pageListParse(it.body(), it.raw())
-                return@let listDto.map { dto -> mapper.toEntity(dto) }
+        return flow {
+            val a = safeApiCall {
+                service.pageListRequest(chapterUrl).let {
+                    val listDto = source.pageListParse(it.body(), it.raw())
+                    return@let listDto.map { dto -> mapper.toEntity(dto) }
+                }
             }
-        }.asFlow().flatMapMerge {
+            when (a) {
+                is Result.Success -> a.data.forEach { emit(Result.Success(it)) }
+                else -> emit(Result.Error((a as Result.Error).exception))
+            }
+        }.flatMapMerge {
             parseImageToBitmap(it)
         }
     }
 
-    override suspend fun parseImageToBitmap(page: PageEntity): Flow<Result<PageEntity>> {
+    override suspend fun parseImageToBitmap(page: Result<PageEntity>): Flow<Result<PageEntity>> {
         return flow {
-            emit(safeApiCall {
-                client.newCall(source.imageRequest(page.imageUrl ?: "")).await().let {
-                    return@let page.apply { byte = it.body.bytes() }
-                }
-            })
+            if (page.data != null)
+                emit(safeApiCall {
+                    client.newCall(source.imageRequest(page.data!!.imageUrl ?: "")).await().let {
+                        return@let page.data!!.apply { byte = it.body.bytes() }
+                    }
+                })
+            else emit(page)
         }.map { result ->
             when (result) {
                 is Result.Success -> Result.Success(result.data)
