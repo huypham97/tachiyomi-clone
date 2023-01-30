@@ -4,15 +4,21 @@ import com.example.tachiyomi_clone.data.local.database.DatabaseHandler
 import com.example.tachiyomi_clone.data.local.database.listOfStringsAdapter
 import com.example.tachiyomi_clone.data.local.database.mapper.mangaMapper
 import com.example.tachiyomi_clone.data.local.database.updateStrategyAdapter
+import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import com.example.tachiyomi_clone.data.model.mapper.MangaMapper
 import com.example.tachiyomi_clone.data.network.http.MangaSource
-import com.example.tachiyomi_clone.data.network.http.await
+import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.MangaRepository
+import com.example.tachiyomi_clone.di.qualifier.DefaultDispatcher
 import com.example.tachiyomi_clone.utils.Logger
 import com.example.tachiyomi_clone.utils.toLong
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
@@ -20,8 +26,11 @@ class MangaProvider @Inject constructor(
     private val handler: DatabaseHandler,
     private val client: OkHttpClient,
     private val source: MangaSource,
-    private val mapper: MangaMapper
-) : MangaRepository {
+    private val mapper: MangaMapper,
+    private val service: HomeService,
+    errorDataMapper: ErrorDataMapper,
+    @DefaultDispatcher private val defaultDispatcher: CoroutineDispatcher
+) : MangaRepository, BaseProvider(defaultDispatcher, errorDataMapper) {
 
     companion object {
         const val TAG = "MangaProvider"
@@ -69,10 +78,20 @@ class MangaProvider @Inject constructor(
         return handler.subscribeToOne { mangasQueries.getMangaById(id, mangaMapper) }
     }
 
-    override suspend fun fetchMangaDetails(mangaUrl: String): MangaEntity {
-        return client.newCall(source.mangaDetailsRequest(mangaUrl)).await().let {
-            val dto = source.mangaDetailsParse(it).apply { initialized = true }
-            return@let mapper.toEntity(dto)
+    override suspend fun fetchMangaDetails(mangaUrl: String): Flow<Result<MangaEntity>> {
+        return flow {
+            emit(safeApiCall {
+                service.mangaDetailsRequest(mangaUrl)
+            })
+        }.map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(
+                    mapper.toEntity(
+                        MangaDto.mangaDetailsParse(result.data.body(), result.data.raw()).apply { initialized = true })
+                )
+                is Result.Error -> Result.Error(result.exception)
+                else -> Result.Error(IllegalStateException("Result must be Success or Error"))
+            }
         }
     }
 

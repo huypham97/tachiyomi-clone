@@ -14,9 +14,9 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
+
 
 @Module
 @Suppress("UNUSED")
@@ -64,11 +64,14 @@ class NetworkModule(baseUrl: String) {
 
     @Provides
     fun provideRetrofit(httpClient: OkHttpClient, gson: Gson): Retrofit {
+        val okHttpClient = OkHttpClient().newBuilder()
+            .build()
         return Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create(gson))
+//            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl(this.baseAuthUrl)
+            .client(okHttpClient)
             .build()
     }
 

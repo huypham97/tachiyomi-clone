@@ -1,5 +1,11 @@
 package com.example.tachiyomi_clone.data.model.dto
 
+import com.example.tachiyomi_clone.utils.asJsoup
+import com.example.tachiyomi_clone.utils.doesInclude
+import com.example.tachiyomi_clone.utils.getUrlWithoutDomain
+import com.example.tachiyomi_clone.utils.imageOrNull
+import okhttp3.Response
+
 data class MangaDto(
     var id: Long? = null,
     var url: String? = null,
@@ -34,6 +40,20 @@ data class MangaDto(
             update_strategy = UpdateStrategy.ALWAYS_UPDATE,
             initialized = false
         )
+
+        fun mangaDetailsParse(html: String?, response: Response): MangaDto {
+            val document = response.asJsoup(html)
+            return create().apply {
+                document.select("article#item-detail").let { info ->
+                    author = info.select("li.author p.col-xs-8").text()
+                    status = info.select("li.status p.col-xs-8").text().toStatus()
+                    genre = info.select("li.kind p.col-xs-8 a").joinToString { it.text() }
+                    description = info.select("div.detail-content p").text()
+                    thumbnail_url =
+                        info.select("div.col-image img").first()?.let { imageOrNull(it) }
+                }
+            }
+        }
     }
 
     var listGenre: List<String>? = null
@@ -41,6 +61,21 @@ data class MangaDto(
     fun getGenres(): List<String>? {
         if (genre.isNullOrBlank()) return null
         return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
+    }
+
+    fun setUrlWithoutDomain(url: String) {
+        this.url = getUrlWithoutDomain(url)
+    }
+
+    fun String?.toStatus(): Int {
+        val ongoingWords = listOf("Ongoing", "Updating", "Đang tiến hành")
+        val completedWords = listOf("Complete", "Hoàn thành")
+        return when {
+            this == null -> UNKNOWN
+            ongoingWords.doesInclude(this) -> ONGOING
+            completedWords.doesInclude(this) -> COMPLETED
+            else -> UNKNOWN
+        }
     }
 }
 

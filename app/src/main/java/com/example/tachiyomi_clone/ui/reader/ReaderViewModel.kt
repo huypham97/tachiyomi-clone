@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.ui.reader
 
 import androidx.lifecycle.viewModelScope
+import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.entity.PageEntity
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.PageLoadUseCase
@@ -37,10 +38,26 @@ class ReaderViewModel @Inject constructor(private val pageLoadUseCase: PageLoadU
                         "[${TAG}] getPages() --> response success: $pageList"
                     )
                 }
-                .collect { value ->
-                    pageList.add(value)
+                .collect { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            Logger.d(
+                                TAG,
+                                "[${TAG}] getPages() --> response next: ${result.data}"
+                            )
+                            pageList.add(result.data)
+                        }
+                        is Result.Error -> {
+                            Logger.e(TAG, "[${TAG}] getPages() --> error: ${result.exception}")
+                        }
+                    }
                 }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        pageList.clear()
     }
 
 }

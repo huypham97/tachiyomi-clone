@@ -4,11 +4,7 @@ import androidx.paging.PagingState
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaPagingSourceType
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
-import com.example.tachiyomi_clone.data.model.mapper.MangasPageMapper
-import com.example.tachiyomi_clone.data.network.http.MangaSource
-import com.example.tachiyomi_clone.data.network.http.await
 import com.example.tachiyomi_clone.utils.withIOContext
-import okhttp3.OkHttpClient
 
 abstract class HomePagingSource : MangaPagingSourceType() {
 
@@ -39,17 +35,4 @@ abstract class HomePagingSource : MangaPagingSourceType() {
             anchorPage?.prevKey ?: anchorPage?.nextKey
         }
     }
-}
-
-class HomePopularPagingSource constructor(
-    private val client: OkHttpClient,
-    private val source: MangaSource,
-    private val mangasPageMapper: MangasPageMapper,
-) : HomePagingSource() {
-    override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
-        return client.newCall(source.popularMangaRequest(currentPage)).await().let {
-            mangasPageMapper.toEntity(source.popularMangaParse(it))
-        }
-    }
-
 }

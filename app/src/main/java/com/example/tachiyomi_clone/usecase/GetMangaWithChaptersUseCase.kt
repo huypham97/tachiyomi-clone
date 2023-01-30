@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.usecase
 
+import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.dto.ChapterDto
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
@@ -12,6 +13,7 @@ import com.example.tachiyomi_clone.provider.ChapterProvider
 import com.example.tachiyomi_clone.utils.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import java.util.*
 import javax.inject.Inject
 
@@ -39,13 +41,16 @@ class GetMangaWithChaptersUseCase @Inject constructor(
         return chapterRepository.getChapterByMangaId(id)
     }
 
-    suspend fun fetchMangaDetails(mangaUrl: String): MangaEntity {
+    suspend fun fetchMangaDetails(mangaUrl: String): Flow<Result<MangaEntity>> {
         return mangaRepository.fetchMangaDetails(mangaUrl)
     }
 
-    suspend fun getChapterList(manga: MangaEntity): List<ChapterEntity> {
-        return chapterRepository.fetchChaptersFromNetwork(manga).let {
-            updateChaptersLocal(it, manga)
+    suspend fun getChapterList(manga: MangaEntity): Flow<Result<List<ChapterEntity>>> {
+        return chapterRepository.fetchChaptersFromNetwork(manga).map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(updateChaptersLocal(result.data, manga))
+                is Result.Error -> Result.Error(result.exception)
+            }
         }
     }
 

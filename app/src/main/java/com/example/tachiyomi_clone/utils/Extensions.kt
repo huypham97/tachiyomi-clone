@@ -7,9 +7,8 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
 import okhttp3.Response
+import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.text.SimpleDateFormat
@@ -31,7 +30,11 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Unit) {
 }
 
 fun Response.asJsoup(html: String? = null): Document {
-    return Jsoup.parse(html ?: body.string(), request.url.toString())
+    return Jsoup.parse(html ?: body.toString(), request.url.toString())
+}
+
+fun ResponseBody.asJsoup(html: String? = null): Document {
+    return Jsoup.parse(html ?: string())
 }
 
 fun Boolean.toLong() = if (this) 1L else 0L
@@ -45,3 +48,6 @@ fun Long.getDateTime(format: String): String {
     val netDate = Date(this)
     return sdf.format(netDate)
 }
+
+fun List<String>.doesInclude(thisWord: String): Boolean =
+    this.any { it.contains(thisWord, ignoreCase = true) }
