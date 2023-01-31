@@ -12,9 +12,11 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
 
     companion object {
         const val CHAPTER_URL = "CHAPTER_URL"
+        const val MANGA_TITLE = "MANGA_TITLE"
     }
 
     private var chapter: ChapterEntity? = null
+    private var mangaTitle: String? = null
 
     private lateinit var viewer: WebtoonViewer
 
@@ -25,9 +27,11 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
 
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
+        mangaTitle = intent.getStringExtra(MANGA_TITLE)
         chapter = intent.getSerializableExtra(CHAPTER_URL, ChapterEntity::class.java)
         viewer = WebtoonViewer(this)
-        binding.tbHeader.title = chapter?.name
+        binding.tbHeader.title = mangaTitle
+        binding.tbHeader.subtitle = chapter?.name
         viewModel.getPages(chapter?.url ?: "")
         binding.flPage.addView(viewer.getView())
     }

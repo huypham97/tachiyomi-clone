@@ -4,7 +4,6 @@ import com.example.tachiyomi_clone.data.model.dto.MangasPageDto
 import com.example.tachiyomi_clone.data.model.entity.MangaPagingSourceType
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.data.model.mapper.MangasPageMapper
-import com.example.tachiyomi_clone.data.network.http.MangaSource
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.HomeRepository
 import com.example.tachiyomi_clone.paging.home.HomePagingSource

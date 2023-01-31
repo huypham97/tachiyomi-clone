@@ -2,11 +2,10 @@ package com.example.tachiyomi_clone.provider
 
 import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.data
+import com.example.tachiyomi_clone.data.model.dto.PageDto
 import com.example.tachiyomi_clone.data.model.entity.PageEntity
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import com.example.tachiyomi_clone.data.model.mapper.PageMapper
-import com.example.tachiyomi_clone.data.network.http.MangaSource
-import com.example.tachiyomi_clone.data.network.http.await
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.PageRepository
 import com.example.tachiyomi_clone.di.qualifier.DefaultDispatcher
@@ -17,8 +16,6 @@ import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 class PageProvider @Inject constructor(
-    private val client: OkHttpClient,
-    private val source: MangaSource,
     private val mapper: PageMapper,
     private val service: HomeService,
     errorDataMapper: ErrorDataMapper,
@@ -32,15 +29,15 @@ class PageProvider @Inject constructor(
     @OptIn(FlowPreview::class)
     override suspend fun fetchPageList(chapterUrl: String): Flow<Result<PageEntity>> {
         return flow {
-            val a = safeApiCall {
+            val listEntity = safeApiCall {
                 service.pageListRequest(chapterUrl).let {
-                    val listDto = source.pageListParse(it.body(), it.raw())
+                    val listDto = PageDto.pageListParse(it.body(), it.raw())
                     return@let listDto.map { dto -> mapper.toEntity(dto) }
                 }
             }
-            when (a) {
-                is Result.Success -> a.data.forEach { emit(Result.Success(it)) }
-                else -> emit(Result.Error((a as Result.Error).exception))
+            when (listEntity) {
+                is Result.Success -> listEntity.data.forEach { emit(Result.Success(it)) }
+                else -> emit(Result.Error((listEntity as Result.Error).exception))
             }
         }.flatMapMerge {
             parseImageToBitmap(it)
@@ -51,8 +48,8 @@ class PageProvider @Inject constructor(
         return flow {
             if (page.data != null)
                 emit(safeApiCall {
-                    client.newCall(source.imageRequest(page.data!!.imageUrl ?: "")).await().let {
-                        return@let page.data!!.apply { byte = it.body.bytes() }
+                    service.imageRequest(page.data!!.imageUrl ?: "").let {
+                        return@let page.data!!.apply { byte = it.bytes() }
                     }
                 })
             else emit(page)

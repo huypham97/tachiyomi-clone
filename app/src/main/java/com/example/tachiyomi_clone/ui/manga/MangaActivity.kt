@@ -7,6 +7,7 @@ import android.view.View
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.ActivityMangaBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
@@ -45,9 +46,7 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
             adapter = genreAdapter
         }
         binding.rvChapter.apply {
-            layoutManager = LinearLayoutManager(context).apply {
-                isAutoMeasureEnabled = true
-            }
+            layoutManager = LinearLayoutManager(context)
             adapter = chapterAdapter
         }
     }
@@ -58,7 +57,13 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
             this.finish()
         }
         viewModel.manga.observe(this) { manga ->
-            Glide.with(this).load(manga.thumbnailUrl)
+            Glide.with(this).asBitmap().apply(RequestOptions().apply {
+                override(
+                    binding.ivMangaThumbnail.width,
+                    binding.ivMangaThumbnail.height
+                )
+            })
+                .load(manga.thumbnailUrl)
                 .into(binding.ivMangaThumbnail)
             if (manga.title.isNotEmpty()) binding.tvMangaTitle.text = manga.title
             binding.tvMangaStatus.text = "Status: ${resources.getString(manga.getStatus())}"
@@ -77,6 +82,7 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
         }
         chapterAdapter.onSelectChapterListener = {
             val intent = Intent(this, ReaderActivity::class.java)
+            intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
             intent.putExtra(ReaderActivity.CHAPTER_URL, it)
             startActivity(intent)
         }

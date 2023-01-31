@@ -30,9 +30,9 @@ class ReaderPageImageView @JvmOverloads constructor(
         it.isVisible = false
     }
 
-    fun setImage(byteArray: ByteArray) {
+    fun setImage(image: Any) {
         prepareNonAnimatedImageView()
-        setNonAnimatedImage(byteArray)
+        setNonAnimatedImage(image)
     }
 
     private fun prepareNonAnimatedImageView() {

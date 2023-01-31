@@ -1,5 +1,7 @@
 package com.example.tachiyomi_clone.data.network.service
 
+import com.example.tachiyomi_clone.utils.Constant
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -24,8 +26,8 @@ interface HomeService {
     @Headers("Content-Type: text/html")
     @GET("{chapter_url}")
     suspend fun pageListRequest(@Path("chapter_url") chapterUrl: String): Response<String>
-
-    @Headers("Content-Type: text/html")
+    
     @GET
-    suspend fun imageRequest(@Url url: String): Response<String>
+    @Headers("Referer: ${Constant.BASE_URL}")
+    suspend fun imageRequest(@Url url: String): ResponseBody
 }

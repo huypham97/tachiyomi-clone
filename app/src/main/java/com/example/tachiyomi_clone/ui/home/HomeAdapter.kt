@@ -9,6 +9,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.RowRvMangaBinding
@@ -39,9 +40,14 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
     }
 
     private fun initViewHolder(holder: HomeViewHolder, position: Int, item: MangaEntity?) {
-        holder.binding.tvMangaName.
-        text = getItem(position)?.title
-        Glide.with(context).load(getItem(position)?.thumbnailUrl)
+        holder.binding.tvMangaName.text = getItem(position)?.title
+        Glide.with(holder.itemView).asBitmap().apply(RequestOptions().apply {
+            override(
+                holder.binding.ivMangaThumbnail.width,
+                holder.binding.ivMangaThumbnail.height
+            )
+        })
+            .load(getItem(position)?.thumbnailUrl)
             .into(holder.binding.ivMangaThumbnail)
     }
 

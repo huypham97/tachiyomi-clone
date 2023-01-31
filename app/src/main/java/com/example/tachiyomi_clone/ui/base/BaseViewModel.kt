@@ -2,11 +2,11 @@ package com.example.tachiyomi_clone.ui.base
 
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.io.Serializable
 
-abstract class BaseViewModel : ViewModel(), Observable {
+abstract class BaseViewModel : ViewModel(), Observable, Serializable {
 
     var dataBindingCallback = PropertyChangeRegistry()
 

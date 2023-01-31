@@ -54,10 +54,5 @@ class ReaderViewModel @Inject constructor(private val pageLoadUseCase: PageLoadU
                 }
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        pageList.clear()
-    }
-
+    
 }

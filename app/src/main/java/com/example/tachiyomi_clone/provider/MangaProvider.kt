@@ -9,7 +9,6 @@ import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import com.example.tachiyomi_clone.data.model.mapper.MangaMapper
-import com.example.tachiyomi_clone.data.network.http.MangaSource
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.MangaRepository
 import com.example.tachiyomi_clone.di.qualifier.DefaultDispatcher
@@ -19,13 +18,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 class MangaProvider @Inject constructor(
     private val handler: DatabaseHandler,
-    private val client: OkHttpClient,
-    private val source: MangaSource,
     private val mapper: MangaMapper,
     private val service: HomeService,
     errorDataMapper: ErrorDataMapper,
@@ -87,7 +83,8 @@ class MangaProvider @Inject constructor(
             when (result) {
                 is Result.Success -> Result.Success(
                     mapper.toEntity(
-                        MangaDto.mangaDetailsParse(result.data.body(), result.data.raw()).apply { initialized = true })
+                        MangaDto.mangaDetailsParse(result.data.body(), result.data.raw())
+                            .apply { initialized = true })
                 )
                 is Result.Error -> Result.Error(result.exception)
                 else -> Result.Error(IllegalStateException("Result must be Success or Error"))

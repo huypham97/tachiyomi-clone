@@ -7,7 +7,6 @@ import com.example.tachiyomi_clone.data.model.dto.ChapterDto
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
-import com.example.tachiyomi_clone.data.network.http.MangaSource
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.ChapterRepository
 import com.example.tachiyomi_clone.di.qualifier.DefaultDispatcher
@@ -17,7 +16,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 class ChapterProvider @Inject constructor(
