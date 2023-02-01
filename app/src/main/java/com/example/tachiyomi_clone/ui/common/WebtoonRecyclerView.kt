@@ -47,7 +47,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
             originalHeight
         }
         halfHeight = layoutParams.height / 2
-        println("GITBAO originalHeight: $originalHeight halfHeight: $halfHeight")
 
         if (currentScale != DEFAULT_RATE) {
             x = getPositionX(x)
@@ -56,7 +55,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
             x = 0f
             y = 0f
         }
-        println("GITBAO currentScale: $currentScale x: ${x} y: ${y}")
 
         requestLayout()
     }
