@@ -3,9 +3,6 @@ package com.example.tachiyomi_clone.ui.reader.webtoon
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tachiyomi_clone.R
-import com.example.tachiyomi_clone.ui.common.WebtoonFrame
-import com.example.tachiyomi_clone.ui.common.WebtoonRecyclerView
 import com.example.tachiyomi_clone.ui.reader.ReaderActivity
 
 class WebtoonViewer(val activity: ReaderActivity) {
