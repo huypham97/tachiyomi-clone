@@ -274,6 +274,8 @@ class WebtoonRecyclerView @JvmOverloads constructor(
                     if (!isZoomDragging && currentScale > 1f) {
                         var startScroll = false
 
+                        // nếu khoảng cách di chuyển của pointer vượt ngưỡng thì sẽ thay đổi tọa độ (x,y) của view
+                        // việc thay đổi (x,y) của view làm dịch chuyển view tạo hiệu ứng đang scroll view
                         if (abs(dx) > touchSlop) {
                             if (dx < 0) {
                                 dx += touchSlop
