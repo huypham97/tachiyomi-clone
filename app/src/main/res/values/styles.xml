@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">@dimen/et_text_size_12</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">@color/color_FFB340</item>
+    </style>
+
+    <style name="BottomNavigationView.Inactive" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">@dimen/et_text_size_12</item>
+        <item name="fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">@color/color_828282</item>
+    </style>
+</resources>

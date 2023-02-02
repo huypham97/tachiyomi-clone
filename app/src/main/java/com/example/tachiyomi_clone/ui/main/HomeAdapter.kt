@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.home
+package com.example.tachiyomi_clone.ui.main
 
 import android.annotation.SuppressLint
 import android.content.Context

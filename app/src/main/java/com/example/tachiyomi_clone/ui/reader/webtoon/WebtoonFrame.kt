@@ -37,7 +37,7 @@ class WebtoonFrame(context: Context) : FrameLayout(context) {
      */
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         scaleDetector.onTouchEvent(ev)
-//        flingDetector.onTouchEvent(ev)
+        flingDetector.onTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
     }
 
@@ -45,18 +45,10 @@ class WebtoonFrame(context: Context) : FrameLayout(context) {
      * Scale listener used to delegate events to the recycler view.
      */
     inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-            recycler?.onScaleBegin()
-            return true
-        }
 
         override fun onScale(detector: ScaleGestureDetector): Boolean {
             recycler?.onScale(detector.scaleFactor)
             return true
-        }
-
-        override fun onScaleEnd(detector: ScaleGestureDetector) {
-            recycler?.onScaleEnd()
         }
     }
 

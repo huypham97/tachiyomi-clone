@@ -23,7 +23,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
     defStyle: Int = 0,
 ) : RecyclerView(context, attrs, defStyle) {
 
-    private var isZooming = false
     private var atLastPosition = false
     private var atFirstPosition = false
     private var halfWidth = 0
@@ -34,11 +33,8 @@ class WebtoonRecyclerView @JvmOverloads constructor(
     private var lastVisibleItemPosition = 0
     private var currentScale = DEFAULT_RATE
 
-    private val listener = GestureListener()
+    private val listener = GestureDetectorWithLongTap.Listener()
     private val detector = Detector()
-
-    var tapListener: ((MotionEvent) -> Unit)? = null
-    var longTapListener: ((MotionEvent) -> Boolean)? = null
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
         halfWidth = MeasureSpec.getSize(widthSpec) / 2
@@ -76,7 +72,10 @@ class WebtoonRecyclerView @JvmOverloads constructor(
         if (currentScale < 1) {
             return 0f
         }
+        // width * currentScale : độ dài sau scale của view
+        // width * currentScale - width : quãng đường tối đa có thể di chuyển theo trục Ox của view
         val maxPositionX = halfWidth * (currentScale - 1)
+        println("TESTT currentScale: $currentScale positionX: $positionX maxPositionX: $maxPositionX halfWidth: $halfWidth")
         return positionX.coerceIn(-maxPositionX, maxPositionX)
     }
 
@@ -86,36 +85,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
         }
         val maxPositionY = halfHeight * (currentScale - 1)
         return positionY.coerceIn(-maxPositionY, maxPositionY)
-    }
-
-    private fun zoom(
-        fromRate: Float,
-        toRate: Float,
-        fromX: Float,
-        toX: Float,
-        fromY: Float,
-        toY: Float,
-    ) {
-        isZooming = true
-        val animatorSet = AnimatorSet()
-        val translationXAnimator = ValueAnimator.ofFloat(fromX, toX)
-        translationXAnimator.addUpdateListener { animation -> x = animation.animatedValue as Float }
-
-        val translationYAnimator = ValueAnimator.ofFloat(fromY, toY)
-        translationYAnimator.addUpdateListener { animation -> y = animation.animatedValue as Float }
-
-        val scaleAnimator = ValueAnimator.ofFloat(fromRate, toRate)
-        scaleAnimator.addUpdateListener { animation ->
-            setScaleRate(animation.animatedValue as Float)
-        }
-        animatorSet.playTogether(translationXAnimator, translationYAnimator, scaleAnimator)
-        animatorSet.duration = ANIMATOR_DURATION_TIME.toLong()
-        animatorSet.interpolator = DecelerateInterpolator()
-        animatorSet.start()
-        animatorSet.doOnEnd {
-            isZooming = false
-            currentScale = toRate
-        }
     }
 
     fun zoomFling(velocityX: Int, velocityY: Int): Boolean {
@@ -169,7 +138,11 @@ class WebtoonRecyclerView @JvmOverloads constructor(
 
         setScaleRate(currentScale)
 
-        layoutParams.height = if (currentScale < 1) { (originalHeight / currentScale).toInt() } else { originalHeight }
+        layoutParams.height = if (currentScale < 1) {
+            (originalHeight / currentScale).toInt()
+        } else {
+            originalHeight
+        }
         halfHeight = layoutParams.height / 2
 
         if (currentScale != DEFAULT_RATE) {
@@ -183,51 +156,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
         requestLayout()
     }
 
-    fun onScaleBegin() {
-        if (detector.isDoubleTapping) {
-            detector.isQuickScaling = true
-        }
-    }
-
-    fun onScaleEnd() {
-        if (scaleX < MIN_RATE) {
-            zoom(currentScale, MIN_RATE, x, 0f, y, 0f)
-        }
-    }
-
-    inner class GestureListener : GestureDetectorWithLongTap.Listener() {
-
-        override fun onSingleTapConfirmed(ev: MotionEvent): Boolean {
-            tapListener?.invoke(ev)
-            return false
-        }
-
-        override fun onDoubleTap(ev: MotionEvent): Boolean {
-//            detector.isDoubleTapping = true
-            return false
-        }
-
-        fun onDoubleTapConfirmed(ev: MotionEvent) {
-            if (!isZooming) {
-                if (scaleX != DEFAULT_RATE) {
-                    zoom(currentScale, DEFAULT_RATE, x, 0f, y, 0f)
-                } else {
-                    val toScale = 2f
-                    val toX = (halfWidth - ev.x) * (toScale - 1)
-                    val toY = (halfHeight - ev.y) * (toScale - 1)
-                    zoom(DEFAULT_RATE, toScale, 0f, toX, 0f, toY)
-                }
-            }
-        }
-
-        override fun onLongTapConfirmed(ev: MotionEvent) {
-            val listener = longTapListener
-            if (listener != null && listener.invoke(ev)) {
-                performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-            }
-        }
-    }
-
     inner class Detector : GestureDetectorWithLongTap(context, listener) {
 
         private var scrollPointerId = 0
@@ -235,8 +163,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
         private var downY = 0
         private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
         private var isZoomDragging = false
-        var isDoubleTapping = false
-        var isQuickScaling = false
 
         override fun onTouchEvent(ev: MotionEvent): Boolean {
             val action = ev.actionMasked
@@ -255,10 +181,6 @@ class WebtoonRecyclerView @JvmOverloads constructor(
                     downY = (ev.getY(actionIndex) + 0.5f).toInt()
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    if (isDoubleTapping && isQuickScaling) {
-                        return true
-                    }
-
                     val index = ev.findPointerIndex(scrollPointerId)
                     if (index < 0) {
                         return false
@@ -303,17 +225,14 @@ class WebtoonRecyclerView @JvmOverloads constructor(
                     }
                 }
                 MotionEvent.ACTION_UP -> {
-//                    if (isDoubleTapping && !isQuickScaling) {
-//                        listener.onDoubleTapConfirmed(ev)
-//                    }
+                    if (currentScale < 1) {
+                        currentScale = DEFAULT_RATE
+                        onScale(DEFAULT_RATE)
+                    }
                     isZoomDragging = false
-                    isDoubleTapping = false
-                    isQuickScaling = false
                 }
                 MotionEvent.ACTION_CANCEL -> {
                     isZoomDragging = false
-                    isDoubleTapping = false
-                    isQuickScaling = false
                 }
             }
             return super.onTouchEvent(ev)

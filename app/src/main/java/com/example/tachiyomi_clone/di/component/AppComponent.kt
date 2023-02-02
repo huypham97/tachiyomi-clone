@@ -1,10 +1,11 @@
 package com.example.tachiyomi_clone.di.component
 
 import android.app.Application
+import com.example.tachiyomi_clone.TachiyomiApplication
+import com.example.tachiyomi_clone.di.module.AppFragmentModule
 import com.example.tachiyomi_clone.di.module.AppModule
 import com.example.tachiyomi_clone.di.module.NetworkModule
 import com.example.tachiyomi_clone.di.module.RepositoriesModule
-import com.example.tachiyomi_clone.TachiyomiApplication
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -18,7 +19,9 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class,
         AppModule::class,
         NetworkModule::class,
-        RepositoriesModule::class]
+        RepositoriesModule::class,
+        AppFragmentModule::class,
+    ]
 )
 interface AppComponent {
 

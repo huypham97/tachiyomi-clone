@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.home
+package com.example.tachiyomi_clone.ui.main.home
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
