@@ -3,11 +3,7 @@ package com.example.tachiyomi_clone.data.network.service
 import com.example.tachiyomi_clone.utils.Constant
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.Url
+import retrofit2.http.*
 
 interface HomeService {
 
@@ -26,8 +22,20 @@ interface HomeService {
     @Headers("Content-Type: text/html")
     @GET("{chapter_url}")
     suspend fun pageListRequest(@Path("chapter_url") chapterUrl: String): Response<String>
-    
+
     @GET
     @Headers("Referer: ${Constant.BASE_URL}")
     suspend fun imageRequest(@Url url: String): ResponseBody
+
+    @Headers("Content-Type: text/html")
+    @GET("truyen-con-gai")
+    suspend fun girlMangaRequest(@Query("page") page: String): Response<String>
+
+    @Headers("Content-Type: text/html")
+    @GET("truyen-con-trai")
+    suspend fun boyMangaRequest(@Query("page") page: String): Response<String>
+
+    @Headers("Content-Type: text/html")
+    @GET(".")
+    suspend fun newestMangaRequest(@Query("page") page: String): Response<String>
 }

@@ -88,5 +88,4 @@ dependencies {
 
     implementation "com.github.tachiyomiorg:DirectionalViewPager:1.0.0"
     implementation "com.github.tachiyomiorg:subsampling-scale-image-view:846abe0"
-    implementation("com.tbuonomo:dotsindicator:4.3")
 }

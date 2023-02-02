@@ -1,6 +1,8 @@
 package com.example.tachiyomi_clone.utils
 
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import java.net.URI
 import java.net.URISyntaxException
 
@@ -36,4 +38,28 @@ fun imageOrNull(element: Element): String? {
         element.hasValidAttr("src") -> element.attr("abs:src")
         else -> null
     }
+}
+
+fun getAllElements(document: Document?, className: String): Elements? {
+    return document?.body()?.select(className)
+}
+
+fun getSingleElement(document: Document?, className: String): Element? {
+    return document?.body()?.select(className)?.first()
+}
+
+fun elementToString(element: Element?, className: String): String? {
+    return element?.select(className)?.first()?.text()
+}
+
+fun nextSiblingToString(element: Element?, className: String): String? {
+    return element?.select(className)?.first()?.nextElementSibling()?.text()
+}
+
+fun lastSiblingToString(element: Element?, className: String): String? {
+    return element?.select(className)?.first()?.lastElementSibling()?.text()
+}
+
+fun getAttrFromHtml(element: Element?, className: String, attr: String): String? {
+    return element?.select(className)?.first()?.attr(attr)
 }

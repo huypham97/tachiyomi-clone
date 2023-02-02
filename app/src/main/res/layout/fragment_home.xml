@@ -39,22 +39,25 @@
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/vp_banner"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/et_dimen_224"
-                        android:layout_marginTop="@dimen/et_dimen_12"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentBottom="true"
+                        android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="@dimen/et_dimen_12"
                         android:orientation="horizontal" />
 
-                    <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
-                        android:id="@+id/worm_dots_indicator"
+                    <com.example.tachiyomi_clone.ui.common.DotIndicator
+                        android:id="@+id/dot_indicator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="@dimen/et_dimen_6"
                         app:dotsColor="@color/color_FFB340"
-                        app:dotsCornerRadius="2dp"
-                        app:dotsSize="4dp"
-                        app:dotsSpacing="4dp" />
+                        app:dotsCornerRadius="@dimen/et_corner_4"
+                        app:dotsSize="@dimen/et_dimen_8"
+                        app:dotsSpacing="@dimen/et_dimen_4" />
 
                 </RelativeLayout>
 
@@ -72,6 +75,16 @@
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

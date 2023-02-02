@@ -37,6 +37,19 @@ data class MangasPageDto(val mangas: List<MangaDto>? = null, val hasNextPage: Bo
                     ?.let { image -> imageOrNull(image) }
             }
         }
+
+        fun suggestMangaParse(html: String, response: Response): MangasPageDto {
+            val document = response.asJsoup(html = html)
+            val mangas = document.select("div.items-slide div.item").mapIndexedNotNull { index, element ->
+                MangaDto().apply {
+                    id = index.toLong()
+                    title = element.select("a").attr("title")
+                    setUrlWithoutDomain(element.select("a").attr("abs:href"))
+                    thumbnail_url = element.select("a img").first()?.let { img -> imageOrNull(img) }
+                }
+            }
+            return MangasPageDto(mangas)
+        }
     }
 
 }
