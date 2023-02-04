@@ -12,7 +12,9 @@ interface ChapterRepository {
 
     suspend fun getChapterByMangaIdAsFlow(mangaId: Long): Flow<List<ChapterEntity>>
 
-    suspend fun fetchChaptersFromNetwork(manga: MangaEntity): Flow<Result<List<ChapterDto>>>
+//    suspend fun fetchChaptersFromNetwork(manga: MangaEntity): Flow<Result<List<ChapterDto>>>
+
+    suspend fun fetchChaptersFromNetwork(manga: MangaEntity): Flow<Result<List<ChapterEntity>>>
 
     suspend fun removeChaptersWithIds(chapterIds: List<Long>)
 

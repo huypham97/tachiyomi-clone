@@ -10,15 +10,8 @@ import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.GetMangaWithChaptersUseCase
 import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
 import com.example.tachiyomi_clone.utils.Logger
-import com.example.tachiyomi_clone.utils.withIOContext
-import com.example.tachiyomi_clone.utils.withUIContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,7 +33,7 @@ class MangaViewModel @Inject constructor(
         private const val TAG = "MangaViewModel"
     }
 
-    fun fetchDetailMangaFromLocal(mangaId: Long) {
+/*    fun fetchDetailMangaFromLocal(mangaId: Long) {
         viewModelScope.launch {
             getMangaWithChaptersUseCase.subscribe(mangaId).distinctUntilChanged()
                 .collectLatest { (manga, chapters) ->
@@ -79,23 +72,31 @@ class MangaViewModel @Inject constructor(
                 else dismissLoadingDialog()
             }
         }
-    }
+    }*/
 
-    private suspend fun fetchMangaFromSource(manga: MangaEntity, manualFetch: Boolean = false) {
-        getMangaWithChaptersUseCase.fetchMangaDetails(manga)
-            .onStart { showLoadingDialog() }
-            .onCompletion { dismissLoadingDialog() }
-            .collect { result ->
-                when (result) {
-                    is Result.Success -> {
-                        if (withIOContext {
-                                updateMangaUseCase.awaitUpdateFromSource(
-                                    manga,
-                                    result.data.first,
-                                    manualFetch
-                                )
-                            }
-                        ) {
+    fun fetchMangaFromSource(manga: MangaEntity, manualFetch: Boolean = false) {
+        viewModelScope.launch {
+            getMangaWithChaptersUseCase.fetchMangaDetails(manga)
+                .onStart { showLoadingDialog() }
+                .onCompletion { dismissLoadingDialog() }
+                .collect { result ->
+                    when (result) {
+                        is Result.Success -> {
+                            /* if (withIOContext {
+                                     updateMangaUseCase.awaitUpdateFromSource(
+                                         manga,
+                                         result.data.first,
+                                         manualFetch
+                                     )
+                                 }
+                             ) {
+                                 _manga.value = result.data.first
+                                 _chapters.value = result.data.second
+                                 Logger.d(
+                                     TAG,
+                                     "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
+                                 )
+                             }*/
                             _manga.value = result.data.first
                             _chapters.value = result.data.second
                             Logger.d(
@@ -103,18 +104,18 @@ class MangaViewModel @Inject constructor(
                                 "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
                             )
                         }
-                    }
-                    is Result.Error -> {
-                        Logger.e(
-                            TAG,
-                            "[${TAG}] fetchMangaFromSource() --> error: ${result.exception}"
-                        )
+                        is Result.Error -> {
+                            Logger.e(
+                                TAG,
+                                "[${TAG}] fetchMangaFromSource() --> error: ${result.exception}"
+                            )
+                        }
                     }
                 }
-            }
+        }
     }
 
-    private suspend fun fetchChaptersFromSource(manga: MangaEntity) {
+/*    private suspend fun fetchChaptersFromSource(manga: MangaEntity) {
         getMangaWithChaptersUseCase.getChapterList(manga).collect { result ->
             when (result) {
                 is Result.Success -> {
@@ -132,6 +133,6 @@ class MangaViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }*/
 
 }

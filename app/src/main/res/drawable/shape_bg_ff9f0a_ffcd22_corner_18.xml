@@ -5,11 +5,12 @@
     tools:ignore="MissingDefaultResource">
     <item>
         <shape>
-            <solid android:color="@android:color/transparent" />
-            <stroke
-                android:width="@dimen/et_dimen_1"
-                android:color="@color/black" />
-            <corners android:radius="8dp" />
+            <gradient
+                android:angle="180"
+                android:endColor="#FFCD22"
+                android:startColor="#FF9F0A"
+                android:type="linear" />
+            <corners android:radius="@dimen/et_corner_18" />
             <padding
                 android:bottom="0dp"
                 android:left="0dp"
@@ -21,7 +22,7 @@
     <item android:id="@android:id/mask">
         <shape>
             <solid android:color="?android:colorAccent" />
-            <corners android:radius="8dp" />
+            <corners android:radius="@dimen/et_corner_18" />
         </shape>
     </item>
 </ripple>

@@ -1,10 +1,16 @@
 package com.example.tachiyomi_clone.utils
 
 import android.app.Activity
+import android.content.Context
+import android.os.Build
+import android.text.Html
+import android.text.Spanned
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import okhttp3.Response
@@ -51,3 +57,18 @@ fun Long.getDateTime(format: String): String {
 
 fun List<String>.doesInclude(thisWord: String): Boolean =
     this.any { it.contains(thisWord, ignoreCase = true) }
+
+fun String.loadByHtml(): Spanned? {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Html.fromHtml(
+            this,
+            Html.FROM_HTML_MODE_COMPACT
+        )
+    } else {
+        Html.fromHtml(this)
+    }
+}
+
+fun String.setColor(context: Context, @ColorRes colorRes: Int): String {
+    return "<font color='${ContextCompat.getColor(context, colorRes)}'>$this</font>"
+}

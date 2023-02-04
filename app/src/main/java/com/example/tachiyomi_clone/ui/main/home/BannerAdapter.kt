@@ -11,8 +11,11 @@ import com.example.tachiyomi_clone.ui.base.BaseViewHolder
 class BannerAdapter : BaseAdapter<PageMangaBannerBinding, MangaEntity>() {
     override fun getLayoutIdForViewType(viewType: Int): Int = R.layout.page_manga_banner
 
-    override fun onBindViewHolder(holder: BaseViewHolder<PageMangaBannerBinding>, position: Int) {
-        super.onBindViewHolder(holder, position)
+    override fun initViewHolder(
+        holder: BaseViewHolder<PageMangaBannerBinding>,
+        position: Int,
+        item: MangaEntity?
+    ) {
         Glide.with(holder.itemView).asBitmap().apply(RequestOptions().apply {
             override(
                 holder.binding.ivMangaThumbnail.width,

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/llExpandableSeeMore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvExpandableNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:ems="5"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/color_F1F1F1"
+            android:textSize="@dimen/et_text_size_14"
+            tools:text="oierfgaio ewahfgioawe iawe foiewafj owe woie" />
+
+        <com.example.tachiyomi_clone.ui.common.ExpandIconView
+            android:id="@+id/eivExpandableSeeMore"
+            android:layout_width="@dimen/et_dimen_24"
+            android:layout_height="@dimen/et_dimen_24"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/et_dimen_12"
+            app:eiv_animationDuration="300"
+            app:eiv_color="@color/color_999999" />
+
+    </LinearLayout>
+
+</layout>

@@ -12,4 +12,20 @@
         <item name="fontFamily">@font/roboto_medium</item>
         <item name="android:textColor">@color/color_828282</item>
     </style>
+
+    <declare-styleable name="ExpandIconView">
+        <attr name="eiv_roundedCorners" format="boolean" />
+        <attr name="eiv_switchColor" format="boolean" />
+        <attr name="eiv_color" format="color" />
+        <attr name="eiv_colorMore" format="color" />
+        <attr name="eiv_colorLess" format="color" />
+        <attr name="eiv_colorIntermediate" format="color" />
+        <attr name="eiv_animationDuration" format="integer" />
+        <attr name="eiv_padding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ExpandableTextView">
+        <attr name="etv_max_line" format="integer" />
+        <attr name="etv_background_resource" format="reference|color" />
+    </declare-styleable>
 </resources>

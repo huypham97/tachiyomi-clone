@@ -38,7 +38,7 @@ class HomeProvider @Inject constructor(
 
         }
 
-    override suspend fun fetchPopularManga(): Flow<Result<MangasPageEntity>> {
+    override suspend fun fetchSuggestManga(): Flow<Result<MangasPageEntity>> {
         return flow {
             emit(safeApiCall {
                 homeService.popularMangaRequest("")
@@ -52,6 +52,98 @@ class HomeProvider @Inject constructor(
                             result.data.raw()
                         )
                     )
+                )
+                is Result.Error -> Result.Error(result.exception)
+                else -> Result.Error(IllegalStateException("Result must be Success or Error"))
+            }
+        }
+    }
+
+    override suspend fun fetchNewestManga(): Flow<Result<MangasPageEntity>> {
+        return flow {
+            emit(safeApiCall {
+                homeService.newestMangaRequest("")
+            })
+        }.map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(
+                    mangasPageMapper.toEntity(
+                        MangasPageDto.suggestMangaParse(
+                            result.data.body() ?: "",
+                            result.data.raw()
+                        )
+                    ).apply {
+                        title = "Truyện mới cập nhật"
+                    }
+                )
+                is Result.Error -> Result.Error(result.exception)
+                else -> Result.Error(IllegalStateException("Result must be Success or Error"))
+            }
+        }
+    }
+
+    override suspend fun fetchPopularManga(): Flow<Result<MangasPageEntity>> {
+        return flow {
+            emit(safeApiCall {
+                homeService.popularMangaRequest("")
+            })
+        }.map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(
+                    mangasPageMapper.toEntity(
+                        MangasPageDto.popularMangaParse(
+                            result.data.body() ?: "",
+                            result.data.raw()
+                        )
+                    ).apply {
+                        title = "Truyện phổ biến"
+                    }
+                )
+                is Result.Error -> Result.Error(result.exception)
+                else -> Result.Error(IllegalStateException("Result must be Success or Error"))
+            }
+        }
+    }
+
+    override suspend fun fetchGirlManga(): Flow<Result<MangasPageEntity>> {
+        return flow {
+            emit(safeApiCall {
+                homeService.girlMangaRequest("")
+            })
+        }.map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(
+                    mangasPageMapper.toEntity(
+                        MangasPageDto.popularMangaParse(
+                            result.data.body() ?: "",
+                            result.data.raw()
+                        )
+                    ).apply {
+                        title = "Truyện con gái"
+                    }
+                )
+                is Result.Error -> Result.Error(result.exception)
+                else -> Result.Error(IllegalStateException("Result must be Success or Error"))
+            }
+        }
+    }
+
+    override suspend fun fetchBoyManga(): Flow<Result<MangasPageEntity>> {
+        return flow {
+            emit(safeApiCall {
+                homeService.boyMangaRequest("")
+            })
+        }.map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(
+                    mangasPageMapper.toEntity(
+                        MangasPageDto.popularMangaParse(
+                            result.data.body() ?: "",
+                            result.data.raw()
+                        )
+                    ).apply {
+                        title = "Truyện con trai"
+                    }
                 )
                 is Result.Error -> Result.Error(result.exception)
                 else -> Result.Error(IllegalStateException("Result must be Success or Error"))

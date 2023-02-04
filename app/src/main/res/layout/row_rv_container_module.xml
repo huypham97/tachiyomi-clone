@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_bg_1c1c1e_corner_16">
+
+        <TextView
+            android:id="@+id/tv_module_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/et_dimen_12"
+            android:layout_marginTop="@dimen/et_dimen_20"
+            android:fontFamily="@font/roboto_medium"
+            android:textColor="@color/color_F1F1F1"
+            android:textSize="@dimen/et_text_size_18"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Mới nhất" />
+
+        <TextView
+            android:id="@+id/tv_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/et_dimen_12"
+            android:background="@drawable/bg_ripple_click"
+            android:fontFamily="@font/roboto_regular"
+            android:text="@string/all"
+            android:textColor="@color/color_FFB340"
+            android:textSize="@dimen/et_text_size_12"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_module_title"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_manga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/et_dimen_12"
+            android:layout_marginTop="@dimen/et_dimen_20"
+            android:layout_marginBottom="@dimen/et_dimen_20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_module_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

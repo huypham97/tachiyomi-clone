@@ -6,6 +6,7 @@ import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.dto.ChapterDto
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.model.mapper.ChapterMapper
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.ChapterRepository
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ChapterProvider @Inject constructor(
+    private val chapterNetworkMapper: ChapterMapper,
     private val handler: DatabaseHandler,
     private val service: HomeService,
     errorDataMapper: ErrorDataMapper,
@@ -41,7 +43,7 @@ class ChapterProvider @Inject constructor(
         }
     }
 
-    override suspend fun fetchChaptersFromNetwork(manga: MangaEntity): Flow<Result<List<ChapterDto>>> {
+/*    override suspend fun fetchChaptersFromNetwork(manga: MangaEntity): Flow<Result<List<ChapterDto>>> {
         return flow {
             emit(safeApiCall {
                 service.chapterListRequest(manga.url)
@@ -50,6 +52,35 @@ class ChapterProvider @Inject constructor(
             when (result) {
                 is Result.Success -> Result.Success(
                     ChapterDto.chapterListParse(result.data.body(), result.data.raw())
+                )
+                is Result.Error -> Result.Error(result.exception)
+                else -> Result.Error(IllegalStateException("Result must be Success or Error"))
+            }
+        }
+    }*/
+
+    override suspend fun fetchChaptersFromNetwork(manga: MangaEntity): Flow<Result<List<ChapterEntity>>> {
+        return flow {
+            emit(safeApiCall {
+                service.chapterListRequest(manga.url)
+            })
+        }.map { result ->
+            when (result) {
+                is Result.Success -> Result.Success(
+                    ChapterDto.chapterListParse(result.data.body(), result.data.raw())
+                        .mapIndexed { i, dto ->
+                            chapterNetworkMapper.toEntity(dto)
+                                .apply {
+                                    name =
+                                        dto.name?.let { cleanupChapterName(it, manga.title) } ?: ""
+                                    url = dto.url ?: ""
+                                    dateUpload = dto.date_upload
+                                    chapterNumber = dto.chapter_number
+                                    scanlator = dto.scanlator?.ifBlank { null }
+                                    mangaId = manga.id
+                                    sourceOrder = i.toLong()
+                                }
+                        }
                 )
                 is Result.Error -> Result.Error(result.exception)
                 else -> Result.Error(IllegalStateException("Result must be Success or Error"))

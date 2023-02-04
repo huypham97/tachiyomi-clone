@@ -6,14 +6,15 @@
         android:id="@+id/tv_genre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/shape_bg_gray_corner_5"
+        android:layout_marginEnd="@dimen/et_dimen_6"
+        android:layout_marginBottom="@dimen/et_dimen_12"
+        android:background="@drawable/shape_bg_trans_stroke_ffb340_corner_12"
+        android:fontFamily="@font/roboto_regular"
         android:gravity="center"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="4dp"
-        android:textColor="@color/black"
-        android:textSize="14sp"
+        android:paddingHorizontal="@dimen/et_dimen_10"
+        android:paddingVertical="@dimen/et_dimen_6"
+        android:textColor="@color/color_FFB340"
+        android:textSize="@dimen/et_text_size_12"
         tools:text="hello" />
 
 </layout>

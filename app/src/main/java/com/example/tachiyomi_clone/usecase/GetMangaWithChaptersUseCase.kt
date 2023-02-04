@@ -43,19 +43,26 @@ class GetMangaWithChaptersUseCase @Inject constructor(
     }
 
     suspend fun fetchMangaDetails(manga: MangaEntity): Flow<Result<Pair<MangaEntity, List<ChapterEntity>>>> {
-        return mangaRepository.fetchMangaDetails(manga.url).zip(getChapterList(manga)) { rsManga, rsChapters ->
-            return@zip when {
-                rsManga is Result.Success && rsChapters is Result.Success -> Result.Success(Pair(rsManga.data, rsChapters.data))
-                rsManga is Result.Error -> Result.Error(rsManga.exception)
-                else -> Result.Error((rsChapters as Result.Error).exception)
+        return mangaRepository.fetchMangaDetails(manga.url)
+            .zip(getChapterList(manga)) { rsManga, rsChapters ->
+                return@zip when {
+                    rsManga is Result.Success && rsChapters is Result.Success -> Result.Success(
+                        Pair(
+                            rsManga.data,
+                            rsChapters.data
+                        )
+                    )
+                    rsManga is Result.Error -> Result.Error(rsManga.exception)
+                    else -> Result.Error((rsChapters as Result.Error).exception)
+                }
             }
-        }
     }
 
     suspend fun getChapterList(manga: MangaEntity): Flow<Result<List<ChapterEntity>>> {
         return chapterRepository.fetchChaptersFromNetwork(manga).map { result ->
             when (result) {
-                is Result.Success -> Result.Success(updateChaptersLocal(result.data, manga))
+//                is Result.Success -> Result.Success(updateChaptersLocal(result.data, manga))
+                is Result.Success -> Result.Success(result.data)
                 is Result.Error -> Result.Error(result.exception)
             }
         }

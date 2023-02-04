@@ -55,8 +55,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="@dimen/et_dimen_6"
                         app:dotsColor="@color/color_FFB340"
-                        app:dotsCornerRadius="@dimen/et_corner_4"
-                        app:dotsSize="@dimen/et_dimen_8"
+                        app:dotsCornerRadius="@dimen/et_corner_2"
+                        app:dotsSize="@dimen/et_dimen_4"
                         app:dotsSpacing="@dimen/et_dimen_4" />
 
                 </RelativeLayout>
@@ -67,6 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/et_dimen_12"
                     android:layout_marginTop="@dimen/et_dimen_24"
+                    android:layout_marginBottom="@dimen/et_dimen_12"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
