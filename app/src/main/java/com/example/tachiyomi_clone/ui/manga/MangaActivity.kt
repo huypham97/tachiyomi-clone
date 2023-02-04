@@ -13,6 +13,7 @@ import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.ActivityMangaBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
+import com.example.tachiyomi_clone.ui.common.VerticalSpacingDecoration
 import com.example.tachiyomi_clone.ui.reader.ReaderActivity
 import com.example.tachiyomi_clone.utils.loadByHtml
 import com.example.tachiyomi_clone.utils.setColor
@@ -64,6 +65,13 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
 
         binding.rvChapter.apply {
             layoutManager = LinearLayoutManager(context)
+            addItemDecoration(
+                VerticalSpacingDecoration(
+                    this@MangaActivity,
+                    R.drawable.divider,
+                    true
+                )
+            )
             adapter = chapterAdapter
         }
 
@@ -99,6 +107,24 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
             this.finish()
         }
 
+        binding.tvReadFirst.setOnClickListener {
+            viewModel.chapters.value?.let {
+                val intent = Intent(this, ReaderActivity::class.java)
+                intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
+                intent.putExtra(ReaderActivity.CHAPTER_URL, it[it.size - 1])
+                startActivity(intent)
+            }
+        }
+
+        binding.tvReadLast.setOnClickListener {
+            viewModel.chapters.value?.let {
+                val intent = Intent(this, ReaderActivity::class.java)
+                intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
+                intent.putExtra(ReaderActivity.CHAPTER_URL, it[0])
+                startActivity(intent)
+            }
+        }
+
         viewModel.manga.observe(this) { manga ->
             Glide.with(this).asBitmap().apply(RequestOptions().apply {
                 override(
@@ -128,7 +154,7 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
         }
 
         viewModel.chapters.observe(this) { chapters ->
-            binding.tvChaptersCount.text = "${chapters.size} chapters"
+            binding.tvChaptersCount.text = "Đã ra ${chapters.size} chương"
             count = if (chapters.size > 50) 50 else chapters.size
             chapterAdapter.refreshList(chapters.take(count))
         }
@@ -142,6 +168,16 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
             intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
             intent.putExtra(ReaderActivity.CHAPTER_URL, it)
             startActivity(intent)
+        }
+
+        binding.ivChapterSort.setOnClickListener {
+            viewModel.ascendingSort.value =
+                viewModel.ascendingSort.value != true
+        }
+
+        viewModel.ascendingSort.observe(this) {
+            binding.tvChapterSortTitle.text =
+                resources.getText(if (it) R.string.oldest else R.string.newest)
         }
 
         initScrollListener()
