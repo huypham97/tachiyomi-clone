@@ -1,17 +1,13 @@
 package com.example.tachiyomi_clone.ui.reader.webtoon
 
-import android.animation.AnimatorSet
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.ViewConfiguration
 import android.view.animation.DecelerateInterpolator
-import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tachiyomi_clone.ui.common.GestureDetectorWithLongTap
+import com.example.tachiyomi_clone.common.widget.GestureDetectorWithLongTap
 import kotlin.math.abs
 
 /**
@@ -33,8 +29,10 @@ class WebtoonRecyclerView @JvmOverloads constructor(
     private var lastVisibleItemPosition = 0
     private var currentScale = DEFAULT_RATE
 
-    private val listener = GestureDetectorWithLongTap.Listener()
+    private val listener = GestureDetector()
     private val detector = Detector()
+
+    var tapListener: ((MotionEvent) -> Unit)? = null
 
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
         halfWidth = MeasureSpec.getSize(widthSpec) / 2
@@ -154,6 +152,15 @@ class WebtoonRecyclerView @JvmOverloads constructor(
         }
 
         requestLayout()
+    }
+
+    inner class GestureDetector:GestureDetectorWithLongTap.Listener() {
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            tapListener?.invoke(e)
+            return false
+        }
+
     }
 
     inner class Detector : GestureDetectorWithLongTap(context, listener) {

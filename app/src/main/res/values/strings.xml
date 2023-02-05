@@ -28,4 +28,7 @@
     <string name="seen_count">Lượt xem</string>
     <string name="newest">Mới nhất</string>
     <string name="oldest">Cũ nhất</string>
+    <string name="index">Mục lục</string>
+    <string name="auto_read">Đọc tự động</string>
+    <string name="light">Độ sáng</string>
 </resources>

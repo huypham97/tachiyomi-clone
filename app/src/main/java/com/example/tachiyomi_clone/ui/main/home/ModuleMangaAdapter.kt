@@ -7,7 +7,7 @@ import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.databinding.RowRvContainerModuleBinding
 import com.example.tachiyomi_clone.ui.base.BaseAdapter
 import com.example.tachiyomi_clone.ui.base.BaseViewHolder
-import com.example.tachiyomi_clone.ui.common.SpaceItemDecoration
+import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 
 class ModuleMangaAdapter : BaseAdapter<RowRvContainerModuleBinding, MangasPageEntity>() {
 

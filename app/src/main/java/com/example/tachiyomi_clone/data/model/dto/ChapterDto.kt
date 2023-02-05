@@ -73,5 +73,6 @@ fun ChapterDto.toDomain(): ChapterEntity? {
         dateUpload = date_upload,
         chapterNumber = chapter_number,
         scanlator = scanlator,
+        null, null
     )
 }

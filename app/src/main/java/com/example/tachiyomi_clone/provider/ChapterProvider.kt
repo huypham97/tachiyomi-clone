@@ -80,6 +80,16 @@ class ChapterProvider @Inject constructor(
                                     mangaId = manga.id
                                     sourceOrder = i.toLong()
                                 }
+                        }.let {
+                            return@let it.mapIndexed { index, chapterEntity ->
+                                chapterEntity.apply {
+                                    if (index - 1 in it.indices) nextChapterOrder =
+                                        it[index - 1].sourceOrder
+                                    if (index + 1 in it.indices) prevChapterOrder =
+                                        it[index + 1].sourceOrder
+                                }
+                                chapterEntity
+                            }
                         }
                 )
                 is Result.Error -> Result.Error(result.exception)

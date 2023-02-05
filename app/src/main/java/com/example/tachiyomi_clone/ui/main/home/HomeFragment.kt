@@ -2,13 +2,13 @@ package com.example.tachiyomi_clone.ui.main.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.FragmentHomeBinding
 import com.example.tachiyomi_clone.ui.base.BaseFragment
-import com.example.tachiyomi_clone.ui.common.SpaceItemDecoration
+import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 import com.example.tachiyomi_clone.ui.manga.MangaActivity
 
 class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
@@ -58,7 +58,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             moduleMangaAdapter.refreshList(it)
         }
         viewModel.isLoading.observe(this) {
-            binding.pbLoading.visibility = if (it) View.VISIBLE else View.GONE
+            binding.pbLoading.isVisible = it
         }
         moduleMangaAdapter.onSelectItemListener = {
             val intent = Intent(context, MangaActivity::class.java)

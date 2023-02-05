@@ -283,7 +283,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/divider_1" />
 
-                    <com.example.tachiyomi_clone.ui.common.ExpandableTextView
+                    <com.example.tachiyomi_clone.common.widget.ExpandableTextView
                         android:id="@+id/etv_manga_describe"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -321,9 +321,10 @@
 
                     <ImageView
                         android:id="@+id/iv_chapter_sort"
-                        android:layout_width="@dimen/et_dimen_24"
-                        android:layout_height="@dimen/et_dimen_24"
-                        android:layout_marginEnd="@dimen/et_dimen_16"
+                        android:layout_width="@dimen/et_dimen_30"
+                        android:layout_height="@dimen/et_dimen_30"
+                        android:padding="@dimen/et_dimen_6"
+                        android:layout_marginEnd="@dimen/et_dimen_10"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:scaleType="centerInside"
                         android:src="@drawable/ic_sort"
@@ -335,7 +336,6 @@
                         android:id="@+id/tv_chapter_sort_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/et_dimen_6"
                         android:fontFamily="@font/roboto_regular"
                         android:text="@string/newest"
                         android:textColor="@color/color_999999"
@@ -357,21 +357,18 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_chapters_count" />
 
-                    <ProgressBar
-                        android:id="@+id/pb_loading"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.core.widget.NestedScrollView>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible" />
 
     </FrameLayout>
 

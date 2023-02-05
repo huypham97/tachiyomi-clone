@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.common
+package com.example.tachiyomi_clone.common.widget
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class VerticalSpacingDecoration(
     context: Context,
-    resId: Int,
-    private val isEdging: Boolean?
+    resId: Int
 ) :
     RecyclerView.ItemDecoration() {
 

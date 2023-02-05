@@ -29,7 +29,7 @@ class MangaViewModel @Inject constructor(
     val chapters: LiveData<List<ChapterEntity>>
         get() = _chapters
 
-    var ascendingSort: MutableLiveData<Boolean> = MutableLiveData(false)
+    var ascendingSort: Boolean = true
 
     companion object {
         private const val TAG = "MangaViewModel"
@@ -136,4 +136,10 @@ class MangaViewModel @Inject constructor(
             }
         }
     }*/
+
+    fun sortChapterList() {
+        ascendingSort = !ascendingSort
+        _chapters.value =
+            if (ascendingSort) _chapters.value?.sortedBy { it.sourceOrder } else _chapters.value?.sortedByDescending { it.sourceOrder }
+    }
 }

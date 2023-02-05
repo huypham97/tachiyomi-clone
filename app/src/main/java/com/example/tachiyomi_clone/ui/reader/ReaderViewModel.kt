@@ -22,6 +22,7 @@ class ReaderViewModel @Inject constructor(private val pageLoadUseCase: PageLoadU
     var pageList: MutableList<PageEntity> = mutableListOf()
 
     fun getPages(chapterUrl: String) {
+        pageList.clear()
         viewModelScope.launch {
             pageLoadUseCase.fetchPageList(chapterUrl)
                 .catch { e ->

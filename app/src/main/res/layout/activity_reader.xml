@@ -3,69 +3,225 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <FrameLayout
+            android:id="@+id/fl_page"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            app:expanded="true"
-            app:liftOnScroll="true"
-            app:statusBarForeground="@android:color/transparent">
+            android:layout_height="match_parent" />
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+        <RelativeLayout
+            android:id="@+id/rl_top_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            tools:visibility="visible">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:fitsSystemWindows="true"
-                app:collapsedTitleGravity="center"
-                app:contentScrim="@android:color/transparent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:statusBarScrim="@android:color/transparent"
-                app:title="Hello"
-                app:titleEnabled="false"
-                app:toolbarId="@id/tb_header">
+                android:layout_alignParentTop="true"
+                android:background="@color/color_1C1C1E"
+                app:layout_collapseMode="pin">
 
                 <com.google.android.material.appbar.MaterialToolbar
                     android:id="@+id/tb_header"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
+                    android:elevation="0dp"
                     android:gravity="center"
                     app:contentInsetLeft="0dp"
                     app:contentInsetStart="0dp"
                     app:contentInsetStartWithNavigation="0dp"
                     app:layout_collapseMode="pin"
-                    app:navigationIcon="@drawable/ic_back_black"
+                    app:menu="@menu/menu_app_bar"
+                    app:navigationIcon="@drawable/ic_back_white"
                     app:titleMarginStart="0dp"
+                    app:titleTextColor="@color/color_F1F1F1"
                     tools:title="GITBAO" />
 
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
 
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <FrameLayout
-            android:id="@+id/fl_page"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            android:focusable="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <ProgressBar
-                android:id="@+id/pb_loading"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_bottom_menu"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_alignParentBottom="true"
+                android:background="@color/color_1C1C1E"
+                android:orientation="vertical">
 
-        </FrameLayout>
+                <ImageView
+                    android:id="@+id/iv_prev_chapter"
+                    android:layout_width="@dimen/et_dimen_24"
+                    android:layout_height="@dimen/et_dimen_24"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_back_white"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_prev_chapter"
+                    app:layout_constraintEnd_toEndOf="@id/btn_prev_chapter"
+                    app:layout_constraintStart_toStartOf="@id/btn_prev_chapter"
+                    app:layout_constraintTop_toTopOf="@id/btn_prev_chapter" />
 
-    </com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout>
+                <Button
+                    android:id="@+id/btn_prev_chapter"
+                    android:layout_width="@dimen/et_dimen_56"
+                    android:layout_height="@dimen/et_dimen_56"
+                    android:background="@drawable/bg_ripple_click"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_next_chapter"
+                    android:layout_width="@dimen/et_dimen_24"
+                    android:layout_height="@dimen/et_dimen_24"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_next_white"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_next_chapter"
+                    app:layout_constraintEnd_toEndOf="@id/btn_next_chapter"
+                    app:layout_constraintStart_toStartOf="@id/btn_next_chapter"
+                    app:layout_constraintTop_toTopOf="@id/btn_next_chapter" />
+
+                <Button
+                    android:id="@+id/btn_next_chapter"
+                    android:layout_width="@dimen/et_dimen_56"
+                    android:layout_height="@dimen/et_dimen_56"
+                    android:background="@drawable/bg_ripple_click"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_chapter_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textColor="@color/color_F1F1F1"
+                    android:textSize="@dimen/et_text_size_14"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_prev_chapter"
+                    app:layout_constraintEnd_toStartOf="@id/btn_next_chapter"
+                    app:layout_constraintStart_toEndOf="@id/btn_prev_chapter"
+                    app:layout_constraintTop_toTopOf="@id/btn_prev_chapter"
+                    tools:text="Chuong 1" />
+
+                <View
+                    android:id="@+id/v_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/color_333333"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btn_prev_chapter" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/v_divider">
+
+                    <LinearLayout
+                        android:id="@+id/ll_option_index"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_ripple_click"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/et_dimen_24"
+                            android:layout_height="@dimen/et_dimen_24"
+                            android:layout_marginTop="@dimen/et_dimen_8"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_index" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/et_dimen_4"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Mục lục"
+                            android:textColor="@color/color_F1F1F1"
+                            android:textSize="@dimen/et_text_size_12" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_option_auto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_ripple_click"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/et_dimen_24"
+                            android:layout_height="@dimen/et_dimen_24"
+                            android:layout_marginTop="@dimen/et_dimen_8"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_auto" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/et_dimen_4"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Đọc tự động"
+                            android:textColor="@color/color_F1F1F1"
+                            android:textSize="@dimen/et_text_size_12" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_option_light"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_ripple_click"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="@dimen/et_dimen_24"
+                            android:layout_height="@dimen/et_dimen_24"
+                            android:layout_marginTop="@dimen/et_dimen_8"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_light" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="@dimen/et_dimen_4"
+                            android:fontFamily="@font/roboto_regular"
+                            android:text="Độ sáng"
+                            android:textColor="@color/color_F1F1F1"
+                            android:textSize="@dimen/et_text_size_12" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </FrameLayout>
 
 </layout>

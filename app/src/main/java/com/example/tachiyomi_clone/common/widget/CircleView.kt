@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.common
+package com.example.tachiyomi_clone.common.widget
 
 import android.content.Context
 import android.graphics.Canvas

@@ -3,17 +3,19 @@ package com.example.tachiyomi_clone.ui.manga
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.View
+import android.os.Looper
 import android.widget.FrameLayout
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.tachiyomi_clone.R
+import com.example.tachiyomi_clone.common.widget.VerticalSpacingDecoration
+import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.ActivityMangaBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
-import com.example.tachiyomi_clone.ui.common.VerticalSpacingDecoration
 import com.example.tachiyomi_clone.ui.reader.ReaderActivity
 import com.example.tachiyomi_clone.utils.loadByHtml
 import com.example.tachiyomi_clone.utils.setColor
@@ -27,6 +29,7 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
 
     companion object {
         const val MANGA_ITEM = "MANGA_ITEM"
+        private const val LOAD_MORE_PEAK = 50
     }
 
     //    private var mangaId: Long = -1L
@@ -34,8 +37,7 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
     private val genreAdapter = MangaGenreAdapter()
     private val chapterAdapter = ChapterAdapter()
     private var count = 0
-    private var isLoading = false
-    private val handler = Handler()
+    private var isLoadingMore = false
     private var isShow = true
     private var scrollRange = -1
 
@@ -68,8 +70,7 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
             addItemDecoration(
                 VerticalSpacingDecoration(
                     this@MangaActivity,
-                    R.drawable.divider,
-                    true
+                    R.drawable.divider
                 )
             )
             adapter = chapterAdapter
@@ -109,19 +110,22 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
 
         binding.tvReadFirst.setOnClickListener {
             viewModel.chapters.value?.let {
-                val intent = Intent(this, ReaderActivity::class.java)
-                intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
-                intent.putExtra(ReaderActivity.CHAPTER_URL, it[it.size - 1])
-                startActivity(intent)
+//                val intent = Intent(this, ReaderActivity::class.java)
+//                intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
+//                intent.putExtra(ReaderActivity.CHAPTER_URL, it[it.size - 1])
+//                intent.putParcelableArrayListExtra(ReaderActivity.CHAPTER_LIST, ArrayList(it))
+//                startActivity(intent)
+                navigateToReaderActivity(it[it.size - 1].sourceOrder)
             }
         }
 
         binding.tvReadLast.setOnClickListener {
             viewModel.chapters.value?.let {
-                val intent = Intent(this, ReaderActivity::class.java)
-                intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
-                intent.putExtra(ReaderActivity.CHAPTER_URL, it[0])
-                startActivity(intent)
+//                val intent = Intent(this, ReaderActivity::class.java)
+//                intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
+//                intent.putExtra(ReaderActivity.CHAPTER_URL, it[0])
+//                startActivity(intent)
+                navigateToReaderActivity(it[0].sourceOrder)
             }
         }
 
@@ -155,29 +159,26 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
 
         viewModel.chapters.observe(this) { chapters ->
             binding.tvChaptersCount.text = "Đã ra ${chapters.size} chương"
-            count = if (chapters.size > 50) 50 else chapters.size
-            chapterAdapter.refreshList(chapters.take(count))
+            setChapterList(chapters)
         }
 
         viewModel.isLoading.observe(this) {
-            binding.pbLoading.visibility = if (it) View.VISIBLE else View.GONE
+            binding.pbLoading.isVisible = it
         }
 
         chapterAdapter.onSelectChapterListener = {
-            val intent = Intent(this, ReaderActivity::class.java)
-            intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
-            intent.putExtra(ReaderActivity.CHAPTER_URL, it)
-            startActivity(intent)
+//            val intent = Intent(this, ReaderActivity::class.java)
+//            intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
+//            intent.putExtra(ReaderActivity.CHAPTER_URL, it)
+//            startActivity(intent)
+            navigateToReaderActivity(it.sourceOrder)
         }
 
         binding.ivChapterSort.setOnClickListener {
-            viewModel.ascendingSort.value =
-                viewModel.ascendingSort.value != true
-        }
-
-        viewModel.ascendingSort.observe(this) {
+            count = 0
+            viewModel.sortChapterList()
             binding.tvChapterSortTitle.text =
-                resources.getText(if (it) R.string.oldest else R.string.newest)
+                resources.getText(if (viewModel.ascendingSort) R.string.newest else R.string.oldest)
         }
 
         initScrollListener()
@@ -186,19 +187,35 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
     private fun initScrollListener() {
         binding.nsv.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
             if (scrollY == (v.getChildAt(0).measuredHeight - v.measuredHeight)) {
-                if (!isLoading) {
+                if (!isLoadingMore) {
                     loadMore()
-                    isLoading = true
+                    isLoadingMore = true
                 }
             }
         })
     }
 
     private fun loadMore() {
-        handler.postDelayed({
-            isLoading = false
-            count += if (viewModel.chapters.value!!.size - count > 50) 50 else viewModel.chapters.value!!.size - count
-            chapterAdapter.refreshList(viewModel.chapters.value!!.take(count))
+        Handler(Looper.getMainLooper()).postDelayed({
+            isLoadingMore = false
+            viewModel.chapters.value?.let {
+                setChapterList(it)
+            }
         }, 100)
+    }
+
+    private fun setChapterList(list: List<ChapterEntity>) {
+        if (count == list.size) return
+        count += if (list.size - count > LOAD_MORE_PEAK) LOAD_MORE_PEAK else list.size - count
+        chapterAdapter.refreshList(list.take(count))
+    }
+
+    private fun navigateToReaderActivity(id: Long) {
+        val intent = Intent(this, ReaderActivity::class.java)
+        intent.putExtra(ReaderActivity.MANGA_TITLE, binding.tvMangaTitle.text)
+        intent.putExtra(ReaderActivity.CHAPTER_SELECTED_ID, id)
+        intent.putParcelableArrayListExtra(ReaderActivity.CHAPTER_LIST,
+            viewModel.chapters.value?.let { ArrayList(it) })
+        startActivity(intent)
     }
 }

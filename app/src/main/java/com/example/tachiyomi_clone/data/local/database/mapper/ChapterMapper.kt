@@ -17,5 +17,6 @@ val chapterMapper: (Long, Long, String, String, String?, Boolean, Boolean, Long,
             dateUpload = dateUpload,
             chapterNumber = chapterNumber,
             scanlator = scanlator,
+            null, null
         )
     }

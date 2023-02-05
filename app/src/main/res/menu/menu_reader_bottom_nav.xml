@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_index"
+        android:icon="@drawable/ic_index"
+        android:menuCategory="secondary"
+        android:title="@string/index" />
+
+    <item
+        android:id="@+id/nav_auto"
+        android:icon="@drawable/ic_auto"
+        android:menuCategory="secondary"
+        android:title="@string/auto_read" />
+
+    <item
+        android:id="@+id/nav__option_light"
+        android:icon="@drawable/ic_light"
+        android:menuCategory="secondary"
+        android:title="@string/light" />
+
+</menu>

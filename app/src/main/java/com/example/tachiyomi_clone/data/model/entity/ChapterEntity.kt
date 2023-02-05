@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.data.model.entity
 
-import java.io.Serializable
+import android.os.Parcel
+import android.os.Parcelable
 
 data class ChapterEntity(
     var id: Long,
@@ -15,7 +16,9 @@ data class ChapterEntity(
     var dateUpload: Long,
     var chapterNumber: Float,
     var scanlator: String?,
-) : Serializable {
+    var nextChapterOrder: Long?,
+    var prevChapterOrder: Long?
+) : Parcelable {
 
     companion object {
         private const val NUMBER_PATTERN = """([0-9]+)(\.[0-9]+)?(\.?[a-z]+)?"""
@@ -33,7 +36,20 @@ data class ChapterEntity(
             dateUpload = 0,
             chapterNumber = -1f,
             scanlator = null,
+            nextChapterOrder = null,
+            prevChapterOrder = null
         )
+
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<ChapterEntity> {
+            override fun createFromParcel(parcel: Parcel): ChapterEntity {
+                return ChapterEntity(parcel)
+            }
+
+            override fun newArray(size: Int): Array<ChapterEntity?> {
+                return arrayOfNulls(size)
+            }
+        }
     }
 
     val isRecognizedNumber: Boolean
@@ -83,11 +99,33 @@ data class ChapterEntity(
 
     private val number = Regex(NUMBER_PATTERN)
 
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readLong(),
+        parcel.readFloat(),
+        parcel.readString(),
+        parcel.readLong(),
+        parcel.readLong(),
+    ) {
+    }
+
     fun cleanupChapterName(chapterName: String, mangaTitle: String): String {
         return chapterName.trim().removePrefix(mangaTitle).trim(*CHAPTER_TRIM_CHARS)
     }
 
-    fun parseChapterNumber(mangaTitle: String, chapterName: String, chapterNumber: Float? = null): Float {
+    fun parseChapterNumber(
+        mangaTitle: String,
+        chapterName: String,
+        chapterNumber: Float? = null
+    ): Float {
         // If chapter number is known return.
         if (chapterNumber != null && (chapterNumber == -2f || chapterNumber > -1f)) {
             return chapterNumber
@@ -159,4 +197,26 @@ data class ChapterEntity(
         if (number >= 10) return 0f
         return number / 10f
     }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(id)
+        parcel.writeLong(mangaId)
+        parcel.writeByte(if (read) 1 else 0)
+        parcel.writeByte(if (bookmark) 1 else 0)
+        parcel.writeLong(lastPageRead)
+        parcel.writeLong(dateFetch)
+        parcel.writeLong(sourceOrder)
+        parcel.writeString(url)
+        parcel.writeString(name)
+        parcel.writeLong(dateUpload)
+        parcel.writeFloat(chapterNumber)
+        parcel.writeString(scanlator)
+        parcel.writeLong(nextChapterOrder ?: -1)
+        parcel.writeLong(prevChapterOrder ?: -1)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
 }

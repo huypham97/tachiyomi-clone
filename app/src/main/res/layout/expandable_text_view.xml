@@ -20,7 +20,7 @@
             android:textSize="@dimen/et_text_size_14"
             tools:text="oierfgaio ewahfgioawe iawe foiewafj owe woie" />
 
-        <com.example.tachiyomi_clone.ui.common.ExpandIconView
+        <com.example.tachiyomi_clone.common.widget.ExpandIconView
             android:id="@+id/eivExpandableSeeMore"
             android:layout_width="@dimen/et_dimen_24"
             android:layout_height="@dimen/et_dimen_24"

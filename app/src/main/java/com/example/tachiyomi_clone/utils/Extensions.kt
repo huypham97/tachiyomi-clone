@@ -3,6 +3,7 @@ package com.example.tachiyomi_clone.utils
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.provider.Settings
 import android.text.Html
 import android.text.Spanned
 import android.view.View
@@ -72,3 +73,6 @@ fun String.loadByHtml(): Spanned? {
 fun String.setColor(context: Context, @ColorRes colorRes: Int): String {
     return "<font color='${ContextCompat.getColor(context, colorRes)}'>$this</font>"
 }
+
+val Context.animatorDurationScale: Float
+    get() = Settings.Global.getFloat(this.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)

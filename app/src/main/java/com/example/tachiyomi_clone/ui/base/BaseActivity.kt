@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.ui.base
 
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Gravity
@@ -11,8 +12,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.tachiyomi_clone.utils.system.ScreenUtils
+import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.utils.inTransaction
+import com.example.tachiyomi_clone.utils.system.ScreenUtils
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -55,7 +57,12 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
 //        binding.setVariable(BR._all, viewModel)
     }
 
-    protected open fun initViews(savedInstanceState: Bundle?) {}
+    protected open fun initViews(savedInstanceState: Bundle?) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+            window.navigationBarColor = ContextCompat.getColor(this, R.color.color_1C1C1E)
+        }
+    }
 
     protected open fun setEventListener() {}
 
