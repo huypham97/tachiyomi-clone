@@ -51,6 +51,8 @@ class WebtoonViewer(val fragment: ReaderFragment) {
         fragment.viewModel.isLoading.observe(fragment) {
             if (!it) {
                 adapter.updateItems(fragment.viewModel.pageList)
+                if (fragment.viewModel.pageList.size > 0)
+                    recycler.scrollToPosition(0)
             }
         }
     }
