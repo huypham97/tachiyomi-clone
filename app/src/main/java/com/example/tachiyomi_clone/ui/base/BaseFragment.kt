@@ -2,37 +2,35 @@ package com.example.tachiyomi_clone.ui.base
 
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.tachiyomi_clone.common.event.EventObserver
 import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment() {
+abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> :
+    DaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    abstract val modelClass: Class<VM>
-
     open val isViewModelProvideByActivity: Boolean = false
 
-    protected val viewModel by lazy {
-        ViewModelProvider(
-            if (isViewModelProvideByActivity) {
-                requireActivity()
-            } else {
-                this
-            }, viewModelFactory
-        ).get(modelClass)
-    }
+    abstract val viewModel: VM
 
     protected lateinit var binding: B
+
+    protected val navController by lazy {
+        findNavController()
+    }
 
     override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
@@ -45,6 +43,7 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
         savedInstanceState: Bundle?
     ): View? {
         setContentView(inflater, getLayoutResId(), container)
+        setupPopBackStackEvent()
         return binding.root
     }
 
@@ -61,7 +60,6 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
     ) {
         binding = DataBindingUtil.inflate(inflater, layoutResID, container, false)
         binding.lifecycleOwner = getLifeCycleOwner()
-//        binding.setVariable(BR.viewModel, viewModel)
         onCreateBinding()
     }
 
@@ -75,4 +73,28 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> : Fragment(
 
     open fun setEventListeners() {}
 
+    open fun onHandleBackPressed() {
+        popBackStack(true)
+    }
+
+    open fun popBackStack(applyActivityPopBack: Boolean = false): Boolean {
+        val check = navController.popBackStack()
+
+        if (!check && applyActivityPopBack) {
+            requireActivity().finish()
+            return false
+        }
+
+        return check
+    }
+
+    open fun setupPopBackStackEvent() {
+        viewModel.onBackPressedDispatcher.observe(viewLifecycleOwner, EventObserver {
+            onHandleBackPressed()
+        })
+    }
+
+    open fun onDispatchKeyEvent(event: KeyEvent, dispatch: Boolean): Boolean {
+        return dispatch
+    }
 }

@@ -8,48 +8,46 @@ import android.view.animation.AnimationUtils
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.navGraphViewModels
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.listener.SimpleAnimationListener
-import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
-import com.example.tachiyomi_clone.databinding.ActivityReaderBinding
-import com.example.tachiyomi_clone.ui.base.BaseActivity
+import com.example.tachiyomi_clone.databinding.FragmentReaderBinding
+import com.example.tachiyomi_clone.ui.base.BaseNavFragment
+import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailViewModel
 import com.example.tachiyomi_clone.ui.reader.webtoon.WebtoonViewer
 import com.example.tachiyomi_clone.utils.system.applySystemAnimatorScale
 
-class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
-
+class ReaderFragment :
+    BaseNavFragment<FragmentReaderBinding, ReaderViewModel>(ReaderViewModel::class) {
     companion object {
-        const val CHAPTER_SELECTED_ID = "CHAPTER_SELECTED_ID"
-        const val CHAPTER_LIST = "CHAPTER_LIST"
-        const val MANGA_TITLE = "MANGA_TITLE"
+        @JvmStatic
+        fun newInstance() = ReaderFragment()
     }
 
-    private var chapterId: Long? = null
-    private var mangaTitle: String? = null
-    private var chapterSelected: ChapterEntity? = null
-    private var listChapter: List<ChapterEntity>? = null
     private lateinit var viewer: WebtoonViewer
     var menuVisible = false
         private set
     private val windowInsetsController by lazy {
         WindowInsetsControllerCompat(
-            window,
+            requireActivity().window,
             binding.root
         )
     }
+    private val mangaDetailViewModel by navGraphViewModels<MangaDetailViewModel>(
+        navGraphId = R.id.nav_graph,
+        factoryProducer = { viewModelFactory })
 
-    override val modelClass: Class<ReaderViewModel>
-        get() = ReaderViewModel::class.java
+    override fun getLayoutResId(): Int = R.layout.fragment_reader
 
-    override fun getLayoutResId(): Int = R.layout.activity_reader
+    override fun getLifeCycleOwner(): LifecycleOwner = this
 
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
-        initializedIntent()
         viewer = WebtoonViewer(this)
-        binding.tbHeader.title = mangaTitle
-        binding.tvChapterName.text = chapterSelected?.name
-        viewModel.getPages(chapterSelected?.url ?: "")
+        binding.tbHeader.title = mangaDetailViewModel.manga.value?.title
+        binding.tvChapterName.text = mangaDetailViewModel.selectedChapter?.name
+        viewModel.getPages(mangaDetailViewModel.selectedChapter?.url ?: "")
         binding.flPage.addView(viewer.getView())
         binding.tbHeader.menu.getItem(0).isVisible = false
 
@@ -59,12 +57,12 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
     }
 
     private fun setNavButtonStatus() {
-        (chapterSelected?.prevChapterOrder == -1L || chapterSelected?.prevChapterOrder == null).let {
+        (mangaDetailViewModel.selectedChapter?.prevChapterOrder == -1L || mangaDetailViewModel.selectedChapter?.prevChapterOrder == null).let {
             binding.ivPrevChapter.alpha =
                 if (it) 0.3f else 1f
             binding.btnPrevChapter.isEnabled = !it
         }
-        (chapterSelected?.nextChapterOrder == -1L || chapterSelected?.nextChapterOrder == null).let {
+        (mangaDetailViewModel.selectedChapter?.nextChapterOrder == -1L || mangaDetailViewModel.selectedChapter?.nextChapterOrder == null).let {
             binding.ivNextChapter.alpha =
                 if (it)
                     0.3f else 1f
@@ -72,17 +70,10 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
         }
     }
 
-    private fun initializedIntent() {
-        mangaTitle = intent.getStringExtra(MANGA_TITLE)
-        chapterId = intent.getLongExtra(CHAPTER_SELECTED_ID, -1)
-        listChapter = intent.getParcelableArrayListExtra(CHAPTER_LIST, ChapterEntity::class.java)
-        chapterSelected = listChapter?.find { chapterId == it.sourceOrder }
-    }
-
-    override fun setEventListener() {
-        super.setEventListener()
+    override fun setEventListeners() {
+        super.setEventListeners()
         binding.tbHeader.setNavigationOnClickListener {
-            this.finish()
+            viewModel.onBackPressed()
         }
         viewModel.isLoading.observe(this) {
             binding.pbLoading.isVisible = it
@@ -91,43 +82,35 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
 
     override fun onResume() {
         super.onResume()
-        setMenuVisibility(menuVisible, animate = false)
+        setReaderMenuVisibility(menuVisible, animate = false)
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus)
-            setMenuVisibility(menuVisible, animate = false)
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+    override fun onDispatchKeyEvent(event: KeyEvent, dispatch: Boolean): Boolean {
         val handled = viewer.handleKeyEvent(event)
-        return handled || super.dispatchKeyEvent(event)
+        return handled || dispatch
     }
 
     private fun initMenu() {
         initStatusBars()
-        setMenuVisibility(menuVisible)
+        setReaderMenuVisibility(menuVisible)
 
         binding.btnPrevChapter.setOnClickListener {
-            chapterSelected?.prevChapterOrder?.let { index ->
-                listChapter?.find { index == it.sourceOrder }?.let { chapter ->
+            mangaDetailViewModel.selectedChapter?.prevChapterOrder?.let { index ->
+                mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }?.let { chapter ->
                     viewModel.getPages(chapter.url)
                     binding.tvChapterName.text = chapter.name
-                    chapterId = chapter.sourceOrder
-                    chapterSelected = chapter
+                    mangaDetailViewModel.selectedChapter = chapter
                 }
             }
             setNavButtonStatus()
         }
 
         binding.btnNextChapter.setOnClickListener {
-            chapterSelected?.nextChapterOrder?.let { index ->
-                listChapter?.find { index == it.sourceOrder }?.let { chapter ->
+            mangaDetailViewModel.selectedChapter?.nextChapterOrder?.let { index ->
+                mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }?.let { chapter ->
                     viewModel.getPages(chapter.url)
                     binding.tvChapterName.text = chapter.name
-                    chapterId = chapter.sourceOrder
-                    chapterSelected = chapter
+                    mangaDetailViewModel.selectedChapter = chapter
                 }
             }
             setNavButtonStatus()
@@ -140,32 +123,33 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 
-    private fun setMenuVisibility(visible: Boolean, animate: Boolean = true) {
+    private fun setReaderMenuVisibility(visible: Boolean, animate: Boolean = true) {
         menuVisible = visible
         if (visible) {
             binding.rlTopMenu.isVisible = true
 
             if (animate) {
-                val toolbarAnimation = AnimationUtils.loadAnimation(this, R.anim.enter_from_top)
-                toolbarAnimation.applySystemAnimatorScale(this)
+                val toolbarAnimation = AnimationUtils.loadAnimation(context, R.anim.enter_from_top)
+                toolbarAnimation.applySystemAnimatorScale(requireContext())
                 toolbarAnimation.setAnimationListener(
                     object : SimpleAnimationListener() {
                         override fun onAnimationStart(animation: Animation) {
                             // Fix status bar being translucent the first time it's opened.
-                            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                            requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                         }
                     },
                 )
                 binding.appBarHeader.startAnimation(toolbarAnimation)
 
-                val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.enter_from_bottom)
-                bottomAnimation.applySystemAnimatorScale(this)
+                val bottomAnimation =
+                    AnimationUtils.loadAnimation(context, R.anim.enter_from_bottom)
+                bottomAnimation.applySystemAnimatorScale(requireContext())
                 binding.clBottomMenu.startAnimation(bottomAnimation)
             }
         } else {
             if (animate) {
-                val toolbarAnimation = AnimationUtils.loadAnimation(this, R.anim.exit_to_top)
-                toolbarAnimation.applySystemAnimatorScale(this)
+                val toolbarAnimation = AnimationUtils.loadAnimation(context, R.anim.exit_to_top)
+                toolbarAnimation.applySystemAnimatorScale(requireContext())
                 toolbarAnimation.setAnimationListener(
                     object : SimpleAnimationListener() {
                         override fun onAnimationEnd(animation: Animation) {
@@ -175,27 +159,26 @@ class ReaderActivity : BaseActivity<ActivityReaderBinding, ReaderViewModel>() {
                 )
                 binding.appBarHeader.startAnimation(toolbarAnimation)
 
-                val bottomAnimation = AnimationUtils.loadAnimation(this, R.anim.exit_to_bottom)
-                bottomAnimation.applySystemAnimatorScale(this)
+                val bottomAnimation = AnimationUtils.loadAnimation(context, R.anim.exit_to_bottom)
+                bottomAnimation.applySystemAnimatorScale(requireContext())
                 binding.clBottomMenu.startAnimation(bottomAnimation)
             }
         }
     }
 
     fun toggleMenu() {
-        setMenuVisibility(!menuVisible)
+        setReaderMenuVisibility(!menuVisible)
     }
 
     fun showMenu() {
         if (!menuVisible) {
-            setMenuVisibility(true)
+            setReaderMenuVisibility(true)
         }
     }
 
     fun hideMenu() {
         if (menuVisible) {
-            setMenuVisibility(false)
+            setReaderMenuVisibility(false)
         }
     }
-
 }

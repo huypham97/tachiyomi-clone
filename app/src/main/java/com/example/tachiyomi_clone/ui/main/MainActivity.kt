@@ -16,52 +16,17 @@ class MainActivity :
 
     private var activeFragment: Fragment? = null
 
-    private val homeAdapter = HomeAdapter()
-
     override val modelClass: Class<MainViewModel> = MainViewModel::class.java
 
     override fun getLayoutResId(): Int = R.layout.activity_main
 
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
-//        this.binding.rvManga.apply {
-//            layoutManager = GridLayoutManager(context, 2)
-//            adapter = homeAdapter
-//            val drawable = ResourcesCompat.getDrawable(
-//                resources,
-//                com.example.tachiyomi_clone.R.drawable.divider,
-//                theme
-//            )
-//            addItemDecoration(
-//                DividerItemDecoration(
-//                    this@HomeActivity,
-//                    DividerItemDecoration.HORIZONTAL
-//                ).apply { setDrawable(drawable!!) })
-//            addItemDecoration(
-//                DividerItemDecoration(
-//                    this@HomeActivity,
-//                    DividerItemDecoration.VERTICAL
-//                ).apply { setDrawable(drawable!!) })
-//        }
-//
-//        val items = viewModel.listManga(HomeUseCase.QUERY_POPULAR)
-//        lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                items.collectLatest {
-//                    homeAdapter.submitData(it)
-//                }
-//            }
-//        }
         showHomeFragment()
     }
 
     override fun setEventListener() {
         super.setEventListener()
-//        homeAdapter.onSelectLoanClientListener = {
-//            val intent = Intent(this, MangaActivity::class.java)
-//            intent.putExtra(MangaActivity.MANGA_ID, it.id)
-//            startActivity(intent)
-//        }
         binding.bnvDashBoard.setOnItemSelectedListener {
             return@setOnItemSelectedListener when (it.itemId) {
                 R.id.nav_home -> {

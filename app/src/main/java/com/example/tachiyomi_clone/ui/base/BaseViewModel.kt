@@ -2,8 +2,10 @@ package com.example.tachiyomi_clone.ui.base
 
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.tachiyomi_clone.common.event.Event
 import java.io.Serializable
 
 abstract class BaseViewModel : ViewModel(), Observable, Serializable {
@@ -32,4 +34,11 @@ abstract class BaseViewModel : ViewModel(), Observable, Serializable {
         dataBindingCallback.notifyCallbacks(this, fieldId, null)
     }
 
+    private val _onBackPressedDispatcher = MutableLiveData<Event<Unit>>()
+    val onBackPressedDispatcher: LiveData<Event<Unit>>
+        get() = _onBackPressedDispatcher
+
+    fun onBackPressed() {
+        _onBackPressedDispatcher.value = Event(Unit)
+    }
 }

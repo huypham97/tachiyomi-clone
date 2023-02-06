@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tachiyomi_clone.ui.reader.ReaderActivity
+import com.example.tachiyomi_clone.ui.reader.ReaderFragment
 import com.example.tachiyomi_clone.utils.Constant
 
-class WebtoonViewer(val activity: ReaderActivity) {
+class WebtoonViewer(val fragment: ReaderFragment) {
 
-    val recycler = WebtoonRecyclerView(activity)
-    private val frame = WebtoonFrame(activity)
+    val recycler = WebtoonRecyclerView(fragment.requireContext())
+    private val frame = WebtoonFrame(fragment.requireContext())
     private val adapter = WebtoonAdapter(this)
 
     init {
@@ -26,18 +26,18 @@ class WebtoonViewer(val activity: ReaderActivity) {
         )
         recycler.isFocusable = false
         recycler.itemAnimator = null
-        recycler.layoutManager = LinearLayoutManager(activity)
+        recycler.layoutManager = LinearLayoutManager(fragment.context)
         recycler.adapter = adapter
         recycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if ((dy > Constant.SCROLL_THRESHOLD || dy < -Constant.SCROLL_THRESHOLD) && activity.menuVisible) {
-                    activity.hideMenu()
+                if ((dy > Constant.SCROLL_THRESHOLD || dy < -Constant.SCROLL_THRESHOLD) && fragment.menuVisible) {
+                    fragment.hideMenu()
                 }
                 super.onScrolled(recyclerView, dx, dy)
             }
         })
         recycler.tapListener = {
-            activity.toggleMenu()
+            fragment.toggleMenu()
         }
 
         frame.layoutParams = ViewGroup.LayoutParams(
@@ -48,9 +48,9 @@ class WebtoonViewer(val activity: ReaderActivity) {
     }
 
     private fun setEventListeners() {
-        activity.viewModel.isLoading.observe(activity) {
+        fragment.viewModel.isLoading.observe(fragment) {
             if (!it) {
-                adapter.updateItems(activity.viewModel.pageList)
+                adapter.updateItems(fragment.viewModel.pageList)
             }
         }
     }
@@ -63,7 +63,7 @@ class WebtoonViewer(val activity: ReaderActivity) {
         val isUp = event.action == KeyEvent.ACTION_UP
 
         when (event.keyCode) {
-            KeyEvent.KEYCODE_MENU -> if (isUp) activity.toggleMenu()
+            KeyEvent.KEYCODE_MENU -> if (isUp) fragment.toggleMenu()
             else -> return false
         }
         return true

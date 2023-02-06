@@ -7,6 +7,7 @@ import com.example.tachiyomi_clone.di.ViewModelKey
 import com.example.tachiyomi_clone.ui.main.MainViewModel
 import com.example.tachiyomi_clone.ui.main.home.HomeViewModel
 import com.example.tachiyomi_clone.ui.manga.MangaViewModel
+import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailViewModel
 import com.example.tachiyomi_clone.ui.reader.ReaderViewModel
 import dagger.Binds
 import dagger.Module
@@ -38,4 +39,9 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelKey(HomeViewModel::class)
     abstract fun bindHomeViewModel(viewModel: HomeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MangaDetailViewModel::class)
+    abstract fun bindMangaDetailViewModel(viewModel: MangaDetailViewModel): ViewModel
 }

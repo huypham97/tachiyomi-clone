@@ -9,7 +9,7 @@ class WebtoonAdapter(val viewer: WebtoonViewer) : RecyclerView.Adapter<WebtoonPa
     var items: MutableList<Any> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WebtoonPageHolder {
-        val view = ReaderPageImageView(viewer.activity)
+        val view = ReaderPageImageView(viewer.fragment.requireContext())
         return WebtoonPageHolder(view, viewer)
     }
 

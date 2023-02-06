@@ -6,12 +6,12 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tachiyomi_clone.R
-import com.example.tachiyomi_clone.databinding.FragmentHomeBinding
-import com.example.tachiyomi_clone.ui.base.BaseFragment
 import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
+import com.example.tachiyomi_clone.databinding.FragmentHomeBinding
+import com.example.tachiyomi_clone.ui.base.BaseGeneralFragment
 import com.example.tachiyomi_clone.ui.manga.MangaActivity
 
-class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
+class HomeFragment : BaseGeneralFragment<FragmentHomeBinding, HomeViewModel>(HomeViewModel::class) {
 
     companion object {
         const val TAG = "HomeFragment"
@@ -22,9 +22,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private lateinit var bannerAdapter: BannerAdapter
     private lateinit var moduleMangaAdapter: ModuleMangaAdapter
-
-    override val modelClass: Class<HomeViewModel>
-        get() = HomeViewModel::class.java
 
     override fun getLayoutResId(): Int = R.layout.fragment_home
 

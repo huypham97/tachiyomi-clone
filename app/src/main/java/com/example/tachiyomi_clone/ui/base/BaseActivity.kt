@@ -1,10 +1,10 @@
 package com.example.tachiyomi_clone.ui.base
 
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.view.Gravity
+import android.view.KeyEvent
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -13,6 +13,7 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.tachiyomi_clone.R
+import com.example.tachiyomi_clone.ui.reader.ReaderFragment
 import com.example.tachiyomi_clone.utils.inTransaction
 import com.example.tachiyomi_clone.utils.system.ScreenUtils
 import dagger.android.AndroidInjection
@@ -54,14 +55,11 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
     protected open fun setBindingContentView(@LayoutRes layoutId: Int) {
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this
-//        binding.setVariable(BR._all, viewModel)
     }
 
     protected open fun initViews(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
-            window.navigationBarColor = ContextCompat.getColor(this, R.color.color_1C1C1E)
-        }
+        window.statusBarColor = ContextCompat.getColor(this, android.R.color.transparent)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.color_1C1C1E)
     }
 
     protected open fun setEventListener() {}
@@ -120,6 +118,16 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
         } else {
             supportFragmentManager.popBackStack()
         }
+    }
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        supportFragmentManager.fragments.forEach {
+            if (it is ReaderFragment) return it.onDispatchKeyEvent(
+                event,
+                super.dispatchKeyEvent(event)
+            )
+        }
+        return super.dispatchKeyEvent(event)
     }
 
 }

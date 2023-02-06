@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_manga">
+
+    <fragment
+        android:id="@+id/navigation_manga"
+        android:name="com.example.tachiyomi_clone.ui.manga.detail.MangaDetailFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_manga_detail">
+
+        <action
+            android:id="@+id/action_manga_to_reader"
+            app:destination="@+id/navigation_reader"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/nav_exit_anim"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_reader"
+        android:name="com.example.tachiyomi_clone.ui.reader.ReaderFragment"
+        tools:layout="@layout/fragment_reader" />
+
+</navigation>
