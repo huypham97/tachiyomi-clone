@@ -20,6 +20,7 @@ import com.example.tachiyomi_clone.ui.base.BaseNavFragment
 import com.example.tachiyomi_clone.ui.manga.ChapterAdapter
 import com.example.tachiyomi_clone.ui.manga.MangaActivity.Companion.MANGA_ITEM
 import com.example.tachiyomi_clone.ui.manga.MangaGenreAdapter
+import com.example.tachiyomi_clone.ui.reader.ReaderFragment
 import com.example.tachiyomi_clone.utils.loadByHtml
 import com.example.tachiyomi_clone.utils.setColor
 import com.example.tachiyomi_clone.utils.system.ScreenUtils
@@ -53,7 +54,7 @@ class MangaDetailFragment :
 
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
-        extractData()
+        initData()
         mangaSelected?.let {
             binding.tbHeader.title = it.title
             binding.tvMangaTitle.text = it.title
@@ -105,7 +106,7 @@ class MangaDetailFragment :
         }
     }
 
-    private fun extractData() {
+    private fun initData() {
         mangaSelected = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getSerializable(MANGA_ITEM, MangaEntity::class.java)
         } else {
@@ -121,13 +122,13 @@ class MangaDetailFragment :
 
         binding.tvReadFirst.setOnClickListener {
             viewModel.chapters.value?.let {
-                viewModel.selectedChapter = it[it.size - 1]
+                navigateReaderActivity(it[it.size - 1])
             }
         }
 
         binding.tvReadLast.setOnClickListener {
             viewModel.chapters.value?.let {
-                viewModel.selectedChapter = it[0]
+                navigateReaderActivity(it[0])
             }
         }
 
@@ -170,8 +171,7 @@ class MangaDetailFragment :
         }
 
         chapterAdapter.onSelectChapterListener = {
-            viewModel.selectedChapter = it
-            navController.navigate(R.id.action_manga_to_reader)
+            navigateReaderActivity(it)
         }
 
         binding.ivChapterSort.setOnClickListener {
@@ -208,5 +208,12 @@ class MangaDetailFragment :
         if (count == list.size) return
         count += if (list.size - count > LOAD_MORE_PEAK) LOAD_MORE_PEAK else list.size - count
         chapterAdapter.refreshList(list.take(count))
+    }
+
+    private fun navigateReaderActivity(chapter: ChapterEntity) {
+        viewModel.selectedChapter = chapter
+        val bundle = Bundle()
+        bundle.putSerializable(ReaderFragment.MANGA_VALUE, mangaSelected)
+        navController.navigate(R.id.action_manga_to_reader, bundle)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.ui.reader
 
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
@@ -12,6 +13,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.navGraphViewModels
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.listener.SimpleAnimationListener
+import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.FragmentReaderBinding
 import com.example.tachiyomi_clone.ui.base.BaseNavFragment
 import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailViewModel
@@ -23,6 +25,8 @@ class ReaderFragment :
     companion object {
         @JvmStatic
         fun newInstance() = ReaderFragment()
+
+        const val MANGA_VALUE = "MANGA_VALUE"
     }
 
     private lateinit var viewer: WebtoonViewer
@@ -38,14 +42,17 @@ class ReaderFragment :
         navGraphId = R.id.nav_graph,
         factoryProducer = { viewModelFactory })
 
+    private var mangaSelected: MangaEntity? = null
+
     override fun getLayoutResId(): Int = R.layout.fragment_reader
 
     override fun getLifeCycleOwner(): LifecycleOwner = this
 
     override fun initViews(savedInstanceState: Bundle?) {
-        super.initViews(savedInstanceState)
+        initData()
+
         viewer = WebtoonViewer(this)
-        binding.tbHeader.title = mangaDetailViewModel.manga.value?.title
+        binding.tbHeader.title = mangaSelected?.title
         binding.tvChapterName.text = mangaDetailViewModel.selectedChapter?.name
         viewModel.getPages(mangaDetailViewModel.selectedChapter?.url ?: "")
         binding.flPage.addView(viewer.getView())
@@ -54,6 +61,14 @@ class ReaderFragment :
         setNavButtonStatus()
 
         initMenu()
+    }
+
+    private fun initData() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            mangaSelected = arguments?.getSerializable(MANGA_VALUE, MangaEntity::class.java)
+        } else {
+            mangaSelected = arguments?.getSerializable(MANGA_VALUE) as MangaEntity
+        }
     }
 
     private fun setNavButtonStatus() {
@@ -96,22 +111,24 @@ class ReaderFragment :
 
         binding.btnPrevChapter.setOnClickListener {
             mangaDetailViewModel.selectedChapter?.prevChapterOrder?.let { index ->
-                mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }?.let { chapter ->
-                    viewModel.getPages(chapter.url)
-                    binding.tvChapterName.text = chapter.name
-                    mangaDetailViewModel.selectedChapter = chapter
-                }
+                mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }
+                    ?.let { chapter ->
+                        viewModel.getPages(chapter.url)
+                        binding.tvChapterName.text = chapter.name
+                        mangaDetailViewModel.selectedChapter = chapter
+                    }
             }
             setNavButtonStatus()
         }
 
         binding.btnNextChapter.setOnClickListener {
             mangaDetailViewModel.selectedChapter?.nextChapterOrder?.let { index ->
-                mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }?.let { chapter ->
-                    viewModel.getPages(chapter.url)
-                    binding.tvChapterName.text = chapter.name
-                    mangaDetailViewModel.selectedChapter = chapter
-                }
+                mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }
+                    ?.let { chapter ->
+                        viewModel.getPages(chapter.url)
+                        binding.tvChapterName.text = chapter.name
+                        mangaDetailViewModel.selectedChapter = chapter
+                    }
             }
             setNavButtonStatus()
         }
