@@ -349,7 +349,6 @@
                         android:id="@+id/rv_chapter"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="@dimen/et_dimen_16"
                         android:layout_marginTop="@dimen/et_dimen_20"
                         android:layout_marginBottom="@dimen/et_dimen_16"
                         android:nestedScrollingEnabled="false"

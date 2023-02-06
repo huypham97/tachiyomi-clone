@@ -5,6 +5,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/et_dimen_16"
         android:background="@drawable/bg_ripple_click"
         android:paddingVertical="@dimen/et_dimen_12">
 

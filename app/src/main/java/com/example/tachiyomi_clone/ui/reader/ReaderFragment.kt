@@ -13,6 +13,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.navGraphViewModels
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.listener.SimpleAnimationListener
+import com.example.tachiyomi_clone.ui.common.ListIndexBottomSheetDialog
+import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.FragmentReaderBinding
 import com.example.tachiyomi_clone.ui.base.BaseNavFragment
@@ -93,6 +95,19 @@ class ReaderFragment :
         viewModel.isLoading.observe(this) {
             binding.pbLoading.isVisible = it
         }
+
+        binding.llOptionIndex.setOnClickListener {
+            mangaDetailViewModel.chapters.value?.let {
+                ListIndexBottomSheetDialog.show(
+                    childFragmentManager,
+                    it
+                ) { chapter ->
+                    loadChapter(chapter)
+                    setNavButtonStatus()
+                }
+                hideMenu()
+            }
+        }
     }
 
     override fun onResume() {
@@ -113,9 +128,7 @@ class ReaderFragment :
             mangaDetailViewModel.selectedChapter?.prevChapterOrder?.let { index ->
                 mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }
                     ?.let { chapter ->
-                        viewModel.getPages(chapter.url)
-                        binding.tvChapterName.text = chapter.name
-                        mangaDetailViewModel.selectedChapter = chapter
+                        loadChapter(chapter)
                     }
             }
             setNavButtonStatus()
@@ -125,13 +138,17 @@ class ReaderFragment :
             mangaDetailViewModel.selectedChapter?.nextChapterOrder?.let { index ->
                 mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }
                     ?.let { chapter ->
-                        viewModel.getPages(chapter.url)
-                        binding.tvChapterName.text = chapter.name
-                        mangaDetailViewModel.selectedChapter = chapter
+                        loadChapter(chapter)
                     }
             }
             setNavButtonStatus()
         }
+    }
+
+    private fun loadChapter(chapter: ChapterEntity) {
+        viewModel.getPages(chapter.url)
+        binding.tvChapterName.text = chapter.name
+        mangaDetailViewModel.selectedChapter = chapter
     }
 
     private fun initStatusBars() {

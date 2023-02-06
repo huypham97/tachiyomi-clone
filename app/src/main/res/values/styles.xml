@@ -28,4 +28,9 @@
         <attr name="etv_max_line" format="integer" />
         <attr name="etv_background_resource" format="reference|color" />
     </declare-styleable>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_slide_up</item>
+        <item name="android:windowExitAnimation">@anim/anim_slide_down</item>
+    </style>
 </resources>

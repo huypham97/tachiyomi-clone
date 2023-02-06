@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_bg_1c1c1e_corner_top_16">
+
+        <View
+            android:id="@+id/v_divider"
+            android:layout_width="@dimen/et_dimen_30"
+            android:layout_height="@dimen/et_dimen_4"
+            android:layout_marginTop="@dimen/et_dimen_4"
+            android:background="@drawable/shape_bg_333333_corner_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_chapters_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/et_dimen_16"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/color_F1F1F1"
+            android:textSize="@dimen/et_text_size_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_sort"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sort"
+            tools:text="300 chapters" />
+
+        <ImageView
+            android:id="@+id/iv_chapter_sort"
+            android:layout_width="@dimen/et_dimen_24"
+            android:layout_height="@dimen/et_dimen_24"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_sort"
+            app:layout_constraintBottom_toBottomOf="@id/btn_sort"
+            app:layout_constraintEnd_toEndOf="@+id/btn_sort"
+            app:layout_constraintStart_toStartOf="@+id/btn_sort"
+            app:layout_constraintTop_toTopOf="@id/btn_sort" />
+
+        <TextView
+            android:id="@+id/tv_chapter_sort_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/et_dimen_6"
+            android:fontFamily="@font/roboto_regular"
+            android:text="@string/newest"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/et_text_size_14"
+            app:layout_constraintBottom_toBottomOf="@id/iv_chapter_sort"
+            app:layout_constraintRight_toLeftOf="@id/iv_chapter_sort"
+            app:layout_constraintTop_toTopOf="@id/iv_chapter_sort" />
+
+        <Button
+            android:id="@+id/btn_sort"
+            android:layout_width="@dimen/et_dimen_56"
+            android:layout_height="@dimen/et_dimen_56"
+            android:background="@android:color/transparent"
+            android:foreground="?attr/actionBarItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chapter"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/et_dimen_16"
+            android:nestedScrollingEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_default="wrap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_sort" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.FrameLayout
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleOwner
@@ -47,6 +49,13 @@ class MangaDetailFragment :
     private var isLoadingMore = false
     private var isShow = true
     private var scrollRange = -1
+
+    private val windowInsetsController by lazy {
+        WindowInsetsControllerCompat(
+            requireActivity().window,
+            binding.root
+        )
+    }
 
     override fun getLayoutResId(): Int = R.layout.fragment_manga_detail
 
@@ -93,6 +102,9 @@ class MangaDetailFragment :
                 isShow = false
             }
         }
+
+        binding.tvChapterSortTitle.text =
+            resources.getText(if (viewModel.ascendingSort) R.string.newest else R.string.oldest)
 
         ScreenUtils.getStatusBarHeight(requireContext()).let {
             binding.tbHeader.apply {
@@ -215,5 +227,16 @@ class MangaDetailFragment :
         val bundle = Bundle()
         bundle.putSerializable(ReaderFragment.MANGA_VALUE, mangaSelected)
         navController.navigate(R.id.action_manga_to_reader, bundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initStatusBars()
+    }
+
+    private fun initStatusBars() {
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 }
