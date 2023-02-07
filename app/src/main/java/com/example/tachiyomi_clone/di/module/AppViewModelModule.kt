@@ -6,6 +6,7 @@ import com.example.tachiyomi_clone.di.ViewModelFactory
 import com.example.tachiyomi_clone.di.ViewModelKey
 import com.example.tachiyomi_clone.ui.main.MainViewModel
 import com.example.tachiyomi_clone.ui.main.home.HomeViewModel
+import com.example.tachiyomi_clone.ui.main.search.SearchViewModel
 import com.example.tachiyomi_clone.ui.manga.MangaViewModel
 import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailViewModel
 import com.example.tachiyomi_clone.ui.page.MangaPageViewModel
@@ -56,4 +57,9 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelKey(MangaPageDetailViewModel::class)
     abstract fun bindMangaPageDetailViewModel(viewModel: MangaPageDetailViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    abstract fun bindSearchViewModel(viewModel: SearchViewModel): ViewModel
 }

@@ -33,4 +33,11 @@
         <item name="android:windowEnterAnimation">@anim/anim_slide_up</item>
         <item name="android:windowExitAnimation">@anim/anim_slide_down</item>
     </style>
+
+    <style name="EditTextHintStyle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/color_999999</item>
+        <item name="android:textSize">@dimen/et_text_size_14</item>
+        <item name="fontFamily">@font/roboto_regular</item>
+    </style>
+
 </resources>
