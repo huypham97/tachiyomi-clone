@@ -13,17 +13,20 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.navGraphViewModels
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.listener.SimpleAnimationListener
-import com.example.tachiyomi_clone.ui.common.ListIndexBottomSheetDialog
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.FragmentReaderBinding
 import com.example.tachiyomi_clone.ui.base.BaseNavFragment
+import com.example.tachiyomi_clone.ui.common.ListIndexBottomSheetDialog
 import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailViewModel
 import com.example.tachiyomi_clone.ui.reader.webtoon.WebtoonViewer
 import com.example.tachiyomi_clone.utils.system.applySystemAnimatorScale
 
 class ReaderFragment :
-    BaseNavFragment<FragmentReaderBinding, ReaderViewModel>(ReaderViewModel::class) {
+    BaseNavFragment<FragmentReaderBinding, ReaderViewModel>(
+        ReaderViewModel::class,
+        R.id.nav_graph_manga
+    ) {
     companion object {
         @JvmStatic
         fun newInstance() = ReaderFragment()
@@ -41,7 +44,7 @@ class ReaderFragment :
         )
     }
     private val mangaDetailViewModel by navGraphViewModels<MangaDetailViewModel>(
-        navGraphId = R.id.nav_graph,
+        navGraphId = R.id.nav_graph_manga,
         factoryProducer = { viewModelFactory })
 
     private var mangaSelected: MangaEntity? = null

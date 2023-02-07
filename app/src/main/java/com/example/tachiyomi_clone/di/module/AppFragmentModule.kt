@@ -2,6 +2,7 @@ package com.example.tachiyomi_clone.di.module
 
 import com.example.tachiyomi_clone.ui.main.home.HomeFragment
 import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailFragment
+import com.example.tachiyomi_clone.ui.page.detail.MangaPageDetailFragment
 import com.example.tachiyomi_clone.ui.reader.ReaderFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -18,5 +19,8 @@ internal abstract class AppFragmentModule {
 
     @ContributesAndroidInjector
     abstract fun bindReaderFragment(): ReaderFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindMangaPageDetailFragment(): MangaPageDetailFragment
 
 }

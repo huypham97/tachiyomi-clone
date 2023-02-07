@@ -32,7 +32,7 @@ import com.google.android.flexbox.JustifyContent
 import jp.wasabeef.glide.transformations.BlurTransformation
 
 class MangaDetailFragment :
-    BaseNavFragment<FragmentMangaDetailBinding, MangaDetailViewModel>(MangaDetailViewModel::class) {
+    BaseNavFragment<FragmentMangaDetailBinding, MangaDetailViewModel>(MangaDetailViewModel::class, R.id.nav_graph_manga) {
 
     companion object {
         @JvmStatic

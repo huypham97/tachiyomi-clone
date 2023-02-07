@@ -2,6 +2,7 @@ package com.example.tachiyomi_clone.provider
 
 import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.dto.MangasPageDto
+import com.example.tachiyomi_clone.data.model.entity.MODULE_TYPE
 import com.example.tachiyomi_clone.data.model.entity.MangaPagingSourceType
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
@@ -35,8 +36,46 @@ class HomeProvider @Inject constructor(
                     )
                 }
             }
-
         }
+
+    override fun fetchNewestMangaPage(): MangaPagingSourceType = object : HomePagingSource() {
+        override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
+            return homeService.newestMangaRequest(currentPage.toString()).let {
+                mangasPageMapper.toEntity(
+                    MangasPageDto.popularMangaParse(
+                        it.body() ?: "",
+                        it.raw()
+                    )
+                )
+            }
+        }
+    }
+
+    override fun fetchBoyMangaPage(): MangaPagingSourceType = object : HomePagingSource() {
+        override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
+            return homeService.boyMangaRequest(currentPage.toString()).let {
+                mangasPageMapper.toEntity(
+                    MangasPageDto.popularMangaParse(
+                        it.body() ?: "",
+                        it.raw()
+                    )
+                )
+            }
+        }
+    }
+
+    override fun fetchGirlMangaPage(): MangaPagingSourceType = object : HomePagingSource() {
+        override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
+            return homeService.girlMangaRequest(currentPage.toString()).let {
+                mangasPageMapper.toEntity(
+                    MangasPageDto.popularMangaParse(
+                        it.body() ?: "",
+                        it.raw()
+                    )
+                )
+            }
+        }
+    }
 
     override suspend fun fetchSuggestManga(): Flow<Result<MangasPageEntity>> {
         return flow {
@@ -74,6 +113,7 @@ class HomeProvider @Inject constructor(
                         )
                     ).apply {
                         title = "Truyện mới cập nhật"
+                        type = MODULE_TYPE.NEWEST
                     }
                 )
                 is Result.Error -> Result.Error(result.exception)
@@ -97,6 +137,7 @@ class HomeProvider @Inject constructor(
                         )
                     ).apply {
                         title = "Truyện phổ biến"
+                        type = MODULE_TYPE.POPULAR
                     }
                 )
                 is Result.Error -> Result.Error(result.exception)
@@ -120,6 +161,7 @@ class HomeProvider @Inject constructor(
                         )
                     ).apply {
                         title = "Truyện con gái"
+                        type = MODULE_TYPE.GIRL
                     }
                 )
                 is Result.Error -> Result.Error(result.exception)
@@ -143,6 +185,7 @@ class HomeProvider @Inject constructor(
                         )
                     ).apply {
                         title = "Truyện con trai"
+                        type = MODULE_TYPE.BOY
                     }
                 )
                 is Result.Error -> Result.Error(result.exception)

@@ -1,4 +1,4 @@
-package com.example.tachiyomi_clone.ui.main
+package com.example.tachiyomi_clone.ui.page.detail
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,9 +12,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
-import com.example.tachiyomi_clone.databinding.RowRvMangaThumbnailBinding
+import com.example.tachiyomi_clone.databinding.RowRvMangaPageBinding
 
-class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparator) {
+class MangaPageAdapter : PagingDataAdapter<MangaEntity, MangaPageViewHolder>(MangaPageComparator) {
 
     private lateinit var context: Context
 
@@ -25,31 +25,32 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
         context = recyclerView.context
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MangaPageViewHolder {
         val layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
-        val binding: RowRvMangaThumbnailBinding = DataBindingUtil.inflate(
-            layoutInflater, R.layout.row_rv_manga_thumbnail, parent, false
+        val binding: RowRvMangaPageBinding = DataBindingUtil.inflate(
+            layoutInflater, R.layout.row_rv_manga_page, parent, false
         )
-        return HomeViewHolder(binding)
+        return MangaPageViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MangaPageViewHolder, position: Int) {
         initViewHolder(holder, position, getItem(position))
         setEventListener(holder, position, getItem(position))
     }
 
-    private fun initViewHolder(holder: HomeViewHolder, position: Int, item: MangaEntity?) {
+    private fun initViewHolder(holder: MangaPageViewHolder, position: Int, item: MangaEntity?) {
         Glide.with(holder.itemView).asBitmap().apply(RequestOptions().apply {
             override(
                 holder.binding.ivMangaThumbnail.width,
                 holder.binding.ivMangaThumbnail.height
             )
         })
-            .load(getItem(position)?.thumbnailUrl)
+            .load(item?.thumbnailUrl)
             .into(holder.binding.ivMangaThumbnail)
+        holder.binding.tvMangaTitle.text = item?.title
     }
 
-    private fun setEventListener(holder: HomeViewHolder, position: Int, item: MangaEntity?) {
+    private fun setEventListener(holder: MangaPageViewHolder, position: Int, item: MangaEntity?) {
         holder.binding.root.setOnClickListener {
             if (item != null) {
                 onSelectLoanClientListener?.invoke(item)
@@ -57,7 +58,7 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
         }
     }
 
-    object HomeComparator : DiffUtil.ItemCallback<MangaEntity>() {
+    object MangaPageComparator : DiffUtil.ItemCallback<MangaEntity>() {
         override fun areItemsTheSame(oldItem: MangaEntity, newItem: MangaEntity): Boolean {
             return oldItem.url == newItem.url
         }
@@ -70,7 +71,7 @@ class HomeAdapter : PagingDataAdapter<MangaEntity, HomeViewHolder>(HomeComparato
     }
 }
 
-class HomeViewHolder(val binding: RowRvMangaThumbnailBinding) :
+class MangaPageViewHolder(val binding: RowRvMangaPageBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
 }

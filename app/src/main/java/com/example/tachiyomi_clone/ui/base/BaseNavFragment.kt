@@ -8,14 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.fragment.findNavController
-import com.example.tachiyomi_clone.R
 import kotlin.reflect.KClass
 
-abstract class BaseNavFragment<B : ViewDataBinding, VM : BaseViewModel>(viewModelClass: KClass<VM>) :
+abstract class BaseNavFragment<B : ViewDataBinding, VM : BaseViewModel>(
+    viewModelClass: KClass<VM>,
+    @IdRes navGraphId: Int
+) :
     BaseFragment<B, VM>() {
 
     override val viewModel: VM by viewModelNavGraph(
-        navGraphId = R.id.nav_graph,
+        navGraphId = navGraphId,
         clazz = viewModelClass,
         factoryProducer = { viewModelFactory })
 

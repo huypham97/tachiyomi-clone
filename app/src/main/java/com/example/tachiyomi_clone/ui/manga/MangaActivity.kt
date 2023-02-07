@@ -12,7 +12,6 @@ class MangaActivity : BaseActivity<ActivityMangaBinding, MangaViewModel>() {
 
     companion object {
         const val MANGA_ITEM = "MANGA_ITEM"
-        private const val LOAD_MORE_PEAK = 50
     }
 
     //    private var mangaId: Long = -1L

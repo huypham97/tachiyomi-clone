@@ -8,6 +8,12 @@ import kotlinx.coroutines.flow.Flow
 interface HomeRepository {
     fun fetchPopularMangaPage(): MangaPagingSourceType
 
+    fun fetchNewestMangaPage(): MangaPagingSourceType
+
+    fun fetchBoyMangaPage(): MangaPagingSourceType
+
+    fun fetchGirlMangaPage(): MangaPagingSourceType
+
     suspend fun fetchSuggestManga(): Flow<Result<MangasPageEntity>>
 
     suspend fun fetchNewestManga(): Flow<Result<MangasPageEntity>>

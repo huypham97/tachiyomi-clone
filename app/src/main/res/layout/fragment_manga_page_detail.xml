@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/et_dimen_120"
+            android:background="@drawable/bg_app_bar_cover" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:fitsSystemWindows="true"
+                app:expanded="true"
+                app:liftOnScroll="true"
+                app:statusBarForeground="@android:color/transparent">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:fitsSystemWindows="true"
+                    app:collapsedTitleGravity="center"
+                    app:contentScrim="@android:color/transparent"
+                    app:layout_scrollFlags="noScroll"
+                    app:statusBarScrim="@android:color/transparent"
+                    app:title="Hello"
+                    app:titleEnabled="false"
+                    app:toolbarId="@id/toolbar">
+
+                    <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        app:contentInsetStart="0dp"
+                        app:navigationIcon="@drawable/ic_back_white"
+                        app:titleCentered="true"
+                        app:titleTextColor="@color/color_F1F1F1"
+                        tools:title="GITBAO" />
+
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_body"
+                android:layout_marginTop="@dimen/et_dimen_12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_bg_1c1c1e_corner_top_16"
+                android:animateLayoutChanges="true"
+                android:focusable="true"
+                android:padding="@dimen/et_dimen_16"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_manga_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </FrameLayout>
+
+
+</layout>

@@ -4,11 +4,11 @@
     android:color="#b3b3b3"
     tools:ignore="MissingDefaultResource">
     <item>
-        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+        <shape>
             <solid android:color="@color/color_1C1C1E" />
             <corners
-                android:topLeftRadius="@dimen/et_dimen_16"
-                android:topRightRadius="@dimen/et_dimen_16" />
+                android:topLeftRadius="@dimen/et_corner_16"
+                android:topRightRadius="@dimen/et_corner_16" />
         </shape>
     </item>
 
@@ -16,8 +16,8 @@
         <shape>
             <solid android:color="?android:colorAccent" />
             <corners
-                android:topLeftRadius="@dimen/et_dimen_16"
-                android:topRightRadius="@dimen/et_dimen_16" />
+                android:topLeftRadius="@dimen/et_corner_16"
+                android:topRightRadius="@dimen/et_corner_16" />
         </shape>
     </item>
 </ripple>

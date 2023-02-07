@@ -34,6 +34,17 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_module_title"
             app:layout_constraintEnd_toEndOf="parent" />
 
+        <Button
+            android:id="@+id/btn_all"
+            android:layout_width="@dimen/et_dimen_50"
+            android:layout_height="@dimen/et_dimen_50"
+            app:layout_constraintEnd_toEndOf="@id/tv_all"
+            app:layout_constraintTop_toTopOf="@id/tv_all"
+            app:layout_constraintStart_toStartOf="@id/tv_all"
+            app:layout_constraintBottom_toBottomOf="@id/tv_all"
+            android:elevation="0dp"
+            android:background="@android:color/transparent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_manga"
             android:layout_width="match_parent"

@@ -1,6 +1,7 @@
 package com.example.tachiyomi_clone.usecase
 
 import com.example.tachiyomi_clone.data.model.Result
+import com.example.tachiyomi_clone.data.model.entity.MODULE_TYPE
 import com.example.tachiyomi_clone.data.model.entity.MangaPagingSourceType
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.data.repository.HomeRepository
@@ -10,8 +11,13 @@ import kotlinx.coroutines.flow.zip
 import javax.inject.Inject
 
 class HomeUseCase @Inject constructor(private val homeRepository: HomeRepository) {
-    fun getPopularMangaPage(): MangaPagingSourceType {
-        return homeRepository.fetchPopularMangaPage()
+    fun getMangaPage(query: MODULE_TYPE): MangaPagingSourceType {
+        return when (query) {
+            MODULE_TYPE.POPULAR -> homeRepository.fetchPopularMangaPage()
+            MODULE_TYPE.NEWEST -> homeRepository.fetchNewestMangaPage()
+            MODULE_TYPE.BOY -> homeRepository.fetchBoyMangaPage()
+            else -> homeRepository.fetchGirlMangaPage()
+        }
     }
 
     suspend fun getSuggestManga(): Flow<Result<MangasPageEntity>> {

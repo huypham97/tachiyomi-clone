@@ -12,6 +12,7 @@ import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 class ModuleMangaAdapter : BaseAdapter<RowRvContainerModuleBinding, MangasPageEntity>() {
 
     var onSelectItemListener: ((MangaEntity) -> Unit)? = null
+    var onSelectSeeAllListener: ((MangasPageEntity) -> Unit)? = null
 
     override fun getLayoutIdForViewType(viewType: Int): Int = R.layout.row_rv_container_module
 
@@ -43,8 +44,10 @@ class ModuleMangaAdapter : BaseAdapter<RowRvContainerModuleBinding, MangasPageEn
         position: Int,
         item: MangasPageEntity?
     ) {
-        holder.binding.tvAll.setOnClickListener {
-
+        holder.binding.btnAll.setOnClickListener {
+            if (item != null) {
+                onSelectSeeAllListener?.invoke(item)
+            }
         }
     }
 }
