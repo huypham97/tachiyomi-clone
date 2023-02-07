@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:icon="@drawable/union"
+        android:title="Trang chủ"/>
+    <item
+        android:icon="@drawable/icon_truyen_kieu_moi"
+        android:title="Truyện kiểu mới"/>
+    <item
+        android:icon="@drawable/icon_tu_sach"
+        android:title="Tủ sách"/>
+</menu>

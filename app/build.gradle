@@ -83,4 +83,7 @@ dependencies {
     implementation "androidx.sqlite:sqlite-ktx:2.3.0"
     implementation "androidx.sqlite:sqlite-framework:2.3.0"
     implementation 'com.github.requery:sqlite-android:3.39.2'
+
+    
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 }
