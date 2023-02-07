@@ -77,6 +77,23 @@ class HomeProvider @Inject constructor(
         }
     }
 
+    override fun fetchSearchMangaPage(keyword: String): MangaPagingSourceType =
+        object : HomePagingSource() {
+            override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
+                return homeService.searchMangaRequest(
+                    keyword = keyword,
+                    page = currentPage.toString()
+                ).let {
+                    mangasPageMapper.toEntity(
+                        MangasPageDto.popularMangaParse(
+                            it.body() ?: "",
+                            it.raw()
+                        )
+                    )
+                }
+            }
+        }
+
     override suspend fun fetchSuggestManga(): Flow<Result<MangasPageEntity>> {
         return flow {
             emit(safeApiCall {

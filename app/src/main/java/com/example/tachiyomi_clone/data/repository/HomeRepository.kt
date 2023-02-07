@@ -14,6 +14,8 @@ interface HomeRepository {
 
     fun fetchGirlMangaPage(): MangaPagingSourceType
 
+    fun fetchSearchMangaPage(keyword: String): MangaPagingSourceType
+
     suspend fun fetchSuggestManga(): Flow<Result<MangasPageEntity>>
 
     suspend fun fetchNewestManga(): Flow<Result<MangasPageEntity>>

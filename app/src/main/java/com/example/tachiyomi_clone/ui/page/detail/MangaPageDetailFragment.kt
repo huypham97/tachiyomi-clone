@@ -30,7 +30,7 @@ class MangaPageDetailFragment :
 
     private var moduleSelected: MangasPageEntity? = null
 
-    private val homeAdapter = MangaPageAdapter()
+    private val mangaPageAdapter = MangaPageAdapter()
 
     override fun getLayoutResId(): Int = R.layout.fragment_manga_page_detail
 
@@ -52,7 +52,7 @@ class MangaPageDetailFragment :
                     mSpace = context.resources.getDimension(R.dimen.et_dimen_20).toInt()
                 )
             )
-            adapter = homeAdapter
+            adapter = mangaPageAdapter
         }
 
         val items = moduleSelected?.type?.let { viewModel.fetchMangaPage(it) }
@@ -60,7 +60,7 @@ class MangaPageDetailFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 moduleSelected?.type?.let {
                     items?.collectLatest {
-                        homeAdapter.submitData(it)
+                        mangaPageAdapter.submitData(it)
                     }
                 }
             }
@@ -81,7 +81,7 @@ class MangaPageDetailFragment :
             onHandleBackPressed()
         }
 
-        homeAdapter.onSelectLoanClientListener = {
+        mangaPageAdapter.onSelectLoanClientListener = {
             val bundle = Bundle()
             bundle.putSerializable(MangaActivity.MANGA_ITEM, it)
             navController.navigate(R.id.action_manga_page_to_manga, bundle)

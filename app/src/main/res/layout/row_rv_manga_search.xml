@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_ripple_click">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.26" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_manga_thumbnail"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/et_dimen_88"
+            android:elevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="@dimen/et_corner_6"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toStartOf="@id/gl_26"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_manga_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tv_manga_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/et_dimen_16"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_regular"
+            android:maxLines="1"
+            android:textColor="@color/color_F1F1F1"
+            android:textSize="@dimen/et_text_size_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gl_26"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Tên truyện 2 dòng như sau bala bala Tên truyện 2 dòng như sau bala bala Tên truyện 2 dòng như sau bala bala Tên truyện 2 dòng như sau bala bala" />
+
+        <TextView
+            android:id="@+id/tv_manga_author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/et_dimen_16"
+            android:layout_marginTop="@dimen/et_dimen_8"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_regular"
+            android:maxLines="1"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/et_text_size_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gl_26"
+            app:layout_constraintTop_toBottomOf="@id/tv_manga_title"
+            tools:text="Tác giả: Tên Tác Giả" />
+
+        <TextView
+            android:id="@+id/tv_manga_genre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/et_dimen_16"
+            android:layout_marginTop="@dimen/et_dimen_8"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_regular"
+            android:maxLines="1"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/et_text_size_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/gl_26"
+            app:layout_constraintTop_toBottomOf="@id/tv_manga_author"
+            tools:text="Thể loại: Tên thể loại" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

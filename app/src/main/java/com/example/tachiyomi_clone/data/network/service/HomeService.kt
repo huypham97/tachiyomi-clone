@@ -38,4 +38,11 @@ interface HomeService {
     @Headers("Content-Type: text/html")
     @GET(".")
     suspend fun newestMangaRequest(@Query("page") page: String): Response<String>
+
+    @Headers("Content-Type: text/html")
+    @GET("tim-truyen")
+    suspend fun searchMangaRequest(
+        @Query("keyword") keyword: String,
+        @Query("page") page: String
+    ): Response<String>
 }
