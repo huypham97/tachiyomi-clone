@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.data.model.dto
 
+import android.net.Uri
 import com.example.tachiyomi_clone.utils.asJsoup
 import com.example.tachiyomi_clone.utils.doesInclude
 import com.example.tachiyomi_clone.utils.getUrlWithoutDomain
@@ -13,7 +14,7 @@ data class MangaDto(
     var artist: String? = null,
     var author: String? = null,
     var description: String? = null,
-    var genre: String? = null,
+    var genre: MutableList<Genre> = mutableListOf(),
     var status: Int? = null,
     var thumbnail_url: String? = null,
     var update_strategy: UpdateStrategy? = null,
@@ -47,7 +48,16 @@ data class MangaDto(
                 document.select("article#item-detail").let { info ->
                     author = info.select("li.author p.col-xs-8").text()
                     status = info.select("li.status p.col-xs-8").text().toStatus()
-                    genre = info.select("li.kind p.col-xs-8 a").joinToString { it.text() }
+//                    genre = info.select("li.kind p.col-xs-8 a").joinToString { it.text() }
+                    info.select("li.kind p.col-xs-8 a").map {
+                        val segments = Uri.parse(it.attr("href")).path?.split("/")
+                        genre.add(
+                            Genre(
+                                title = it.text(),
+                                pathUrl = segments?.get(segments.size - 1)
+                            )
+                        )
+                    }
                     description = info.select("div.detail-content p").text()
                     thumbnail_url =
                         info.select("div.col-image img").first()?.let { imageOrNull(it) }
@@ -58,10 +68,10 @@ data class MangaDto(
 
     var listGenre: List<String>? = null
 
-    fun getGenres(): List<String>? {
-        if (genre.isNullOrBlank()) return null
-        return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
-    }
+//    fun getGenres(): List<String>? {
+//        if (genre.isNullOrBlank()) return null
+//        return genre?.split(", ")?.map { it.trim() }?.filterNot { it.isBlank() }?.distinct()
+//    }
 
     fun setUrlWithoutDomain(url: String) {
         this.url = getUrlWithoutDomain(url)
@@ -78,6 +88,8 @@ data class MangaDto(
         }
     }
 }
+
+data class Genre(val title: String?, val pathUrl: String?): java.io.Serializable {}
 
 /**
  * Define the update strategy for a single [MangaDto].

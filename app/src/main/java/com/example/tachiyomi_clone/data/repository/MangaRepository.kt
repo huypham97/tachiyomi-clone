@@ -9,7 +9,7 @@ interface MangaRepository {
 
     suspend fun getMangaByUrl(url: String): MangaEntity?
 
-    suspend fun insert(mangaEntity: MangaEntity): Long?
+//    suspend fun insert(mangaEntity: MangaEntity): Long?
 
     suspend fun getMangaById(id: Long): MangaEntity
 

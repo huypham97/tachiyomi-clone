@@ -41,30 +41,30 @@ class MangaProvider @Inject constructor(
         }
     }
 
-    override suspend fun insert(manga: MangaEntity): Long? {
-        return handler.awaitOneOrNull(inTransaction = true) {
-            mangasQueries.insert(
-                url = manga.url,
-                artist = manga.artist,
-                author = manga.author,
-                description = manga.description,
-                genre = manga.genre,
-                title = manga.title,
-                status = manga.status,
-                thumbnailUrl = manga.thumbnailUrl,
-                favorite = manga.favorite,
-                lastUpdate = manga.lastUpdate,
-                nextUpdate = null,
-                initialized = manga.initialized,
-                viewerFlags = manga.viewerFlags,
-                chapterFlags = manga.chapterFlags,
-                coverLastModified = manga.coverLastModified,
-                dateAdded = manga.dateAdded,
-                updateStrategy = manga.updateStrategy,
-            )
-            mangasQueries.selectLastInsertedRowId()
-        }
-    }
+//    override suspend fun insert(manga: MangaEntity): Long? {
+//        return handler.awaitOneOrNull(inTransaction = true) {
+//            mangasQueries.insert(
+//                url = manga.url,
+//                artist = manga.artist,
+//                author = manga.author,
+//                description = manga.description,
+//                genre = manga.genre,
+//                title = manga.title,
+//                status = manga.status,
+//                thumbnailUrl = manga.thumbnailUrl,
+//                favorite = manga.favorite,
+//                lastUpdate = manga.lastUpdate,
+//                nextUpdate = null,
+//                initialized = manga.initialized,
+//                viewerFlags = manga.viewerFlags,
+//                chapterFlags = manga.chapterFlags,
+//                coverLastModified = manga.coverLastModified,
+//                dateAdded = manga.dateAdded,
+//                updateStrategy = manga.updateStrategy,
+//            )
+//            mangasQueries.selectLastInsertedRowId()
+//        }
+//    }
 
     override suspend fun getMangaById(id: Long): MangaEntity {
         return handler.awaitOne { mangasQueries.getMangaById(id, mangaMapper) }

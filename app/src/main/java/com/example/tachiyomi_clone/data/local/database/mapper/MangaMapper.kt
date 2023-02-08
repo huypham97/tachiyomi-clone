@@ -18,7 +18,7 @@ val mangaMapper: (Long, String, String?, String?, String?, List<String>?, String
             artist = artist,
             author = author,
             description = description,
-            genre = genre,
+            genre = mutableListOf(),
             status = status,
             thumbnailUrl = thumbnailUrl,
             updateStrategy = updateStrategy,

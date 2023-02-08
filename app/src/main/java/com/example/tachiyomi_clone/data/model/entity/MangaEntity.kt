@@ -2,6 +2,7 @@ package com.example.tachiyomi_clone.data.model.entity
 
 import androidx.annotation.StringRes
 import com.example.tachiyomi_clone.R
+import com.example.tachiyomi_clone.data.model.dto.Genre
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.dto.UpdateStrategy
 import java.io.Serializable
@@ -19,7 +20,7 @@ data class MangaEntity(
     val artist: String?,
     val author: String?,
     val description: String?,
-    val genre: List<String>?,
+    val genre: MutableList<Genre>,
     val status: Long,
     val thumbnailUrl: String?,
     val updateStrategy: UpdateStrategy,
@@ -40,7 +41,7 @@ data class MangaEntity(
             artist = null,
             author = null,
             description = null,
-            genre = null,
+            genre = mutableListOf(),
             status = 0L,
             thumbnailUrl = null,
             updateStrategy = UpdateStrategy.ALWAYS_UPDATE,
@@ -70,7 +71,7 @@ fun MangaDto.toDomain(): MangaEntity {
         artist = artist,
         author = author,
         description = description,
-        genre = getGenres(),
+        genre = genre,
         status = status?.toLong() ?: 0L,
         thumbnailUrl = thumbnail_url,
         updateStrategy = update_strategy ?: UpdateStrategy.ALWAYS_UPDATE,

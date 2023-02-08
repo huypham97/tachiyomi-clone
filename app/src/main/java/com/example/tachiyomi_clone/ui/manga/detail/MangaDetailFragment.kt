@@ -172,7 +172,7 @@ class MangaDetailFragment :
                 manga.author?.setColor(requireContext(), R.color.color_FFB340)
             }".loadByHtml()
             binding.etvMangaDescribe.setNoteContent(manga.description)
-            manga.genre?.let { genreAdapter.refreshList(it) }
+            genreAdapter.refreshList(manga.genre)
         }
 
         viewModel.chapters.observe(this) { chapters ->

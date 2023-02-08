@@ -9,6 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.widget.SpaceItemGridDecoration
+import com.example.tachiyomi_clone.data.model.dto.Genre
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.databinding.FragmentMangaPageDetailBinding
 import com.example.tachiyomi_clone.ui.base.BaseNavFragment
@@ -17,7 +18,6 @@ import com.example.tachiyomi_clone.ui.page.MangaPageActivity
 import com.example.tachiyomi_clone.ui.page.MangaPageActivity.Companion.MANGA_GENRE
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import toKhongDau
 
 class MangaPageDetailFragment :
     BaseNavFragment<FragmentMangaPageDetailBinding, MangaPageDetailViewModel>(
@@ -31,7 +31,7 @@ class MangaPageDetailFragment :
     }
 
     private var moduleSelected: MangasPageEntity? = null
-    private var genreQuery: String? = null
+    private var genreQuery: Genre? = null
 
     private val mangaPageAdapter = MangaPageAdapter()
 
@@ -43,7 +43,7 @@ class MangaPageDetailFragment :
         super.initViews(savedInstanceState)
         initData()
 
-        binding.toolbar.title = moduleSelected?.title ?: genreQuery
+        binding.toolbar.title = moduleSelected?.title ?: genreQuery?.title
         binding.toolbar.setNavigationOnClickListener {
             onHandleBackPressed()
         }
@@ -72,7 +72,7 @@ class MangaPageDetailFragment :
         }
 
         genreQuery?.let { genre ->
-            val items = viewModel.fetchGenreManga(toKhongDau(genre))
+            val items = viewModel.fetchGenreManga(genre.pathUrl ?: "")
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     items.collectLatest {
@@ -91,7 +91,11 @@ class MangaPageDetailFragment :
             arguments?.getSerializable(MangaPageActivity.MODULE_ITEM) as MangasPageEntity
         }
 
-        genreQuery = arguments?.getString(MANGA_GENRE)
+        genreQuery = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getSerializable(MANGA_GENRE, Genre::class.java)
+        } else {
+            arguments?.getSerializable(MANGA_GENRE) as Genre
+        }
     }
 
     override fun setEventListeners() {

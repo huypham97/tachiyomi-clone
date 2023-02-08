@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import com.example.tachiyomi_clone.R
+import com.example.tachiyomi_clone.data.model.dto.Genre
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.databinding.ActivityMangaPageBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
@@ -16,7 +17,7 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
     }
 
     private var module: MangasPageEntity? = null
-    private var genre: String? = null
+    private var genre: Genre? = null
 
     override val modelClass: Class<MangaPageViewModel>
         get() = MangaPageViewModel::class.java
@@ -35,7 +36,11 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
         } else {
             intent.getSerializableExtra(MODULE_ITEM) as MangasPageEntity
         }
-        genre = intent.getStringExtra(MANGA_GENRE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            genre = intent.getSerializableExtra(MANGA_GENRE, Genre::class.java)
+        } else {
+            genre = intent.getSerializableExtra(MANGA_GENRE) as Genre
+        }
     }
 
     private fun showMangaPageFragment() {
@@ -45,7 +50,7 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
                 bundle.putSerializable(MODULE_ITEM, data)
             }
             genre?.let { data ->
-                bundle.putString(MANGA_GENRE, data)
+                bundle.putSerializable(MANGA_GENRE, data)
             }
             val fragment = NavHostFragment.create(R.navigation.nav_graph_page, bundle)
             it.replace(
