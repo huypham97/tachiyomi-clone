@@ -12,9 +12,11 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
 
     companion object {
         const val MODULE_ITEM = "MODULE_ITEM"
+        const val MANGA_GENRE = "MANGA_GENRE"
     }
 
     private var module: MangasPageEntity? = null
+    private var genre: String? = null
 
     override val modelClass: Class<MangaPageViewModel>
         get() = MangaPageViewModel::class.java
@@ -33,12 +35,18 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
         } else {
             intent.getSerializableExtra(MODULE_ITEM) as MangasPageEntity
         }
+        genre = intent.getStringExtra(MANGA_GENRE)
     }
 
     private fun showMangaPageFragment() {
         supportFragmentManager.beginTransaction().let {
             val bundle = Bundle()
-            bundle.putSerializable(MODULE_ITEM, module)
+            module?.let { data ->
+                bundle.putSerializable(MODULE_ITEM, data)
+            }
+            genre?.let { data ->
+                bundle.putString(MANGA_GENRE, data)
+            }
             val fragment = NavHostFragment.create(R.navigation.nav_graph_page, bundle)
             it.replace(
                 binding.flContainer.id,

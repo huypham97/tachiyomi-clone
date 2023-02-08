@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.ui.main.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 import com.example.tachiyomi_clone.databinding.FragmentSearchBinding
 import com.example.tachiyomi_clone.ui.base.BaseGeneralFragment
+import com.example.tachiyomi_clone.ui.manga.MangaActivity
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -54,7 +56,7 @@ class SearchFragment :
                 .filter { query ->
                     if (query.isEmpty()) {
                         withContext(Dispatchers.Main) {
-                            searchAdapter.refresh()
+                            searchAdapter.submitData(PagingData.empty())
                         }
                         return@filter false
                     } else {
@@ -69,6 +71,12 @@ class SearchFragment :
                     binding.pbLoading.isVisible = false
                     searchAdapter.submitData(data)
                 }
+        }
+
+        searchAdapter.onSelectItemListener = {
+            val intent = Intent(context, MangaActivity::class.java)
+            intent.putExtra(MangaActivity.MANGA_ITEM, it)
+            startActivity(intent)
         }
     }
 

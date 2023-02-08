@@ -23,6 +23,9 @@ class HomeUseCase @Inject constructor(private val homeRepository: HomeRepository
     fun getSearchManga(query: String): MangaPagingSourceType =
         homeRepository.fetchSearchMangaPage(query)
 
+    fun getSearchByGenreManga(query: String): MangaPagingSourceType =
+        homeRepository.fetchSearchByGenreMangaPage(query)
+
     suspend fun getSuggestManga(): Flow<Result<MangasPageEntity>> {
         return homeRepository.fetchSuggestManga()
     }

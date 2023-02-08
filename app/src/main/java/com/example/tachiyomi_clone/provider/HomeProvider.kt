@@ -11,6 +11,7 @@ import com.example.tachiyomi_clone.data.network.service.HomeService
 import com.example.tachiyomi_clone.data.repository.HomeRepository
 import com.example.tachiyomi_clone.di.qualifier.DefaultDispatcher
 import com.example.tachiyomi_clone.paging.home.HomePagingSource
+import com.example.tachiyomi_clone.utils.Constant
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -82,6 +83,30 @@ class HomeProvider @Inject constructor(
             override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
                 return homeService.searchMangaRequest(
                     keyword = keyword,
+                    page = currentPage.toString()
+                ).let {
+                    mangasPageMapper.toEntity(
+                        MangasPageDto.popularMangaParse(
+                            it.body() ?: "",
+                            it.raw()
+                        )
+                    )
+                }
+            }
+        }
+
+    override fun fetchSearchByGenreMangaPage(keyword: String): MangaPagingSourceType =
+        object : HomePagingSource() {
+            override suspend fun requestNextPage(currentPage: Int): MangasPageEntity {
+                var query = keyword
+                for (genre in Constant.genreListUrl) {
+                    if (genre.contains(keyword)) {
+                        query = genre
+                        break
+                    }
+                }
+                return homeService.searchMangaByGenreRequest(
+                    genre = query,
                     page = currentPage.toString()
                 ).let {
                     mangasPageMapper.toEntity(

@@ -18,7 +18,7 @@ class SearchViewModel @Inject constructor(
     fun fetchSearchManga(query: String): Flow<PagingData<MangaEntity>> = Pager(
         PagingConfig(pageSize = 25),
     ) {
-        homeUseCase.getSearchManga(query)
+        homeUseCase.getSearchManga(query = query)
     }.flow.cachedIn(viewModelScope)
 
 }

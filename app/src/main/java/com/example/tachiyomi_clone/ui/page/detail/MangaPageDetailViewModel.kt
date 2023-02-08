@@ -22,4 +22,9 @@ class MangaPageDetailViewModel @Inject constructor(
         homeUseCase.getMangaPage(type)
     }.flow.cachedIn(viewModelScope)
 
+    fun fetchGenreManga(query: String): Flow<PagingData<MangaEntity>> = Pager(
+        PagingConfig(pageSize = 25),
+    ) {
+        homeUseCase.getSearchByGenreManga(query = query)
+    }.flow.cachedIn(viewModelScope)
 }

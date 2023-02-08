@@ -18,7 +18,7 @@ class MangaPageAdapter : PagingDataAdapter<MangaEntity, MangaPageViewHolder>(Man
 
     private lateinit var context: Context
 
-    var onSelectLoanClientListener: ((MangaEntity) -> Unit)? = null
+    var onSelectItemListener: ((MangaEntity) -> Unit)? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -53,7 +53,7 @@ class MangaPageAdapter : PagingDataAdapter<MangaEntity, MangaPageViewHolder>(Man
     private fun setEventListener(holder: MangaPageViewHolder, position: Int, item: MangaEntity?) {
         holder.binding.root.setOnClickListener {
             if (item != null) {
-                onSelectLoanClientListener?.invoke(item)
+                onSelectItemListener?.invoke(item)
             }
         }
     }

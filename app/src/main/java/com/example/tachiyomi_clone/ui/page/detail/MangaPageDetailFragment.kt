@@ -14,8 +14,10 @@ import com.example.tachiyomi_clone.databinding.FragmentMangaPageDetailBinding
 import com.example.tachiyomi_clone.ui.base.BaseNavFragment
 import com.example.tachiyomi_clone.ui.manga.MangaActivity
 import com.example.tachiyomi_clone.ui.page.MangaPageActivity
+import com.example.tachiyomi_clone.ui.page.MangaPageActivity.Companion.MANGA_GENRE
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import toKhongDau
 
 class MangaPageDetailFragment :
     BaseNavFragment<FragmentMangaPageDetailBinding, MangaPageDetailViewModel>(
@@ -29,6 +31,7 @@ class MangaPageDetailFragment :
     }
 
     private var moduleSelected: MangasPageEntity? = null
+    private var genreQuery: String? = null
 
     private val mangaPageAdapter = MangaPageAdapter()
 
@@ -40,7 +43,7 @@ class MangaPageDetailFragment :
         super.initViews(savedInstanceState)
         initData()
 
-        binding.toolbar.title = moduleSelected?.title
+        binding.toolbar.title = moduleSelected?.title ?: genreQuery
         binding.toolbar.setNavigationOnClickListener {
             onHandleBackPressed()
         }
@@ -55,16 +58,30 @@ class MangaPageDetailFragment :
             adapter = mangaPageAdapter
         }
 
-        val items = moduleSelected?.type?.let { viewModel.fetchMangaPage(it) }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                moduleSelected?.type?.let {
-                    items?.collectLatest {
+        moduleSelected?.let { module ->
+            val items = module.type?.let { viewModel.fetchMangaPage(it) }
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    module.type?.let {
+                        items?.collectLatest {
+                            mangaPageAdapter.submitData(it)
+                        }
+                    }
+                }
+            }
+        }
+
+        genreQuery?.let { genre ->
+            val items = viewModel.fetchGenreManga(toKhongDau(genre))
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    items.collectLatest {
                         mangaPageAdapter.submitData(it)
                     }
                 }
             }
         }
+
     }
 
     private fun initData() {
@@ -73,6 +90,8 @@ class MangaPageDetailFragment :
         } else {
             arguments?.getSerializable(MangaPageActivity.MODULE_ITEM) as MangasPageEntity
         }
+
+        genreQuery = arguments?.getString(MANGA_GENRE)
     }
 
     override fun setEventListeners() {
@@ -81,7 +100,7 @@ class MangaPageDetailFragment :
             onHandleBackPressed()
         }
 
-        mangaPageAdapter.onSelectLoanClientListener = {
+        mangaPageAdapter.onSelectItemListener = {
             val bundle = Bundle()
             bundle.putSerializable(MangaActivity.MANGA_ITEM, it)
             navController.navigate(R.id.action_manga_page_to_manga, bundle)

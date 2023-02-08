@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.ui.manga.detail
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -22,6 +23,7 @@ import com.example.tachiyomi_clone.ui.base.BaseNavFragment
 import com.example.tachiyomi_clone.ui.manga.ChapterAdapter
 import com.example.tachiyomi_clone.ui.manga.MangaActivity.Companion.MANGA_ITEM
 import com.example.tachiyomi_clone.ui.manga.MangaGenreAdapter
+import com.example.tachiyomi_clone.ui.page.MangaPageActivity
 import com.example.tachiyomi_clone.ui.reader.ReaderFragment
 import com.example.tachiyomi_clone.utils.loadByHtml
 import com.example.tachiyomi_clone.utils.setColor
@@ -191,6 +193,12 @@ class MangaDetailFragment :
             viewModel.sortChapterList()
             binding.tvChapterSortTitle.text =
                 resources.getText(if (viewModel.ascendingSort) R.string.newest else R.string.oldest)
+        }
+
+        genreAdapter.onSelectItemListener = {
+            val intent = Intent(context, MangaPageActivity::class.java)
+            intent.putExtra(MangaPageActivity.MANGA_GENRE, it)
+            startActivity(intent)
         }
 
         initScrollListener()

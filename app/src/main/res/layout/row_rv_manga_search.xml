@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_ripple_click">
+        android:foreground="?attr/selectableItemBackgroundBorderless">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/gl_26"

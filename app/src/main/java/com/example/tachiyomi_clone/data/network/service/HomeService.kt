@@ -45,4 +45,11 @@ interface HomeService {
         @Query("keyword") keyword: String,
         @Query("page") page: String
     ): Response<String>
+
+    @Headers("Content-Type: text/html")
+    @GET("tim-truyen/{genre}")
+    suspend fun searchMangaByGenreRequest(
+        @Path("genre") genre: String,
+        @Query("page") page: String
+    ): Response<String>
 }
