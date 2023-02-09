@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.tachiyomi_clone.di.ViewModelFactory
 import com.example.tachiyomi_clone.di.ViewModelKey
 import com.example.tachiyomi_clone.ui.main.MainViewModel
+import com.example.tachiyomi_clone.ui.main.favorite.FavoriteViewModel
 import com.example.tachiyomi_clone.ui.main.home.HomeViewModel
 import com.example.tachiyomi_clone.ui.main.search.SearchViewModel
 import com.example.tachiyomi_clone.ui.manga.MangaViewModel
@@ -62,4 +63,9 @@ abstract class AppViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     abstract fun bindSearchViewModel(viewModel: SearchViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteViewModel::class)
+    abstract fun bindFavoriteViewModel(viewModel: FavoriteViewModel): ViewModel
 }

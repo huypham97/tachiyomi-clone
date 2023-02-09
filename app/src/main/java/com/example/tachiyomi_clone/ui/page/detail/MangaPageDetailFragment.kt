@@ -9,7 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.widget.SpaceItemGridDecoration
-import com.example.tachiyomi_clone.data.model.dto.Genre
+import com.example.tachiyomi_clone.data.model.entity.GenreEntity
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.databinding.FragmentMangaPageDetailBinding
 import com.example.tachiyomi_clone.ui.base.BaseNavFragment
@@ -31,7 +31,7 @@ class MangaPageDetailFragment :
     }
 
     private var moduleSelected: MangasPageEntity? = null
-    private var genreQuery: Genre? = null
+    private var genreQuery: GenreEntity? = null
 
     private val mangaPageAdapter = MangaPageAdapter()
 
@@ -92,9 +92,9 @@ class MangaPageDetailFragment :
         }
 
         genreQuery = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arguments?.getSerializable(MANGA_GENRE, Genre::class.java)
+            arguments?.getSerializable(MANGA_GENRE, GenreEntity::class.java)
         } else {
-            arguments?.getSerializable(MANGA_GENRE) as Genre
+            arguments?.getSerializable(MANGA_GENRE) as GenreEntity
         }
     }
 

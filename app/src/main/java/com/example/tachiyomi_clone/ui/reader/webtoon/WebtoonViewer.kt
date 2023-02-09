@@ -33,6 +33,9 @@ class WebtoonViewer(val fragment: ReaderFragment) {
                 if ((dy > Constant.SCROLL_THRESHOLD || dy < -Constant.SCROLL_THRESHOLD) && fragment.menuVisible) {
                     fragment.hideMenu()
                 }
+                if (!recycler.canScrollVertically(1) && dy > 0) {
+                    fragment.showMenu()
+                }
                 super.onScrolled(recyclerView, dx, dy)
             }
         })

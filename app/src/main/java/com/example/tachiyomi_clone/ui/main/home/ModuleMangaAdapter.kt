@@ -2,12 +2,12 @@ package com.example.tachiyomi_clone.ui.main.home
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tachiyomi_clone.R
+import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.databinding.RowRvContainerModuleBinding
 import com.example.tachiyomi_clone.ui.base.BaseAdapter
 import com.example.tachiyomi_clone.ui.base.BaseViewHolder
-import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 
 class ModuleMangaAdapter : BaseAdapter<RowRvContainerModuleBinding, MangasPageEntity>() {
 
@@ -23,16 +23,7 @@ class ModuleMangaAdapter : BaseAdapter<RowRvContainerModuleBinding, MangasPageEn
     ) {
         val mangaThumbnailAdapter = MangaThumbnailAdapter()
         holder.binding.tvModuleTitle.text = item?.title
-        holder.binding.rvManga.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(
-                SpaceItemDecoration(
-                    mSpace = context.resources.getDimension(R.dimen.et_dimen_12).toInt(),
-                    mOrientation = LinearLayoutManager.HORIZONTAL
-                )
-            )
-            adapter = mangaThumbnailAdapter
-        }
+        holder.binding.rvManga.adapter = mangaThumbnailAdapter
         item?.mangas?.let { mangaThumbnailAdapter.refreshList(it) }
         mangaThumbnailAdapter.onSelectItemListener = {
             this.onSelectItemListener?.invoke(it)
@@ -48,6 +39,18 @@ class ModuleMangaAdapter : BaseAdapter<RowRvContainerModuleBinding, MangasPageEn
             if (item != null) {
                 onSelectSeeAllListener?.invoke(item)
             }
+        }
+    }
+
+    override fun initView(binding: RowRvContainerModuleBinding) {
+        binding.rvManga.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            addItemDecoration(
+                SpaceItemDecoration(
+                    mSpace = context.resources.getDimension(R.dimen.et_dimen_12).toInt(),
+                    mOrientation = LinearLayoutManager.HORIZONTAL
+                )
+            )
         }
     }
 }

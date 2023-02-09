@@ -29,8 +29,11 @@ abstract class BaseAdapter<B : ViewDataBinding, E> : RecyclerView.Adapter<BaseVi
             getLayoutIdForViewType(viewType),
             parent, false
         )
+        initView(binding)
         return BaseViewHolder(binding)
     }
+
+    open fun initView(binding: B) {}
 
     protected abstract fun getLayoutIdForViewType(viewType: Int): Int
 

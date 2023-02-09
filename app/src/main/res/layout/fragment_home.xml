@@ -18,7 +18,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srl_refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -26,66 +27,62 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_logo">
 
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/et_dimen_224"
-                    android:layout_marginTop="@dimen/et_dimen_12">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/vp_banner"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginTop="@dimen/et_dimen_12"
-                        android:orientation="horizontal" />
+                        android:layout_height="@dimen/et_dimen_224"
+                        android:layout_marginTop="@dimen/et_dimen_12">
 
-                    <com.example.tachiyomi_clone.common.widget.DotIndicator
-                        android:id="@+id/dot_indicator"
-                        android:layout_width="wrap_content"
+                        <androidx.viewpager2.widget.ViewPager2
+                            android:id="@+id/vp_banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginTop="@dimen/et_dimen_12"
+                            android:orientation="horizontal" />
+
+                        <com.example.tachiyomi_clone.common.widget.DotIndicator
+                            android:id="@+id/dot_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="@dimen/et_dimen_6"
+                            app:dotsColor="@color/color_FFB340"
+                            app:dotsCornerRadius="@dimen/et_corner_2"
+                            app:dotsSize="@dimen/et_dimen_4"
+                            app:dotsSpacing="@dimen/et_dimen_4" />
+
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_manga_module"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="@dimen/et_dimen_6"
-                        app:dotsColor="@color/color_FFB340"
-                        app:dotsCornerRadius="@dimen/et_corner_2"
-                        app:dotsSize="@dimen/et_dimen_4"
-                        app:dotsSpacing="@dimen/et_dimen_4" />
+                        android:layout_marginHorizontal="@dimen/et_dimen_12"
+                        android:layout_marginTop="@dimen/et_dimen_24"
+                        android:layout_marginBottom="@dimen/et_dimen_12"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/vp_banner" />
 
-                </RelativeLayout>
+                </LinearLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_manga_module"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/et_dimen_12"
-                    android:layout_marginTop="@dimen/et_dimen_24"
-                    android:layout_marginBottom="@dimen/et_dimen_12"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/vp_banner" />
+            </androidx.core.widget.NestedScrollView>
 
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-        <ProgressBar
-            android:id="@+id/pb_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,7 +2,6 @@ package com.example.tachiyomi_clone.ui.main.home
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tachiyomi_clone.R
@@ -57,7 +56,7 @@ class HomeFragment : BaseGeneralFragment<FragmentHomeBinding, HomeViewModel>(Hom
             moduleMangaAdapter.refreshList(it)
         }
         viewModel.isLoading.observe(this) {
-            binding.pbLoading.isVisible = it
+            binding.srlRefresh.isRefreshing = it
         }
         moduleMangaAdapter.onSelectItemListener = {
             val intent = Intent(context, MangaActivity::class.java)
@@ -68,6 +67,10 @@ class HomeFragment : BaseGeneralFragment<FragmentHomeBinding, HomeViewModel>(Hom
             val intent = Intent(context, MangaPageActivity::class.java)
             intent.putExtra(MangaPageActivity.MODULE_ITEM, it)
             startActivity(intent)
+        }
+        binding.srlRefresh.setOnRefreshListener {
+            viewModel.fetchSuggestManga()
+            viewModel.fetchListModuleManga()
         }
     }
 }

@@ -4,7 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.navigation.fragment.NavHostFragment
 import com.example.tachiyomi_clone.R
-import com.example.tachiyomi_clone.data.model.dto.Genre
+import com.example.tachiyomi_clone.data.model.entity.GenreEntity
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
 import com.example.tachiyomi_clone.databinding.ActivityMangaPageBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
@@ -17,7 +17,7 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
     }
 
     private var module: MangasPageEntity? = null
-    private var genre: Genre? = null
+    private var genre: GenreEntity? = null
 
     override val modelClass: Class<MangaPageViewModel>
         get() = MangaPageViewModel::class.java
@@ -37,9 +37,9 @@ class MangaPageActivity : BaseActivity<ActivityMangaPageBinding, MangaPageViewMo
             intent.getSerializableExtra(MODULE_ITEM) as MangasPageEntity
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            genre = intent.getSerializableExtra(MANGA_GENRE, Genre::class.java)
+            genre = intent.getSerializableExtra(MANGA_GENRE, GenreEntity::class.java)
         } else {
-            genre = intent.getSerializableExtra(MANGA_GENRE) as Genre
+            genre = intent.getSerializableExtra(MANGA_GENRE) as GenreEntity
         }
     }
 

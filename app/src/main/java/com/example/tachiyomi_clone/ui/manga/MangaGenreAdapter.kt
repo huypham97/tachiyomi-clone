@@ -1,14 +1,14 @@
 package com.example.tachiyomi_clone.ui.manga
 
 import com.example.tachiyomi_clone.R
-import com.example.tachiyomi_clone.data.model.dto.Genre
+import com.example.tachiyomi_clone.data.model.entity.GenreEntity
 import com.example.tachiyomi_clone.databinding.RowRvMangaGenreBinding
 import com.example.tachiyomi_clone.ui.base.BaseAdapter
 import com.example.tachiyomi_clone.ui.base.BaseViewHolder
 
-class MangaGenreAdapter : BaseAdapter<RowRvMangaGenreBinding, Genre>() {
+class MangaGenreAdapter : BaseAdapter<RowRvMangaGenreBinding, GenreEntity>() {
 
-    var onSelectItemListener: ((Genre) -> Unit)? = null
+    var onSelectItemListener: ((GenreEntity) -> Unit)? = null
 
     override fun getLayoutIdForViewType(viewType: Int): Int {
         return R.layout.row_rv_manga_genre
@@ -17,7 +17,7 @@ class MangaGenreAdapter : BaseAdapter<RowRvMangaGenreBinding, Genre>() {
     override fun initViewHolder(
         holder: BaseViewHolder<RowRvMangaGenreBinding>,
         position: Int,
-        item: Genre?
+        item: GenreEntity?
     ) {
         holder.binding.tvGenre.text = item?.title
     }
@@ -25,7 +25,7 @@ class MangaGenreAdapter : BaseAdapter<RowRvMangaGenreBinding, Genre>() {
     override fun setEventListener(
         holder: BaseViewHolder<RowRvMangaGenreBinding>,
         position: Int,
-        item: Genre?
+        item: GenreEntity?
     ) {
         super.setEventListener(holder, position, item)
         holder.binding.root.setOnClickListener {

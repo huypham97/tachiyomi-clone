@@ -33,4 +33,6 @@
     <string name="auto_read">Đọc tự động</string>
     <string name="light">Độ sáng</string>
     <string name="search_hint">Nhập từ khóa tìm kiếm</string>
+    <string name="favorite">Yêu thích</string>
+    <string name="edit">Chỉnh sửa</string>
 </resources>

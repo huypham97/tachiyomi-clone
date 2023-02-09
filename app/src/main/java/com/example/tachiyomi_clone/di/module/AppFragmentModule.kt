@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.di.module
 
+import com.example.tachiyomi_clone.ui.main.favorite.FavoriteFragment
 import com.example.tachiyomi_clone.ui.main.home.HomeFragment
 import com.example.tachiyomi_clone.ui.main.search.SearchFragment
 import com.example.tachiyomi_clone.ui.manga.detail.MangaDetailFragment
@@ -26,5 +27,8 @@ internal abstract class AppFragmentModule {
 
     @ContributesAndroidInjector
     abstract fun bindSearchFragment(): SearchFragment
+
+    @ContributesAndroidInjector
+    abstract fun bindFavoriteFragment(): FavoriteFragment
 
 }

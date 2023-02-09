@@ -14,7 +14,7 @@ data class MangaDto(
     var artist: String? = null,
     var author: String? = null,
     var description: String? = null,
-    var genre: MutableList<Genre> = mutableListOf(),
+    var genre: MutableList<GenreDto> = mutableListOf(),
     var status: Int? = null,
     var thumbnail_url: String? = null,
     var update_strategy: UpdateStrategy? = null,
@@ -52,7 +52,7 @@ data class MangaDto(
                     info.select("li.kind p.col-xs-8 a").map {
                         val segments = Uri.parse(it.attr("href")).path?.split("/")
                         genre.add(
-                            Genre(
+                            GenreDto(
                                 title = it.text(),
                                 pathUrl = segments?.get(segments.size - 1)
                             )
@@ -88,8 +88,6 @@ data class MangaDto(
         }
     }
 }
-
-data class Genre(val title: String?, val pathUrl: String?): java.io.Serializable {}
 
 /**
  * Define the update strategy for a single [MangaDto].

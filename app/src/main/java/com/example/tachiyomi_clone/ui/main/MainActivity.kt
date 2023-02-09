@@ -6,9 +6,9 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.ActivityMainBinding
 import com.example.tachiyomi_clone.ui.base.BaseActivity
+import com.example.tachiyomi_clone.ui.main.favorite.FavoriteFragment
 import com.example.tachiyomi_clone.ui.main.home.HomeFragment
 import com.example.tachiyomi_clone.ui.main.search.SearchFragment
-import com.example.tachiyomi_clone.ui.main.suggest.SuggestFragment
 
 
 class MainActivity :
@@ -33,8 +33,8 @@ class MainActivity :
                     showHomeFragment()
                     true
                 }
-                R.id.nav_suggest -> {
-                    showSuggestFragment()
+                R.id.nav_favorite -> {
+                    showFavoriteFragment()
                     true
                 }
                 R.id.nav_search -> {
@@ -67,17 +67,17 @@ class MainActivity :
         activeFragment = fragment
     }
 
-    private fun showSuggestFragment() {
-        if (activeFragment is SuggestFragment) return
+    private fun showFavoriteFragment() {
+        if (activeFragment is FavoriteFragment) return
 
         val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
 
         var fragment =
-            supportFragmentManager.findFragmentByTag(SuggestFragment.TAG) as SuggestFragment?
+            supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG) as FavoriteFragment?
 
         if (fragment == null) {
-            fragment = SuggestFragment.newInstance()
-            fragmentTransaction.add(binding.flContainer.id, fragment, SuggestFragment.TAG)
+            fragment = FavoriteFragment.newInstance()
+            fragmentTransaction.add(binding.flContainer.id, fragment, FavoriteFragment.TAG)
         } else {
             fragmentTransaction.show(fragment)
         }
