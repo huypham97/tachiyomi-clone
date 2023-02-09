@@ -51,6 +51,10 @@ abstract class BaseAdapter<B : ViewDataBinding, E> : RecyclerView.Adapter<BaseVi
             null
     }
 
+    fun getListItem(): MutableList<E> {
+        return items
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     fun refreshList(data: Collection<E>) {
         listObjects.clear()

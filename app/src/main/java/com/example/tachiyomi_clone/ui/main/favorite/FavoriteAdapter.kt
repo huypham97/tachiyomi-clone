@@ -12,6 +12,8 @@ import com.example.tachiyomi_clone.ui.base.BaseViewHolder
 class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
 
     private var isShowAllCheckBox = false
+    private var isAllCheckBoxSelected = false
+    var onCheckedDeleteBoxListener: ((Boolean) -> Unit)? = null
 
     override fun getLayoutIdForViewType(viewType: Int): Int = R.layout.row_rv_manga_favorite
 
@@ -32,10 +34,37 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
         holder.binding.tvMangaTitle.text = item?.title
         holder.binding.tvMangaAuthor.text = item?.author
         holder.binding.cbDelete.isVisible = isShowAllCheckBox
+        holder.binding.cbDelete.isChecked = isAllCheckBoxSelected
+    }
+
+    override fun setEventListener(
+        holder: BaseViewHolder<RowRvMangaFavoriteBinding>,
+        position: Int,
+        item: MangaEntity?
+    ) {
+        super.setEventListener(holder, position, item)
+        holder.binding.cbDelete.setOnCheckedChangeListener { _, isChecked ->
+            item?.favorite = isChecked
+            getListItem().forEach {
+                if (!it.favorite) {
+                    onCheckedDeleteBoxListener?.invoke(false)
+                    return@setOnCheckedChangeListener
+                }
+            }
+            onCheckedDeleteBoxListener?.invoke(true)
+        }
     }
 
     fun clickAllCheckBoxVisibility() {
         this.isShowAllCheckBox = !(this.isShowAllCheckBox)
+        notifyDataSetChanged()
+    }
+
+    fun setAllCheckBoxSelect(isCheck: Boolean) {
+        this.isAllCheckBoxSelected = isCheck
+        for (i in 0 until getListItem().size) {
+            getListItem()[i].favorite = this.isAllCheckBoxSelected
+        }
         notifyDataSetChanged()
     }
 }

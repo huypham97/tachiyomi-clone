@@ -60,6 +60,10 @@ class FavoriteFragment :
             adapter = favoriteAdapter
         }
         favoriteAdapter.refreshList(list)
+    }
+
+    override fun setEventListeners() {
+        super.setEventListeners()
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.app_bar_edit -> {
@@ -70,11 +74,26 @@ class FavoriteFragment :
             }
             return@setOnMenuItemClickListener true
         }
+
         binding.ivButtonClose.setOnClickListener {
             favoriteAdapter.clickAllCheckBoxVisibility()
             binding.rlToolbarDelete.isVisible = false
             binding.toolbar.isVisible = true
+            binding.cbDelete.isChecked = false
+            favoriteAdapter.setAllCheckBoxSelect(false)
         }
+
+        binding.cbDelete.setOnCheckedChangeListener { view, isChecked ->
+            binding.cbDelete.setOnClickListener {
+                favoriteAdapter.setAllCheckBoxSelect(isChecked)
+            }
+        }
+
+        favoriteAdapter.onCheckedDeleteBoxListener = {
+            binding.cbDelete.isChecked = it
+            binding.ivButtonDelete.setImageDrawable(context?.getDrawable(if (it) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected))
+        }
+
     }
 
 }

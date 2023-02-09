@@ -8,7 +8,7 @@ import java.io.Serializable
 
 data class MangaEntity(
     val id: Long,
-    val favorite: Boolean,
+    var favorite: Boolean,
     val lastUpdate: Long,
     val dateAdded: Long,
     val viewerFlags: Long,
