@@ -1,14 +1,20 @@
 package com.example.tachiyomi_clone.ui.main.favorite
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
-import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.databinding.FragmentFavoriteBinding
 import com.example.tachiyomi_clone.ui.base.BaseGeneralFragment
+import com.example.tachiyomi_clone.ui.common.ConfirmDialog
+import com.example.tachiyomi_clone.utils.Constant
 
 class FavoriteFragment :
     BaseGeneralFragment<FragmentFavoriteBinding, FavoriteViewModel>(FavoriteViewModel::class) {
@@ -21,33 +27,25 @@ class FavoriteFragment :
     }
 
     private val favoriteAdapter = FavoriteAdapter()
-    private val list = listOf(
-        MangaEntity.create().copy(
-            thumbnailUrl = "https://gamek.mediacdn.vn/133514250583805952/2021/6/17/ma1-16239080157491600788916.png",
-            title = "Blue Lock",
-            author = "Yamazaki"
-        ),
-        MangaEntity.create().copy(
-            thumbnailUrl = "https://gamek.mediacdn.vn/133514250583805952/2021/6/17/ma1-16239080157491600788916.png",
-            title = "Blue Lock",
-            author = "Yamazaki"
-        ),
-        MangaEntity.create().copy(
-            thumbnailUrl = "https://gamek.mediacdn.vn/133514250583805952/2021/6/17/ma1-16239080157491600788916.png",
-            title = "Blue Lock",
-            author = "Yamazaki"
-        ),
-        MangaEntity.create().copy(
-            thumbnailUrl = "https://gamek.mediacdn.vn/133514250583805952/2021/6/17/ma1-16239080157491600788916.png",
-            title = "Blue Lock",
-            author = "Yamazaki"
-        ),
-    )
+    private val mRefreshReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            viewModel.fetchFavoriteMangasFromLocal()
+        }
+
+    }
 
     override fun getLayoutResId(): Int = R.layout.fragment_favorite
 
     override fun getLifeCycleOwner(): LifecycleOwner = this
 
+    override fun onResume() {
+        super.onResume()
+        LocalBroadcastManager.getInstance(requireActivity())
+            .registerReceiver(
+                mRefreshReceiver,
+                IntentFilter(Constant.RECEIVER_ID)
+            )
+    }
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
         binding.rvMangaPage.apply {
@@ -59,7 +57,13 @@ class FavoriteFragment :
             )
             adapter = favoriteAdapter
         }
-        favoriteAdapter.refreshList(list)
+
+        viewModel.fetchFavoriteMangasFromLocal()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(requireActivity()).unregisterReceiver(mRefreshReceiver);
     }
 
     override fun setEventListeners() {
@@ -83,17 +87,31 @@ class FavoriteFragment :
             favoriteAdapter.setAllCheckBoxSelect(false)
         }
 
-        binding.cbDelete.setOnCheckedChangeListener { view, isChecked ->
+        binding.cbDelete.setOnCheckedChangeListener { _, isChecked ->
             binding.cbDelete.setOnClickListener {
                 favoriteAdapter.setAllCheckBoxSelect(isChecked)
             }
         }
 
-        favoriteAdapter.onCheckedDeleteBoxListener = {
-            binding.cbDelete.isChecked = it
-            binding.ivButtonDelete.setImageDrawable(context?.getDrawable(if (it) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected))
+        favoriteAdapter.onCheckedDeleteBoxListener = { isSelectAll, isEnableDelete ->
+            binding.cbDelete.isChecked = isSelectAll
+            binding.ivButtonDelete.setImageResource(if (isEnableDelete) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected)
+            binding.ivButtonDelete.isEnabled = isEnableDelete
         }
 
+        binding.ivButtonDelete.setOnClickListener {
+            ConfirmDialog.show(parentFragmentManager) {
+                favoriteAdapter.clickAllCheckBoxVisibility()
+                binding.rlToolbarDelete.isVisible = false
+                binding.toolbar.isVisible = true
+                binding.cbDelete.isChecked = false
+                favoriteAdapter.setAllCheckBoxSelect(false)
+            }
+        }
+
+        viewModel.listFavorite.observe(this) {
+            favoriteAdapter.refreshList(it)
+        }
     }
 
 }

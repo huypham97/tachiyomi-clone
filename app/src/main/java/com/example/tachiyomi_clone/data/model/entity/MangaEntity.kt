@@ -2,6 +2,7 @@ package com.example.tachiyomi_clone.data.model.entity
 
 import androidx.annotation.StringRes
 import com.example.tachiyomi_clone.R
+import com.example.tachiyomi_clone.data.model.dao.MangaDao
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.dto.UpdateStrategy
 import java.io.Serializable
@@ -75,5 +76,21 @@ fun MangaDto.toDomain(): MangaEntity {
         thumbnailUrl = thumbnail_url,
         updateStrategy = update_strategy ?: UpdateStrategy.ALWAYS_UPDATE,
         initialized = initialized ?: false,
+    )
+}
+
+fun MangaDao.toDomain(): MangaEntity {
+    return MangaEntity.create().copy(
+        id = id ?: -1,
+        url = url ?: "",
+        title = title ?: "",
+        artist = artist,
+        author = author,
+        description = description,
+        status = status?.toLong() ?: 0L,
+        thumbnailUrl = thumbnail_url,
+        updateStrategy = update_strategy ?: UpdateStrategy.ALWAYS_UPDATE,
+        initialized = initialized ?: false,
+        favorite = favorite ?: false
     )
 }

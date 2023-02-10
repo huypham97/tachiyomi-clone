@@ -1,8 +1,8 @@
 package com.example.tachiyomi_clone.usecase
 
 import com.example.tachiyomi_clone.data.model.Result
+import com.example.tachiyomi_clone.data.model.dao.MangaDao
 import com.example.tachiyomi_clone.data.model.dto.ChapterDto
-import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.data.model.mapper.ChapterMapper
@@ -208,7 +208,7 @@ class GetMangaWithChaptersUseCase @Inject constructor(
     }
 
     private suspend fun awaitUpdateLastUpdate(mangaId: Long): Boolean {
-        return mangaRepository.updateToLocal(MangaDto(id = mangaId, lastUpdate = Date().time))
+        return mangaRepository.updateToLocal(MangaDao(id = mangaId, lastUpdate = Date().time))
     }
 
     private fun shouldUpdateDbChapter(

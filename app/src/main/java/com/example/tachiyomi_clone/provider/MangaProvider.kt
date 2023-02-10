@@ -1,12 +1,13 @@
 package com.example.tachiyomi_clone.provider
 
 import com.example.tachiyomi_clone.data.local.database.DatabaseHandler
-import com.example.tachiyomi_clone.data.local.database.listOfStringsAdapter
 import com.example.tachiyomi_clone.data.local.database.mapper.mangaMapper
 import com.example.tachiyomi_clone.data.local.database.updateStrategyAdapter
 import com.example.tachiyomi_clone.data.model.Result
+import com.example.tachiyomi_clone.data.model.dao.MangaDao
 import com.example.tachiyomi_clone.data.model.dto.MangaDto
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.model.entity.toDomain
 import com.example.tachiyomi_clone.data.model.mapper.ErrorDataMapper
 import com.example.tachiyomi_clone.data.model.mapper.MangaMapper
 import com.example.tachiyomi_clone.data.network.service.HomeService
@@ -38,40 +39,47 @@ class MangaProvider @Inject constructor(
                 url,
                 mangaMapper
             )
+        }?.toDomain()
+    }
+
+    override suspend fun getMangasFavorite(): List<MangaEntity> {
+        return handler.awaitList(inTransaction = true) {
+            mangasQueries.getFavorites(mangaMapper)
+        }.map { it.toDomain() }
+    }
+
+    override suspend fun insert(manga: MangaEntity): Long? {
+        return handler.awaitOneOrNull(inTransaction = true) {
+            mangasQueries.insert(
+                url = manga.url,
+                artist = manga.artist,
+                author = manga.author,
+                description = manga.description,
+                title = manga.title,
+                status = manga.status,
+                thumbnailUrl = manga.thumbnailUrl,
+                favorite = manga.favorite,
+                lastUpdate = manga.lastUpdate,
+                nextUpdate = null,
+                initialized = manga.initialized,
+                viewerFlags = manga.viewerFlags,
+                chapterFlags = manga.chapterFlags,
+                coverLastModified = manga.coverLastModified,
+                dateAdded = manga.dateAdded,
+                updateStrategy = manga.updateStrategy,
+            )
+            mangasQueries.selectLastInsertedRowId()
         }
     }
 
-//    override suspend fun insert(manga: MangaEntity): Long? {
-//        return handler.awaitOneOrNull(inTransaction = true) {
-//            mangasQueries.insert(
-//                url = manga.url,
-//                artist = manga.artist,
-//                author = manga.author,
-//                description = manga.description,
-//                genre = manga.genre,
-//                title = manga.title,
-//                status = manga.status,
-//                thumbnailUrl = manga.thumbnailUrl,
-//                favorite = manga.favorite,
-//                lastUpdate = manga.lastUpdate,
-//                nextUpdate = null,
-//                initialized = manga.initialized,
-//                viewerFlags = manga.viewerFlags,
-//                chapterFlags = manga.chapterFlags,
-//                coverLastModified = manga.coverLastModified,
-//                dateAdded = manga.dateAdded,
-//                updateStrategy = manga.updateStrategy,
-//            )
-//            mangasQueries.selectLastInsertedRowId()
-//        }
-//    }
-
     override suspend fun getMangaById(id: Long): MangaEntity {
-        return handler.awaitOne { mangasQueries.getMangaById(id, mangaMapper) }
+        return handler.awaitOne { mangasQueries.getMangaById(id, mangaMapper) }.toDomain()
     }
 
     override suspend fun getMangaByIdAsFlow(id: Long): Flow<MangaEntity> {
-        return handler.subscribeToOne { mangasQueries.getMangaById(id, mangaMapper) }
+        return handler.subscribeToOne { mangasQueries.getMangaById(id, mangaMapper) }.map {
+            it.toDomain()
+        }
     }
 
     override suspend fun fetchMangaDetails(mangaUrl: String): Flow<Result<MangaEntity>> {
@@ -92,7 +100,7 @@ class MangaProvider @Inject constructor(
         }
     }
 
-    override suspend fun updateToLocal(manga: MangaDto): Boolean {
+    override suspend fun updateToLocal(manga: MangaDao): Boolean {
         return try {
             partialUpdate(manga)
             true
@@ -102,7 +110,7 @@ class MangaProvider @Inject constructor(
         }
     }
 
-    private suspend fun partialUpdate(vararg mangas: MangaDto) {
+    private suspend fun partialUpdate(vararg mangas: MangaDao) {
         handler.await(inTransaction = true) {
             mangas.forEach { value ->
                 mangasQueries.update(
@@ -110,7 +118,6 @@ class MangaProvider @Inject constructor(
                     artist = value.artist,
                     author = value.author,
                     description = value.description,
-                    genre = value.listGenre?.let(listOfStringsAdapter::encode),
                     title = value.title,
                     status = value.status?.toLong(),
                     thumbnailUrl = value.thumbnail_url,

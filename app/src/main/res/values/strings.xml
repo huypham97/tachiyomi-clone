@@ -35,4 +35,8 @@
     <string name="search_hint">Nhập từ khóa tìm kiếm</string>
     <string name="favorite">Yêu thích</string>
     <string name="edit">Chỉnh sửa</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="confirm_to_delete_manga">Bạn có chắc muốn xóa những truyện nay!</string>
+    <string name="cancel">hủy bỏ</string>
+    <string name="ok">đồng ý</string>
 </resources>

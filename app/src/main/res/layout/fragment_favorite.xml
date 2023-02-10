@@ -91,7 +91,7 @@
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_close" />
 
-                        <ImageView
+                        <ImageButton
                             android:clickable="false"
                             android:id="@+id/iv_button_delete"
                             style="?attr/actionButtonStyle"

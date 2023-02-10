@@ -8,8 +8,11 @@ import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.GetMangaWithChaptersUseCase
+import com.example.tachiyomi_clone.usecase.NetworkToLocalUseCase
 import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
 import com.example.tachiyomi_clone.utils.Logger
+import com.example.tachiyomi_clone.utils.withIOContext
+import com.example.tachiyomi_clone.utils.withUIContext
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -17,7 +20,8 @@ import javax.inject.Inject
 
 class MangaDetailViewModel @Inject constructor(
     private val getMangaWithChaptersUseCase: GetMangaWithChaptersUseCase,
-    private val updateMangaUseCase: UpdateMangaUseCase
+    private val updateMangaUseCase: UpdateMangaUseCase,
+    private val networkToLocalUseCase: NetworkToLocalUseCase
 ) :
     BaseViewModel() {
 
@@ -33,8 +37,14 @@ class MangaDetailViewModel @Inject constructor(
 
     var ascendingSort: Boolean = true
 
+    var isFavorite: Boolean = false
+
     companion object {
         private const val TAG = "MangaViewModel"
+    }
+
+    private suspend fun insertDetailMangaToLocal(manga: MangaEntity): MangaEntity {
+        return networkToLocalUseCase.await(manga)
     }
 
 /*    fun fetchDetailMangaFromLocal(mangaId: Long) {
@@ -101,7 +111,23 @@ class MangaDetailViewModel @Inject constructor(
                                      "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
                                  )
                              }*/
-                            _manga.value = result.data.first
+                            withIOContext {
+                                val mangaLocal =
+                                    insertDetailMangaToLocal(
+                                        result.data.first.copy(
+                                            url = manga.url,
+                                            title = manga.title
+                                        )
+                                    )
+                                withUIContext {
+                                    isFavorite = mangaLocal.favorite
+                                    _manga.value = mangaLocal
+                                    Logger.d(
+                                        TAG,
+                                        "[${TAG}] fetchMangaFromLocalSource() --> response success: ${mangaLocal}"
+                                    )
+                                }
+                            }
                             _chapters.value = result.data.second
                             Logger.d(
                                 TAG,
@@ -116,6 +142,17 @@ class MangaDetailViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    fun setFavoriteManga() {
+        viewModelScope.launch {
+            isFavorite = !isFavorite
+            _manga.value?.let {
+                updateMangaUseCase.awaitUpdateFromSource(
+                    it.copy(favorite = isFavorite)
+                )
+            }
         }
     }
 

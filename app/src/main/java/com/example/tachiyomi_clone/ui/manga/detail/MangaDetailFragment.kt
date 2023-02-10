@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LifecycleOwner
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -25,6 +26,7 @@ import com.example.tachiyomi_clone.ui.manga.MangaActivity.Companion.MANGA_ITEM
 import com.example.tachiyomi_clone.ui.manga.MangaGenreAdapter
 import com.example.tachiyomi_clone.ui.page.MangaPageActivity
 import com.example.tachiyomi_clone.ui.reader.ReaderFragment
+import com.example.tachiyomi_clone.utils.Constant
 import com.example.tachiyomi_clone.utils.loadByHtml
 import com.example.tachiyomi_clone.utils.setColor
 import com.example.tachiyomi_clone.utils.system.ScreenUtils
@@ -33,13 +35,14 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import jp.wasabeef.glide.transformations.BlurTransformation
 
-class MangaDetailFragment :
-    BaseNavFragment<FragmentMangaDetailBinding, MangaDetailViewModel>(MangaDetailViewModel::class, R.id.nav_graph_manga) {
+
+class MangaDetailFragment : BaseNavFragment<FragmentMangaDetailBinding, MangaDetailViewModel>(
+    MangaDetailViewModel::class, R.id.nav_graph_manga
+) {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            MangaDetailFragment()
+        fun newInstance() = MangaDetailFragment()
 
         private const val LOAD_MORE_PEAK = 50
     }
@@ -54,8 +57,7 @@ class MangaDetailFragment :
 
     private val windowInsetsController by lazy {
         WindowInsetsControllerCompat(
-            requireActivity().window,
-            binding.root
+            requireActivity().window, binding.root
         )
     }
 
@@ -84,8 +86,7 @@ class MangaDetailFragment :
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(
                 VerticalSpacingDecoration(
-                    requireContext(),
-                    R.drawable.divider
+                    requireContext(), R.drawable.divider
                 )
             )
             adapter = chapterAdapter
@@ -118,6 +119,7 @@ class MangaDetailFragment :
                 params.setMargins(0, it + ScreenUtils.getAppBarHeight(requireContext()), 0, 0)
             }
         }
+
     }
 
     private fun initData() {
@@ -134,6 +136,19 @@ class MangaDetailFragment :
             viewModel.onBackPressed()
         }
 
+        binding.tbHeader.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.app_bar_heart -> {
+                    viewModel.setFavoriteManga()
+                    binding.tbHeader.menu.findItem(R.id.app_bar_heart)
+                        .setIcon(if (viewModel.isFavorite) R.drawable.ic_heart_selected else R.drawable.ic_heart)
+                    val intent = Intent(Constant.RECEIVER_ID)
+                    LocalBroadcastManager.getInstance(requireActivity()).sendBroadcast(intent)
+                }
+            }
+            return@setOnMenuItemClickListener true
+        }
+
         binding.tvReadFirst.setOnClickListener {
             viewModel.chapters.value?.let {
                 navigateReaderActivity(it[it.size - 1])
@@ -147,21 +162,18 @@ class MangaDetailFragment :
         }
 
         viewModel.manga.observe(this) { manga ->
+            binding.tbHeader.menu.findItem(R.id.app_bar_heart)
+                .setIcon(if (viewModel.isFavorite) R.drawable.ic_heart_selected else R.drawable.ic_heart)
             Glide.with(this).asBitmap().apply(RequestOptions().apply {
                 override(
-                    binding.ivMangaThumbnail.width,
-                    binding.ivMangaThumbnail.height
+                    binding.ivMangaThumbnail.width, binding.ivMangaThumbnail.height
                 )
-            })
-                .load(manga.thumbnailUrl)
-                .into(binding.ivMangaThumbnail)
+            }).load(manga.thumbnailUrl).into(binding.ivMangaThumbnail)
             Glide.with(this).asBitmap().apply(RequestOptions().apply {
                 override(
-                    binding.ivBackground.width,
-                    binding.ivBackground.height
+                    binding.ivBackground.width, binding.ivBackground.height
                 )
-            })
-                .load(manga.thumbnailUrl)
+            }).load(manga.thumbnailUrl)
                 .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 3)))
                 .into(binding.ivBackground)
             binding.tvMangaStatus.text = "${resources.getString(R.string.status)}: ${

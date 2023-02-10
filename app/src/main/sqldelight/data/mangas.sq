@@ -1,5 +1,3 @@
-import java.lang.String;
-import kotlin.collections.List;
 import com.example.tachiyomi_clone.data.model.dto.UpdateStrategy;
 
 CREATE TABLE mangas(
@@ -8,7 +6,6 @@ CREATE TABLE mangas(
     artist TEXT,
     author TEXT,
     description TEXT,
-    genre TEXT AS List<String>,
     title TEXT NOT NULL,
     status INTEGER NOT NULL,
     thumbnail_url TEXT,
@@ -47,8 +44,8 @@ UPDATE mangas
 SET viewer = 0;
 
 insert:
-INSERT INTO mangas(url,artist,author,description,genre,title,status,thumbnail_url,favorite,last_update,next_update,initialized,viewer,chapter_flags,cover_last_modified,date_added,update_strategy)
-VALUES (:url,:artist,:author,:description,:genre,:title,:status,:thumbnailUrl,:favorite,:lastUpdate,:nextUpdate,:initialized,:viewerFlags,:chapterFlags,:coverLastModified,:dateAdded,:updateStrategy);
+INSERT INTO mangas(url,artist,author,description,title,status,thumbnail_url,favorite,last_update,next_update,initialized,viewer,chapter_flags,cover_last_modified,date_added,update_strategy)
+VALUES (:url,:artist,:author,:description,:title,:status,:thumbnailUrl,:favorite,:lastUpdate,:nextUpdate,:initialized,:viewerFlags,:chapterFlags,:coverLastModified,:dateAdded,:updateStrategy);
 
 update:
 UPDATE mangas SET
@@ -56,7 +53,6 @@ UPDATE mangas SET
     artist = coalesce(:artist, artist),
     author = coalesce(:author, author),
     description = coalesce(:description, description),
-    genre = coalesce(:genre, genre),
     title = coalesce(:title, title),
     status = coalesce(:status, status),
     thumbnail_url = coalesce(:thumbnailUrl, thumbnail_url),

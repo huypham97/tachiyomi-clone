@@ -9,7 +9,6 @@ import com.example.tachiyomi_clone.BuildConfig
 import com.example.tachiyomi_clone.Database
 import com.example.tachiyomi_clone.data.local.database.AndroidDatabaseHandler
 import com.example.tachiyomi_clone.data.local.database.DatabaseHandler
-import com.example.tachiyomi_clone.data.local.database.listOfStringsAdapter
 import com.example.tachiyomi_clone.data.local.database.updateStrategyAdapter
 import com.example.tachiyomi_clone.utils.Constant
 import com.squareup.sqldelight.android.AndroidSqliteDriver
@@ -33,7 +32,7 @@ class AppDelegateModule {
     fun provideDatabase(driver: SqlDriver): Database = Database(
         driver = driver,
         mangasAdapter = Mangas.Adapter(
-            genreAdapter = listOfStringsAdapter,
+//            genreAdapter = listOfStringsAdapter,
             update_strategyAdapter = updateStrategyAdapter,
         ),
     )
