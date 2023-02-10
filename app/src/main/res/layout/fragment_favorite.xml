@@ -64,7 +64,7 @@
                         app:menu="@menu/menu_favorite_app_bar">
 
                         <CheckBox
-                            android:id="@+id/cb_delete"
+                            android:id="@+id/cb_delete_all"
                             android:layout_width="@dimen/et_dimen_24"
                             android:layout_height="@dimen/et_dimen_24"
                             android:layout_alignParentStart="true"
@@ -75,7 +75,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/cb_delete"
+                            android:layout_toEndOf="@id/cb_delete_all"
                             android:fontFamily="@font/roboto_regular"
                             android:text="Chọn tất cả"
                             android:textColor="@color/white"

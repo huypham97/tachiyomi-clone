@@ -9,7 +9,7 @@ import javax.inject.Inject
 class NetworkToLocalUseCase @Inject constructor(private val mangaRepository: MangaRepository) {
 
     suspend fun await(manga: MangaEntity): MangaEntity {
-        val localManga = getManga(manga.url)
+        val localManga = getManga(manga.url)?.copy(genre = manga.genre)
         return when {
             localManga == null -> {
                 val id = insertManga(manga)

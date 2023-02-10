@@ -46,6 +46,7 @@ class FavoriteFragment :
                 IntentFilter(Constant.RECEIVER_ID)
             )
     }
+
     override fun initViews(savedInstanceState: Bundle?) {
         super.initViews(savedInstanceState)
         binding.rvMangaPage.apply {
@@ -57,6 +58,7 @@ class FavoriteFragment :
             )
             adapter = favoriteAdapter
         }
+        binding.ivButtonDelete.isEnabled = false
 
         viewModel.fetchFavoriteMangasFromLocal()
     }
@@ -71,41 +73,41 @@ class FavoriteFragment :
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.app_bar_edit -> {
-                    favoriteAdapter.clickAllCheckBoxVisibility()
-                    binding.rlToolbarDelete.isVisible = true
-                    binding.toolbar.isVisible = false
+//                    favoriteAdapter.clickAllCheckBoxVisibility()
+//                    showEditToolbar()
                 }
             }
             return@setOnMenuItemClickListener true
         }
 
         binding.ivButtonClose.setOnClickListener {
-            favoriteAdapter.clickAllCheckBoxVisibility()
-            binding.rlToolbarDelete.isVisible = false
-            binding.toolbar.isVisible = true
-            binding.cbDelete.isChecked = false
-            favoriteAdapter.setAllCheckBoxSelect(false)
+//            favoriteAdapter.clickAllCheckBoxVisibility()
+//            showCommonToolbar()
+//            binding.cbDeleteAll.isChecked = false
         }
 
-        binding.cbDelete.setOnCheckedChangeListener { _, isChecked ->
-            binding.cbDelete.setOnClickListener {
-                favoriteAdapter.setAllCheckBoxSelect(isChecked)
-            }
+        binding.cbDeleteAll.setOnCheckedChangeListener { _, isChecked ->
+//            if (!viewModel.listFavorite.value.isNullOrEmpty())
+//                favoriteAdapter.setAllCheckBoxSelect(isChecked)
+//            binding.cbDelete.setOnClickListener {
+//                favoriteAdapter.setAllCheckBoxSelect(isChecked)
+//            }
         }
 
         favoriteAdapter.onCheckedDeleteBoxListener = { isSelectAll, isEnableDelete ->
-            binding.cbDelete.isChecked = isSelectAll
-            binding.ivButtonDelete.setImageResource(if (isEnableDelete) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected)
-            binding.ivButtonDelete.isEnabled = isEnableDelete
+//            binding.cbDeleteAll.isChecked = isSelectAll
+//            binding.ivButtonDelete.setImageResource(if (isEnableDelete) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected)
+//            binding.ivButtonDelete.isEnabled = isEnableDelete
         }
 
         binding.ivButtonDelete.setOnClickListener {
             ConfirmDialog.show(parentFragmentManager) {
-                favoriteAdapter.clickAllCheckBoxVisibility()
-                binding.rlToolbarDelete.isVisible = false
-                binding.toolbar.isVisible = true
-                binding.cbDelete.isChecked = false
-                favoriteAdapter.setAllCheckBoxSelect(false)
+//                viewModel.clearFavoriteMangas()
+//                favoriteAdapter.clickAllCheckBoxVisibility()
+//                binding.rlToolbarDelete.isVisible = false
+//                binding.toolbar.isVisible = true
+//                binding.cbDelete.isChecked = false
+//                favoriteAdapter.setAllCheckBoxSelect(false)
             }
         }
 
@@ -114,4 +116,13 @@ class FavoriteFragment :
         }
     }
 
+    private fun showCommonToolbar() {
+        binding.rlToolbarDelete.isVisible = false
+        binding.toolbar.isVisible = true
+    }
+
+    private fun showEditToolbar() {
+        binding.rlToolbarDelete.isVisible = true
+        binding.toolbar.isVisible = false
+    }
 }

@@ -25,6 +25,7 @@ data class MangaEntity(
     val thumbnailUrl: String?,
     val updateStrategy: UpdateStrategy,
     val initialized: Boolean,
+    var isChecked: Boolean
 ) : Serializable {
 
     companion object {
@@ -46,6 +47,7 @@ data class MangaEntity(
             thumbnailUrl = null,
             updateStrategy = UpdateStrategy.ALWAYS_UPDATE,
             initialized = false,
+            isChecked = false
         )
     }
 
