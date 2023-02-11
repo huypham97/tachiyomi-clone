@@ -110,9 +110,9 @@ class FavoriteFragment :
             }
         }
 
-        viewModel.listFavorite.observe(this) {
-            setBinViewStatus(it.isNotEmpty())
-            favoriteAdapter.refreshList(it)
+        viewModel.listFavorite.observe(this) { list ->
+            setBinViewStatus(list.isNotEmpty() && list.find { it.isChecked } != null)
+            favoriteAdapter.refreshList(list)
         }
 
         favoriteAdapter.onItemSelectListener = {

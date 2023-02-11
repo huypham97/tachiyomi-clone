@@ -38,7 +38,7 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
         if (item != null) {
             holder.binding.cbDelete.isChecked = item.isChecked
         }
-        if (holder.binding.cbDelete.isChecked != isAllCheckBoxSelected)  {
+        else if (holder.binding.cbDelete.isChecked != isAllCheckBoxSelected) {
             holder.binding.cbDelete.isChecked = isAllCheckBoxSelected
         }
     }
@@ -50,8 +50,10 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
     ) {
         super.setEventListener(holder, position, item)
         holder.binding.cbDelete.setOnCheckedChangeListener { _, isChecked ->
+            println("GITBAO before position: $position cbDelete.isChecked: ${holder.binding.cbDelete.isChecked} isAllCheckBoxSelected: $isAllCheckBoxSelected")
             if (!isChecked) this.isAllCheckBoxSelected = false
             item?.isChecked = isChecked
+            println("GITBAO after position: $position cbDelete.isChecked: ${holder.binding.cbDelete.isChecked} isAllCheckBoxSelected: $isAllCheckBoxSelected")
             var count = 0
             val size = getListItem().size
             for (i in 0 until size) {
@@ -75,6 +77,9 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
 
     fun setAllCheckBoxSelect(isCheck: Boolean) {
         this.isAllCheckBoxSelected = isCheck
+        getListItem().forEach {
+            it.isChecked = this.isAllCheckBoxSelected
+        }
         notifyDataSetChanged()
     }
 }
