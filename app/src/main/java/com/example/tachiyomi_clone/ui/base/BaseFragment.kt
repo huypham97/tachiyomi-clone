@@ -6,11 +6,13 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.common.event.EventObserver
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.DaggerFragment
@@ -71,7 +73,17 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel> :
 
     open fun initViews(savedInstanceState: Bundle?) {}
 
-    open fun setEventListeners() {}
+    open fun setEventListeners() {
+        viewModel.isNetworkAvailable.observe(viewLifecycleOwner) { isAvailable ->
+            if (!isAvailable) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.no_connect_internet_message_text),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
     open fun onHandleBackPressed() {
         popBackStack(true)

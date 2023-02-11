@@ -33,13 +33,13 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
             .into(holder.binding.ivMangaThumbnail)
         holder.binding.tvMangaTitle.text = item?.title
         holder.binding.tvMangaAuthor.text = item?.author
-//        holder.binding.cbDelete.isVisible = isShowAllCheckBox
-//        if (item != null) {
-//            holder.binding.cbDelete.isChecked = item.isChecked
-//        }
-//        if (holder.binding.cbDelete.isChecked != isAllCheckBoxSelected)  {
-//            holder.binding.cbDelete.isChecked = isAllCheckBoxSelected
-//        }
+        holder.binding.cbDelete.isVisible = isShowAllCheckBox
+        if (item != null) {
+            holder.binding.cbDelete.isChecked = item.isChecked
+        }
+        if (holder.binding.cbDelete.isChecked != isAllCheckBoxSelected)  {
+            holder.binding.cbDelete.isChecked = isAllCheckBoxSelected
+        }
     }
 
     override fun setEventListener(
@@ -49,15 +49,16 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
     ) {
         super.setEventListener(holder, position, item)
         holder.binding.cbDelete.setOnCheckedChangeListener { _, isChecked ->
-//            item?.isChecked = isChecked
-//            var count = 0
-//            val size = getListItem().size
-//            for (i in 0 until size) {
-//                if (getListItem()[i].isChecked) {
-//                    count++
-//                }
-//            }
-//            onCheckedDeleteBoxListener?.invoke(count == size, count != 0)
+            if (!isChecked) this.isAllCheckBoxSelected = false
+            item?.isChecked = isChecked
+            var count = 0
+            val size = getListItem().size
+            for (i in 0 until size) {
+                if (getListItem()[i].isChecked) {
+                    count++
+                }
+            }
+            onCheckedDeleteBoxListener?.invoke(count == size, count != 0)
         }
     }
 
@@ -68,9 +69,6 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
 
     fun setAllCheckBoxSelect(isCheck: Boolean) {
         this.isAllCheckBoxSelected = isCheck
-//        for (i in 0 until getListItem().size) {
-//            getListItem()[i].favorite = !this.isAllCheckBoxSelected
-//        }
         notifyDataSetChanged()
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.NetworkToLocalUseCase
 import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
@@ -14,7 +15,8 @@ import javax.inject.Inject
 class FavoriteViewModel @Inject constructor(
     private val networkToLocalUseCase: NetworkToLocalUseCase,
     private val updateMangaUseCase: UpdateMangaUseCase,
-) : BaseViewModel() {
+    private val connectionHelper: ConnectionHelper
+) : BaseViewModel(connectionHelper) {
 
     private val _listFavorite: MutableLiveData<List<MangaEntity>> = MutableLiveData()
     val listFavorite: LiveData<List<MangaEntity>>
@@ -31,6 +33,7 @@ class FavoriteViewModel @Inject constructor(
     fun clearFavoriteMangas() {
         viewModelScope.launch {
             _listFavorite.value?.forEach {
+                if (it.isChecked) it.favorite = false
                 updateMangaUseCase.awaitUpdateFromSource(
                     it
                 )

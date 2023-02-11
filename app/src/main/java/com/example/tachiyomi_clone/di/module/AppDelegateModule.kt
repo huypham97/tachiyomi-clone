@@ -10,6 +10,7 @@ import com.example.tachiyomi_clone.Database
 import com.example.tachiyomi_clone.data.local.database.AndroidDatabaseHandler
 import com.example.tachiyomi_clone.data.local.database.DatabaseHandler
 import com.example.tachiyomi_clone.data.local.database.updateStrategyAdapter
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import com.example.tachiyomi_clone.utils.Constant
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import com.squareup.sqldelight.db.SqlDriver
@@ -70,4 +71,9 @@ class AppDelegateModule {
     fun provideDatabaseHandler(db: Database, driver: SqlDriver): DatabaseHandler =
         AndroidDatabaseHandler(db = db, driver = driver)
 
+    @Provides
+    @Singleton
+    fun provideConnectionHelper(context: Context): ConnectionHelper {
+        return ConnectionHelper(context)
+    }
 }

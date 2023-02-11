@@ -10,6 +10,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -67,7 +68,17 @@ abstract class BaseActivity<B : ViewDataBinding, VM : BaseViewModel> : AppCompat
         window.navigationBarColor = ContextCompat.getColor(this, R.color.color_1C1C1E)
     }
 
-    protected open fun setEventListener() {}
+    protected open fun setEventListener() {
+        viewModel.isNetworkAvailable.observe(this) { isAvailable ->
+            if (!isAvailable) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.no_connect_internet_message_text),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
     protected fun checkHasPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(

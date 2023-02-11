@@ -26,6 +26,8 @@ class FavoriteFragment :
         fun newInstance() = FavoriteFragment()
     }
 
+    private var isCheckAll = false
+
     private val favoriteAdapter = FavoriteAdapter()
     private val mRefreshReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -40,11 +42,9 @@ class FavoriteFragment :
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(requireActivity())
-            .registerReceiver(
-                mRefreshReceiver,
-                IntentFilter(Constant.RECEIVER_ID)
-            )
+        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(
+            mRefreshReceiver, IntentFilter(Constant.RECEIVER_ID)
+        )
     }
 
     override fun initViews(savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class FavoriteFragment :
             )
             adapter = favoriteAdapter
         }
-        binding.ivButtonDelete.isEnabled = false
+        setBinViewStatus(false)
 
         viewModel.fetchFavoriteMangasFromLocal()
     }
@@ -73,45 +73,44 @@ class FavoriteFragment :
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.app_bar_edit -> {
-//                    favoriteAdapter.clickAllCheckBoxVisibility()
-//                    showEditToolbar()
+                    favoriteAdapter.clickAllCheckBoxVisibility()
+                    showEditToolbar()
                 }
             }
             return@setOnMenuItemClickListener true
         }
 
         binding.ivButtonClose.setOnClickListener {
-//            favoriteAdapter.clickAllCheckBoxVisibility()
-//            showCommonToolbar()
-//            binding.cbDeleteAll.isChecked = false
+            favoriteAdapter.clickAllCheckBoxVisibility()
+            showCommonToolbar()
         }
 
-        binding.cbDeleteAll.setOnCheckedChangeListener { _, isChecked ->
-//            if (!viewModel.listFavorite.value.isNullOrEmpty())
-//                favoriteAdapter.setAllCheckBoxSelect(isChecked)
-//            binding.cbDelete.setOnClickListener {
-//                favoriteAdapter.setAllCheckBoxSelect(isChecked)
-//            }
+        binding.cbDeleteAll.setOnClickListener {
+            if (!viewModel.listFavorite.value.isNullOrEmpty()) {
+                isCheckAll = !isCheckAll
+                binding.cbDeleteAll.isChecked = this.isCheckAll
+                favoriteAdapter.setAllCheckBoxSelect(isCheckAll)
+            } else {
+                isCheckAll = false
+                binding.cbDeleteAll.isChecked = isCheckAll
+            }
         }
 
         favoriteAdapter.onCheckedDeleteBoxListener = { isSelectAll, isEnableDelete ->
-//            binding.cbDeleteAll.isChecked = isSelectAll
-//            binding.ivButtonDelete.setImageResource(if (isEnableDelete) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected)
-//            binding.ivButtonDelete.isEnabled = isEnableDelete
+            this.isCheckAll = isSelectAll
+            binding.cbDeleteAll.isChecked = this.isCheckAll
+            setBinViewStatus(isEnableDelete)
         }
 
         binding.ivButtonDelete.setOnClickListener {
             ConfirmDialog.show(parentFragmentManager) {
-//                viewModel.clearFavoriteMangas()
-//                favoriteAdapter.clickAllCheckBoxVisibility()
-//                binding.rlToolbarDelete.isVisible = false
-//                binding.toolbar.isVisible = true
-//                binding.cbDelete.isChecked = false
-//                favoriteAdapter.setAllCheckBoxSelect(false)
+                viewModel.clearFavoriteMangas()
+                binding.cbDeleteAll.isChecked = false
             }
         }
 
         viewModel.listFavorite.observe(this) {
+            setBinViewStatus(it.isNotEmpty())
             favoriteAdapter.refreshList(it)
         }
     }
@@ -124,5 +123,10 @@ class FavoriteFragment :
     private fun showEditToolbar() {
         binding.rlToolbarDelete.isVisible = true
         binding.toolbar.isVisible = false
+    }
+
+    private fun setBinViewStatus(isEnable: Boolean) {
+        binding.ivButtonDelete.setImageResource(if (isEnable) R.drawable.ic_bin_selected else R.drawable.ic_bin_unselected)
+        binding.ivButtonDelete.isEnabled = isEnable
     }
 }

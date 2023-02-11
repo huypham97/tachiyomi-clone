@@ -3,6 +3,7 @@ package com.example.tachiyomi_clone.ui.reader
 import androidx.lifecycle.viewModelScope
 import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.entity.PageEntity
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.PageLoadUseCase
 import com.example.tachiyomi_clone.utils.Logger
@@ -12,8 +13,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ReaderViewModel @Inject constructor(private val pageLoadUseCase: PageLoadUseCase) :
-    BaseViewModel() {
+class ReaderViewModel @Inject constructor(
+    private val pageLoadUseCase: PageLoadUseCase,
+    private val connectionHelper: ConnectionHelper
+) :
+    BaseViewModel(connectionHelper) {
 
     companion object {
         const val TAG = "ReaderViewModel"
@@ -55,5 +59,5 @@ class ReaderViewModel @Inject constructor(private val pageLoadUseCase: PageLoadU
                 }
         }
     }
-    
+
 }

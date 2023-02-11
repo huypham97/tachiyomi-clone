@@ -6,13 +6,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tachiyomi_clone.common.event.Event
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import java.io.Serializable
 
-abstract class BaseViewModel : ViewModel(), Observable, Serializable {
+abstract class BaseViewModel(private val connectionHelper: ConnectionHelper) : ViewModel(),
+    Observable, Serializable {
 
     var dataBindingCallback = PropertyChangeRegistry()
 
     var isLoading = MutableLiveData<Boolean>()
+
+    var isNetworkAvailable = MutableLiveData<Boolean>()
 
     protected fun showLoadingDialog() {
         isLoading.value = true
@@ -40,5 +44,15 @@ abstract class BaseViewModel : ViewModel(), Observable, Serializable {
 
     fun onBackPressed() {
         _onBackPressedDispatcher.value = Event(Unit)
+    }
+
+    protected fun checkInternetConnection(): Boolean {
+        return if (connectionHelper.isNetworkAvailable()) {
+            isNetworkAvailable.postValue(true)
+            true
+        } else {
+            isNetworkAvailable.postValue(false)
+            false
+        }
     }
 }

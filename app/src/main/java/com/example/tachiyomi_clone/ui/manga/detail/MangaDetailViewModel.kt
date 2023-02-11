@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.GetMangaWithChaptersUseCase
 import com.example.tachiyomi_clone.usecase.NetworkToLocalUseCase
@@ -21,9 +22,10 @@ import javax.inject.Inject
 class MangaDetailViewModel @Inject constructor(
     private val getMangaWithChaptersUseCase: GetMangaWithChaptersUseCase,
     private val updateMangaUseCase: UpdateMangaUseCase,
-    private val networkToLocalUseCase: NetworkToLocalUseCase
+    private val networkToLocalUseCase: NetworkToLocalUseCase,
+    private val connectionHelper: ConnectionHelper
 ) :
-    BaseViewModel() {
+    BaseViewModel(connectionHelper) {
 
     private val _manga: MutableLiveData<MangaEntity> = MutableLiveData()
     val manga: LiveData<MangaEntity>

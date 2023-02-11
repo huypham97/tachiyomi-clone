@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.tachiyomi_clone.data.model.Result
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
 import com.example.tachiyomi_clone.data.model.entity.MangasPageEntity
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.HomeUseCase
 import com.example.tachiyomi_clone.usecase.NetworkToLocalUseCase
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val homeUseCase: HomeUseCase,
     private val networkToLocalUseCase: NetworkToLocalUseCase,
-) : BaseViewModel() {
+    private val connectionHelper: ConnectionHelper
+) : BaseViewModel(connectionHelper) {
 
     companion object {
         const val TAG = "HomeViewModel"
@@ -46,26 +48,30 @@ class HomeViewModel @Inject constructor(
 
     fun fetchSuggestManga() {
         viewModelScope.launch {
-            homeUseCase.getSuggestManga()
-                .onStart { showLoadingDialog() }
-                .onCompletion { dismissLoadingDialog() }
-                .collect { result ->
-                    when (result) {
-                        is Result.Success -> {
-                            _popularManga.value = result.data.mangas?.take(5)
-                            Logger.d(
-                                TAG,
-                                "[${TAG}] fetchSuggestManga() --> response success: ${result.data}"
-                            )
-                        }
-                        is Result.Error -> {
-                            Logger.e(
-                                TAG,
-                                "[${TAG}] fetchPopularManga() --> error: ${result.exception}"
-                            )
+            if (connectionHelper.isNetworkAvailable()) {
+                homeUseCase.getSuggestManga()
+                    .onStart { showLoadingDialog() }
+                    .onCompletion { dismissLoadingDialog() }
+                    .collect { result ->
+                        when (result) {
+                            is Result.Success -> {
+                                _popularManga.value = result.data.mangas?.take(5)
+                                Logger.d(
+                                    TAG,
+                                    "[${TAG}] fetchSuggestManga() --> response success: ${result.data}"
+                                )
+                            }
+                            is Result.Error -> {
+                                Logger.e(
+                                    TAG,
+                                    "[${TAG}] fetchPopularManga() --> error: ${result.exception}"
+                                )
+                            }
                         }
                     }
-                }
+            } else {
+                isNetworkAvailable.postValue(false)
+            }
         }
     }
 

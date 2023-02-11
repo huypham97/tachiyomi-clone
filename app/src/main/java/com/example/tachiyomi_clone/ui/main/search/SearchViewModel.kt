@@ -6,14 +6,16 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.tachiyomi_clone.data.model.entity.MangaEntity
+import com.example.tachiyomi_clone.data.network.common.ConnectionHelper
 import com.example.tachiyomi_clone.ui.base.BaseViewModel
 import com.example.tachiyomi_clone.usecase.HomeUseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
-    private val homeUseCase: HomeUseCase
-) : BaseViewModel() {
+    private val homeUseCase: HomeUseCase,
+    private val connectionHelper: ConnectionHelper
+) : BaseViewModel(connectionHelper) {
 
     fun fetchSearchManga(query: String): Flow<PagingData<MangaEntity>> = Pager(
         PagingConfig(pageSize = 25),

@@ -39,4 +39,5 @@
     <string name="confirm_to_delete_manga">Bạn có chắc muốn xóa những truyện nay!</string>
     <string name="cancel">hủy bỏ</string>
     <string name="ok">đồng ý</string>
+    <string name="no_connect_internet_message_text">Không có kết nối internet. Vui lòng kiểm tra lại kết nối</string>
 </resources>
