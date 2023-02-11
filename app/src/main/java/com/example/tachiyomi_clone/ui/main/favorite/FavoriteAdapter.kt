@@ -14,6 +14,7 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
     private var isShowAllCheckBox = false
     private var isAllCheckBoxSelected = false
     var onCheckedDeleteBoxListener: ((Boolean, Boolean) -> Unit)? = null
+    var onItemSelectListener: ((MangaEntity) -> Unit)? = null
 
     override fun getLayoutIdForViewType(viewType: Int): Int = R.layout.row_rv_manga_favorite
 
@@ -59,6 +60,11 @@ class FavoriteAdapter : BaseAdapter<RowRvMangaFavoriteBinding, MangaEntity>() {
                 }
             }
             onCheckedDeleteBoxListener?.invoke(count == size, count != 0)
+        }
+        holder.binding.root.setOnClickListener {
+            if (item != null) {
+                onItemSelectListener?.invoke(item)
+            }
         }
     }
 

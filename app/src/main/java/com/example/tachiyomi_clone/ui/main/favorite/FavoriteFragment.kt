@@ -14,6 +14,7 @@ import com.example.tachiyomi_clone.common.widget.SpaceItemDecoration
 import com.example.tachiyomi_clone.databinding.FragmentFavoriteBinding
 import com.example.tachiyomi_clone.ui.base.BaseGeneralFragment
 import com.example.tachiyomi_clone.ui.common.ConfirmDialog
+import com.example.tachiyomi_clone.ui.manga.MangaActivity
 import com.example.tachiyomi_clone.utils.Constant
 
 class FavoriteFragment :
@@ -112,6 +113,12 @@ class FavoriteFragment :
         viewModel.listFavorite.observe(this) {
             setBinViewStatus(it.isNotEmpty())
             favoriteAdapter.refreshList(it)
+        }
+
+        favoriteAdapter.onItemSelectListener = {
+            val intent = Intent(context, MangaActivity::class.java)
+            intent.putExtra(MangaActivity.MANGA_ITEM, it)
+            startActivity(intent)
         }
     }
 
