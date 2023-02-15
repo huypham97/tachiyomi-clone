@@ -83,6 +83,7 @@ class FavoriteFragment :
 
         binding.ivButtonClose.setOnClickListener {
             favoriteAdapter.clickAllCheckBoxVisibility()
+            favoriteAdapter.setAllCheckBoxSelect(false)
             showCommonToolbar()
         }
 
