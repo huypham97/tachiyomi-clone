@@ -1,5 +1,7 @@
 package com.example.tachiyomi_clone.son_ui
 
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,9 @@ import com.example.tachiyomi_clone.databinding.HomeFragmentBinding
 
 class HomeFragment: Fragment() {
     lateinit var binding: HomeFragmentBinding
+
+    var index = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,6 +55,16 @@ class HomeFragment: Fragment() {
         var adapter = Item_Home_Adapter(requireContext(), listItem)
 
         binding.rycTrangChu.adapter = adapter
+
+
+        binding.btnKhac.setOnClickListener(View.OnClickListener {
+            index = 1
+        })
+
+        binding.btnThieuNhi.setOnClickListener(View.OnClickListener {
+            index = 0
+        })
+
 
 
     }
