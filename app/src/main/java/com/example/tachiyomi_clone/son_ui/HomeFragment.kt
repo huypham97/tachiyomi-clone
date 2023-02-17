@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.databinding.HomeFragmentBinding
+import kotlinx.android.synthetic.main.home_fragment.*
 
 class HomeFragment: Fragment() {
     lateinit var binding: HomeFragmentBinding
@@ -58,12 +59,20 @@ class HomeFragment: Fragment() {
 
 
         binding.btnKhac.setOnClickListener(View.OnClickListener {
-            index = 1
+            binding.btnKhac.setBackgroundResource(R.drawable.son_bg_button)
+            binding.btnThieuNhi.setBackgroundResource(R.drawable.son_bg_button_khac)
+            binding.btnThieuNhi.setTextColor(resources.getColor(R.color.xam))
+            binding.btnKhac.setTextColor(resources.getColor(R.color.black))
         })
 
         binding.btnThieuNhi.setOnClickListener(View.OnClickListener {
-            index = 0
+            binding.btnKhac.setBackgroundResource(R.drawable.son_bg_button_khac)
+            binding.btnThieuNhi.setBackgroundResource(R.drawable.son_bg_button)
+            binding.btnThieuNhi.setTextColor(resources.getColor(R.color.black))
+            binding.btnKhac.setTextColor(resources.getColor(R.color.xam))
         })
+
+
 
 
 

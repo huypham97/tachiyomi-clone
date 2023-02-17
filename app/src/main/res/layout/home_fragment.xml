@@ -69,7 +69,6 @@
                         android:layout_marginLeft="2dp"
                         android:layout_marginTop="2dp"
                         android:background="@drawable/son_bg_button"
-                        android:backgroundTint="#FFCD22"
                         android:fontFamily="@font/roboto_bold"
                         android:text="Thiếu nhi"
                         android:textAllCaps="false"
@@ -81,8 +80,7 @@
                         android:layout_height="30dp"
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="2dp"
-                        android:background="@drawable/son_bg_button"
-                        android:backgroundTint="#1C1C1E"
+                        android:background="@drawable/son_bg_button_khac"
                         android:text="Khác"
                         android:textAllCaps="false"
                         android:textColor="#828282" />
@@ -147,7 +145,7 @@
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="0dp"
                     android:src="@drawable/bangxephang" />
 
                 <TextView
