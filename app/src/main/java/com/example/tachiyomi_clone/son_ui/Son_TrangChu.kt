@@ -16,13 +16,14 @@ class Son_TrangChu : AppCompatActivity() {
         binding = ActivitySonTrangChuBinding.inflate(layoutInflater)
 
         val homeFragment = HomeFragment()
+        val chiTietFragment = Chi_Tiet_Fragment()
 
         setCurrentFragment(homeFragment)
 
         binding.bnTrangChu.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.bn_home->setCurrentFragment(homeFragment)
-                R.id.bn_newstory->setCurrentFragment(homeFragment)
+                R.id.bn_newstory->setCurrentFragment(chiTietFragment)
                 R.id.bn_self->setCurrentFragment(homeFragment)
 
             }
