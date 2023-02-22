@@ -8,7 +8,7 @@ import com.example.tachiyomi_clone.data.model.dto.UpdateStrategy
 import java.io.Serializable
 
 data class MangaEntity(
-    val id: Long,
+    var id: Long,
     var favorite: Boolean,
     val lastUpdate: Long,
     val dateAdded: Long,

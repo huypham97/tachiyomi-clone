@@ -7,15 +7,10 @@ data class ChapterEntity(
     var id: Long,
     var mangaId: Long,
     var read: Boolean,
-    var bookmark: Boolean,
-    var lastPageRead: Long,
-    var dateFetch: Long,
     var sourceOrder: Long,
     var url: String,
     var name: String,
     var dateUpload: Long,
-    var chapterNumber: Float,
-    var scanlator: String?,
     var nextChapterOrder: Long?,
     var prevChapterOrder: Long?
 ) : Parcelable {
@@ -27,15 +22,10 @@ data class ChapterEntity(
             id = -1,
             mangaId = -1,
             read = false,
-            bookmark = false,
-            lastPageRead = 0,
-            dateFetch = 0,
             sourceOrder = 0,
             url = "",
             name = "",
             dateUpload = 0,
-            chapterNumber = -1f,
-            scanlator = null,
             nextChapterOrder = null,
             prevChapterOrder = null
         )
@@ -51,9 +41,6 @@ data class ChapterEntity(
             }
         }
     }
-
-    val isRecognizedNumber: Boolean
-        get() = chapterNumber >= 0f
 
     private val CHAPTER_TRIM_CHARS = arrayOf(
         // Whitespace
@@ -103,15 +90,10 @@ data class ChapterEntity(
         parcel.readLong(),
         parcel.readLong(),
         parcel.readByte() != 0.toByte(),
-        parcel.readByte() != 0.toByte(),
-        parcel.readLong(),
-        parcel.readLong(),
         parcel.readLong(),
         parcel.readString() ?: "",
         parcel.readString() ?: "",
         parcel.readLong(),
-        parcel.readFloat(),
-        parcel.readString(),
         parcel.readLong(),
         parcel.readLong(),
     ) {
@@ -202,15 +184,10 @@ data class ChapterEntity(
         parcel.writeLong(id)
         parcel.writeLong(mangaId)
         parcel.writeByte(if (read) 1 else 0)
-        parcel.writeByte(if (bookmark) 1 else 0)
-        parcel.writeLong(lastPageRead)
-        parcel.writeLong(dateFetch)
         parcel.writeLong(sourceOrder)
         parcel.writeString(url)
         parcel.writeString(name)
         parcel.writeLong(dateUpload)
-        parcel.writeFloat(chapterNumber)
-        parcel.writeString(scanlator)
         parcel.writeLong(nextChapterOrder ?: -1)
         parcel.writeLong(prevChapterOrder ?: -1)
     }

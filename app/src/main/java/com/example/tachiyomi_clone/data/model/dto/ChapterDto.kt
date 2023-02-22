@@ -15,21 +15,11 @@ class ChapterDto : Serializable {
 
     var date_upload: Long = 0
 
-    var chapter_number: Float = -1f
-
-    var scanlator: String? = null
-
     var id: Long? = null
 
     var manga_id: Long? = null
 
     var read: Boolean = false
-
-    var bookmark: Boolean = false
-
-    var last_page_read: Int = 0
-
-    var date_fetch: Long = 0
 
     var source_order: Int = 0
 
@@ -64,15 +54,10 @@ fun ChapterDto.toDomain(): ChapterEntity? {
         id = id!!,
         mangaId = manga_id!!,
         read = read,
-        bookmark = bookmark,
-        lastPageRead = last_page_read.toLong(),
-        dateFetch = date_fetch,
         sourceOrder = source_order.toLong(),
         url = url ?: "",
         name = name ?: "",
         dateUpload = date_upload,
-        chapterNumber = chapter_number,
-        scanlator = scanlator,
         null, null
     )
 }

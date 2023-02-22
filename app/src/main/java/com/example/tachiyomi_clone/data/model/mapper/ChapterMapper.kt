@@ -13,14 +13,9 @@ class ChapterMapper @Inject constructor() : BaseMapper<ChapterDto, ChapterEntity
             url = entity.url
             name = entity.name
             date_upload = entity.dateUpload
-            chapter_number = entity.chapterNumber
-            scanlator = entity.scanlator
             id = entity.id
             manga_id = entity.mangaId
             read = entity.read
-            bookmark = entity.bookmark
-            last_page_read = entity.lastPageRead.toInt()
-            date_fetch = entity.dateFetch
             source_order = entity.sourceOrder.toInt()
         }
     }

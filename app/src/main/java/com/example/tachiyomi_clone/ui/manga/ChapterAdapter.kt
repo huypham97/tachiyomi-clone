@@ -1,5 +1,6 @@
 package com.example.tachiyomi_clone.ui.manga
 
+import androidx.core.content.ContextCompat
 import com.example.tachiyomi_clone.R
 import com.example.tachiyomi_clone.data.model.entity.ChapterEntity
 import com.example.tachiyomi_clone.databinding.RowRvChapterBinding
@@ -23,6 +24,18 @@ class ChapterAdapter : BaseAdapter<RowRvChapterBinding, ChapterEntity>() {
         holder.binding.apply {
             tvChapterName.text = item?.name
             tvChapterDate.text = item?.dateUpload?.getDateTime("dd/MM/yyyy")
+            tvChapterName.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (item?.read == true) R.color.color_999999 else R.color.color_F1F1F1
+                )
+            )
+            tvChapterDate.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (item?.read == true) R.color.color_999999 else R.color.color_F1F1F1
+                )
+            )
         }
     }
 

@@ -152,12 +152,14 @@ class MangaDetailFragment : BaseNavFragment<FragmentMangaDetailBinding, MangaDet
         binding.tvReadFirst.setOnClickListener {
             viewModel.chapters.value?.let {
                 navigateReaderActivity(it[it.size - 1])
+                viewModel.markChapterRead(it[it.size - 1])
             }
         }
 
         binding.tvReadLast.setOnClickListener {
             viewModel.chapters.value?.let {
                 navigateReaderActivity(it[0])
+                viewModel.markChapterRead(it[0])
             }
         }
 
@@ -197,6 +199,7 @@ class MangaDetailFragment : BaseNavFragment<FragmentMangaDetailBinding, MangaDet
         }
 
         chapterAdapter.onSelectChapterListener = {
+            viewModel.markChapterRead(it)
             navigateReaderActivity(it)
         }
 

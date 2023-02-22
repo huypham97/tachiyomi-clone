@@ -154,6 +154,14 @@ class MangaDetailViewModel @Inject constructor(
         }
     }
 
+    fun markChapterRead(chapterEntity: ChapterEntity) {
+        viewModelScope.launch {
+            chapterEntity.mangaId = _manga.value!!.id
+            chapterEntity.read = true
+            getMangaWithChaptersUseCase.addChapter(chapterEntity)
+        }
+    }
+
 /*    private suspend fun fetchChaptersFromSource(manga: MangaEntity) {
         getMangaWithChaptersUseCase.getChapterList(manga).collect { result ->
             when (result) {

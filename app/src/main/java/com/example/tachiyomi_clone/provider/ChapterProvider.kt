@@ -31,7 +31,13 @@ class ChapterProvider @Inject constructor(
         const val TAG = "ChapterProvider"
     }
 
-    override suspend fun getChapterByMangaId(mangaId: Long): List<ChapterEntity> {
+    override suspend fun getChapterByUrl(url: String): ChapterEntity? {
+        return handler.awaitOneOrNull(true) {
+            chaptersQueries.getChapterByUrl(chapterUrl = url, chapterMapper)
+        }
+    }
+
+    override suspend fun getChaptersByMangaId(mangaId: Long): List<ChapterEntity> {
         return handler.awaitList { chaptersQueries.getChaptersByMangaId(mangaId, chapterMapper) }
     }
 
@@ -75,8 +81,6 @@ class ChapterProvider @Inject constructor(
                                         dto.name?.let { cleanupChapterName(it, manga.title) } ?: ""
                                     url = dto.url ?: ""
                                     dateUpload = dto.date_upload
-                                    chapterNumber = dto.chapter_number
-                                    scanlator = dto.scanlator?.ifBlank { null }
                                     mangaId = manga.id
                                     sourceOrder = i.toLong()
                                 }
@@ -114,13 +118,8 @@ class ChapterProvider @Inject constructor(
                         chapter.mangaId,
                         chapter.url,
                         chapter.name,
-                        chapter.scanlator,
                         chapter.read,
-                        chapter.bookmark,
-                        chapter.lastPageRead,
-                        chapter.chapterNumber,
                         chapter.sourceOrder,
-                        chapter.dateFetch,
                         chapter.dateUpload,
                     )
                     val lastInsertId = chaptersQueries.selectLastInsertedRowId().executeAsOne()
@@ -133,26 +132,40 @@ class ChapterProvider @Inject constructor(
         }
     }
 
-    override suspend fun updateAll(chapterUpdates: List<ChapterDto>) {
+    override suspend fun addChapter(chapter: ChapterEntity) {
+        try {
+            handler.await(inTransaction = true) {
+                chaptersQueries.insert(
+                    chapter.mangaId,
+                    chapter.url,
+                    chapter.name,
+                    chapter.read,
+                    chapter.sourceOrder,
+                    chapter.dateUpload,
+                )
+                val lastInsertId = chaptersQueries.selectLastInsertedRowId().executeAsOne()
+                chapter.copy(id = lastInsertId)
+            }
+        } catch (e: Exception) {
+            Logger.e(TAG, "[${TAG}] addAll() --> error: ${e.message}")
+        }
+    }
+
+    override suspend fun updateAll(chapterUpdates: List<ChapterEntity>) {
         partialUpdate(*chapterUpdates.toTypedArray())
     }
 
-    private suspend fun partialUpdate(vararg chapterUpdates: ChapterDto) {
+    private suspend fun partialUpdate(vararg chapterUpdates: ChapterEntity) {
         handler.await(inTransaction = true) {
             chapterUpdates.forEach { chapterUpdate ->
                 chaptersQueries.update(
-                    mangaId = chapterUpdate.manga_id,
+                    mangaId = chapterUpdate.mangaId,
                     url = chapterUpdate.url,
                     name = chapterUpdate.name,
-                    scanlator = chapterUpdate.scanlator,
                     read = chapterUpdate.read.toLong(),
-                    bookmark = chapterUpdate.bookmark.toLong(),
-                    lastPageRead = chapterUpdate.last_page_read.toLong(),
-                    chapterNumber = chapterUpdate.chapter_number.toDouble(),
-                    sourceOrder = chapterUpdate.source_order.toLong(),
-                    dateFetch = chapterUpdate.date_fetch,
-                    dateUpload = chapterUpdate.date_upload,
-                    chapterId = chapterUpdate.id ?: -1L,
+                    sourceOrder = chapterUpdate.sourceOrder,
+                    dateUpload = chapterUpdate.dateUpload,
+                    chapterId = chapterUpdate.id,
                 )
             }
         }

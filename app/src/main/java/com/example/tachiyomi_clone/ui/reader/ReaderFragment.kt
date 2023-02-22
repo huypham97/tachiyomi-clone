@@ -132,6 +132,7 @@ class ReaderFragment :
                 mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }
                     ?.let { chapter ->
                         loadChapter(chapter)
+                        mangaDetailViewModel.markChapterRead(chapter)
                     }
             }
             setNavButtonStatus()
@@ -142,6 +143,7 @@ class ReaderFragment :
                 mangaDetailViewModel.chapters.value?.find { index == it.sourceOrder }
                     ?.let { chapter ->
                         loadChapter(chapter)
+                        mangaDetailViewModel.markChapterRead(chapter)
                     }
             }
             setNavButtonStatus()
