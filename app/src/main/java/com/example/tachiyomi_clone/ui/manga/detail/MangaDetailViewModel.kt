@@ -13,7 +13,6 @@ import com.example.tachiyomi_clone.usecase.NetworkToLocalUseCase
 import com.example.tachiyomi_clone.usecase.UpdateMangaUseCase
 import com.example.tachiyomi_clone.utils.Logger
 import com.example.tachiyomi_clone.utils.withIOContext
-import com.example.tachiyomi_clone.utils.withUIContext
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -113,24 +112,21 @@ class MangaDetailViewModel @Inject constructor(
                                      "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
                                  )
                              }*/
-                            withIOContext {
-                                val mangaLocal =
-                                    insertDetailMangaToLocal(
-                                        result.data.first.copy(
-                                            url = manga.url,
-                                            title = manga.title
-                                        )
+                            val mangaLocal = withIOContext {
+                                insertDetailMangaToLocal(
+                                    result.data.first.copy(
+                                        url = manga.url,
+                                        title = manga.title
                                     )
-                                withUIContext {
-                                    isFavorite = mangaLocal.favorite
-                                    _manga.value = mangaLocal
-                                    Logger.d(
-                                        TAG,
-                                        "[${TAG}] fetchMangaFromLocalSource() --> response success: ${mangaLocal}"
-                                    )
-                                }
+                                )
                             }
+                            isFavorite = mangaLocal.favorite
+                            _manga.value = mangaLocal
                             _chapters.value = result.data.second
+                            Logger.d(
+                                TAG,
+                                "[${TAG}] fetchMangaFromLocalSource() --> response success: ${mangaLocal}"
+                            )
                             Logger.d(
                                 TAG,
                                 "[${TAG}] fetchMangaFromSource() --> response success: ${result.data}"
